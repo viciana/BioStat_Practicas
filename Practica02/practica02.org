@@ -14,7 +14,7 @@
 # Datos:     datos/poblacion.{csv,omv}         src/01_simula_poblacion.R
 # Gráficos:  img/rj_*.pdf                      src/1x_rj_*.R + datos/*.R
 #            img/arbol_pruebas.pdf             src/20_arbol_pruebas.tex
-# Las capturas de jamovi son PROVISIONALES: se toman de ../S2 (curso
+# Las capturas de jamovi son PROVISIONALES: se toman de ../../S2 (curso
 # 2025-26, con otros datos) hasta rehacerlas con poblacion.omv.
 
 #+BEAMER: \begin{frame}{Índice}\footnotesize\tableofcontents[hideallsubsections]\end{frame}
@@ -93,14 +93,14 @@ $\bar{x}$ & $\hat{\mu}=\bar{x}$ & $\mu$ \\
 $S_{n-1}$ & $\hat{\sigma}=S_{n-1}$ & $\sigma$ \\
 $p$ & $\hat{\pi}=p$ & $\pi$ \\\bottomrule
 \end{tabular}\\[2mm]
-\captura{../S2/NewIMG/infererencia.png}{0.42\textwidth}
+\captura{../../S2/NewIMG/infererencia.png}{0.42\textwidth}
 #+END_EXPORT
 
 * Error estándar e intervalos de confianza
 ** Repaso: Normal, Z y t de Student
 
 \centering
-\captura{../S2/imagenes/tStudenZ.png}{0.8\textwidth}
+\captura{../../S2/imagenes/tStudenZ.png}{0.8\textwidth}
 
 \scriptsize Con muestras pequeñas y \sigma desconocida usamos la /t/ de
 Student: colas más largas que la Normal; converge a Z cuando n crece.
@@ -118,7 +118,7 @@ Cuadruplicar $n$ reduce el error estándar \textbf{a la mitad}.
 \end{recuadro}
 \end{column}
 \begin{column}{0.55\textwidth}
-\captura{../S2/imagenes/CLTNormal.png}{\textwidth}
+\captura{../../S2/imagenes/CLTNormal.png}{\textwidth}
 \end{column}
 \end{columns}
 #+END_EXPORT
@@ -146,8 +146,8 @@ Código: \href{https://epidemos.es/bs2026/ic.R}{ic.R} (R o Rj)
 ** IC de una media y de una proporción en jamovi
 
 \centering
-\captura{../S2/imagenes/IC_Jamovi.png}{0.48\textwidth}
-\captura{../S2/imagenes/IC_Proporciones_Jv.png.pdf}{0.48\textwidth}
+\captura{../../S2/imagenes/IC_Jamovi.png}{0.48\textwidth}
+\captura{../../S2/imagenes/IC_Proporciones_Jv.png.pdf}{0.48\textwidth}
 
 ** Q.01 Intervalos de confianza
 
@@ -201,7 +201,7 @@ Código: \href{https://epidemos.es/bs2026/pvalor.R}{pvalor.R}
 ** Errores tipo I y II, potencia
 
 \centering
-\captura{../S2/NewIMG/matriz-errores-test.pdf}{0.75\textwidth}
+\captura{../../S2/NewIMG/matriz-errores-test.pdf}{0.75\textwidth}
 
 \scriptsize \alpha = P(rechazar H_0 | H_0 cierta);
 \beta = P(no rechazar H_0 | H_0 falsa); *potencia* = 1 - \beta (crece con n
@@ -255,7 +255,7 @@ contiene el 0: \textbf{error tipo II}. Código: \href{https://epidemos.es/bs2026
 ** Comparar con un valor de referencia
 
 \centering
-\captura{../S2/imagenes/tTest1M.png}{0.8\textwidth}
+\captura{../../S2/imagenes/tTest1M.png}{0.8\textwidth}
 
 \scriptsize /t/ para una muestra (medias) y prueba binomial (proporciones: Frecuencias › Prueba binomial).
 
@@ -315,7 +315,7 @@ jamovi avisa en una nota cuando hay esperadas $<5$: ¡léela!
 ** Tabla 2\times 2 en jamovi
 
 \centering
-\captura{../S2/imagenes/Tabla2x2.png}{0.85\textwidth}
+\captura{../../S2/imagenes/Tabla2x2.png}{0.85\textwidth}
 
 ** Q.03 Fumador e infarto
 
@@ -335,7 +335,7 @@ jamovi avisa en una nota cuando hay esperadas $<5$: ¡léela!
 ** Tablas N\times M
 
 \centering
-\captura{../S2/imagenes/TablaNxN.png}{0.85\textwidth}
+\captura{../../S2/imagenes/TablaNxN.png}{0.85\textwidth}
 
 ** Q.05 Ejercicio físico y mejora
 
@@ -361,7 +361,7 @@ pruebas \textbf{no paramétricas} (trabajan con rangos).
 ** Dos muestras independientes en jamovi
 
 \centering
-\captura{../S2/imagenes/2MuestrasIndepende.png}{0.85\textwidth}
+\captura{../../S2/imagenes/2MuestrasIndepende.png}{0.85\textwidth}
 
 ** Q.06 ¿Funciona el fármaco?
 
@@ -429,7 +429,7 @@ Código: \href{https://epidemos.es/bs2026/pareadas.R}{pareadas.R}
 ** Muestras pareadas en jamovi
 
 \centering
-\captura{../S2/imagenes/2MuestrasPareadas.png}{0.85\textwidth}
+\captura{../../S2/imagenes/2MuestrasPareadas.png}{0.85\textwidth}
 
 ** Q.09 ¿Baja la presión arterial?
 
@@ -443,7 +443,7 @@ Código: \href{https://epidemos.es/bs2026/pareadas.R}{pareadas.R}
 ** Para saber más: más de dos grupos
 
 \centering
-\captura{../S2/NewIMG/Anova_jm.png}{0.6\textwidth}
+\captura{../../S2/NewIMG/Anova_jm.png}{0.6\textwidth}
 
 \scriptsize ANOVA (paramétrica) y Kruskal-Wallis (no paramétrica).
 

@@ -1,5 +1,9 @@
 # Práctica 2 de Bioestadística (2º Medicina): estado del proyecto
 
+> **Repositorio:** https://github.com/viciana/BioStat_Practicas, carpeta
+> `Practica02/` (local: `sesiones/BioStat_Practicas/`). La carpeta antigua
+> `sesiones/practica02/` quedó como copia y ya no se mantiene.
+
 *Última actualización: 14-10-2026 (sesión corta, 14:15-14:30). Documento
 para retomar el trabajo en otra sesión de Claude: leer `CLAUDE.md`, este
 fichero y `guion_practica02.md`.*
@@ -9,12 +13,12 @@ fichero y `guion_practica02.md`.*
 Presentación org-mode → beamer → PDF para 4 h de prácticas de inferencia
 (temas 4, 5 y 6 del coordinador: contraste de hipótesis; proporciones,
 χ², Yates, Fisher; dos medias independientes/pareadas, paramétricas y no
-paramétricas). Mismo método y estilo que `../practica01` (ver su
+paramétricas). Mismo método y estilo que `../Practica01` (ver su
 `ESTADO_PROYECTO.md`): datos simulados en R en `.omv`, gráficos R con el
 script del alumno enlazado en el PDF (`https://epidemos.es/bs2026/`),
 `make` regenera todo.
 
-Material del curso anterior: `../S2/ppt02.org` (+ `imagenes/`, `NewIMG/`).
+Material del curso anterior: `../../S2/ppt02.org` (+ `imagenes/`, `NewIMG/`).
 
 ## 2. Hecho en esta sesión (BORRADOR v0, sin revisar por el profesor)
 
@@ -69,7 +73,7 @@ Si se cambia la semilla o el orden de las llamadas a `rbinom/sample` en
    infarto subido de 0,9 a 1,7). Decidir si Q.04 debe usar la muestra
    grande (donde χ²/Yates/Fisher discrepan) como pregunta principal.
 3. **Capturas de jamovi**: el borrador usa provisionalmente las de
-   `../S2` (otros datos) vía la macro `\captura` (muestra un recuadro
+   `../../S2` (otros datos) vía la macro `\captura` (muestra un recuadro
    «Captura pendiente» si falta el fichero, p. ej. `img/c01_filtros.png`).
    Rehacer con `poblacion.omv` (filtros, t independiente y pareada,
    Mann-Whitney, tablas 2×2 con Fisher/Yates).
@@ -80,7 +84,8 @@ Si se cambia la semilla o el orden de las llamadas a `rbinom/sample` en
    texto `Muestra_peq == 1` en la diapositiva de filtros.
 6. Subir `poblacion.omv` y los `datos/*.R` a `epidemos.es/bs2026/` cuando
    estén aprobados (o decidir carpeta nueva, p. ej. `bs2026p2`).
-7. Iniciar repositorio git (como practica01) cuando el profesor lo indique.
+7. ~~Repositorio git~~ (hecho 14-10): vive en `BioStat_Practicas/Practica02/`
+   (GitHub `viciana/BioStat_Practicas`, junto a `Practica01/`).
 
 **Acordado con el profesor (14-10, final de sesión):** el borrador
 «está bastante bien», lo repasará con tranquilidad; las capturas de
@@ -90,6 +95,6 @@ jamovi se dejan para otra sesión.
 
 La sección «Objetivo inicial» de `CLAUDE.md` (páginas 29-31 de
 `anterior/ppt01.pdf`, asimetría y curtosis) se refiere a
-`../S1/anterior/ppt01.pdf`, la presentación de la **práctica 1** del curso
-pasado; ese piloto ya se hizo en `../practica01` (`rj_asimetria`,
-`rj_curtosis`). Para la práctica 2 la referencia es `../S2/ppt02.org`.
+`../../S1/anterior/ppt01.pdf`, la presentación de la **práctica 1** del curso
+pasado; ese piloto ya se hizo en `../Practica01` (`rj_asimetria`,
+`rj_curtosis`). Para la práctica 2 la referencia es `../../S2/ppt02.org`.

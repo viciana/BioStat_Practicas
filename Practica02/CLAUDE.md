@@ -3,7 +3,7 @@
 Tengo que preparar 4 horas de practicas de "inferencia estadistica"
 para alumnos de 2º de Medicina. Esta practica es la continuacion de
 una practica anterior de 4 horas cuyo materia y preparacion estan en
-la carpeta "../practica01". Los temas que el coordinador decidio como
+la carpeta "../Practica01". Los temas que el coordinador decidio como
 obligatorios fueron:
 
 1. *Introducción a la bioestadística.* Tipos de variables y escalas de
@@ -29,7 +29,7 @@ coordinador de practicas son los siguientes:
    paramétricas.
 
 Yo tenia una practica preparada del año anterior que se adactan
- palacialemte a , a estos contenidos (en carpeta ../S2.  El fichero
+ palacialemte a , a estos contenidos (en carpeta ../../S2.  El fichero
  nucleo d ela compilñacion de la presentacion es ppt02.org, es un
  org-mode que luego compilo con beamer para general un PDF). En base a
  las instruciones de coordinador de practicas y el maerial disponible

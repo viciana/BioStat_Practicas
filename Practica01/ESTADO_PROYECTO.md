@@ -13,7 +13,7 @@ depende de la carpeta de trabajo `S1` donde se gestó el proyecto.*
 >   JAMOVI», 9 secciones.
 > - **Repositorio:** este mismo (git, rama `main`, autor «viciana»,
 >   licencia CC BY 4.0), publicado en
->   https://github.com/viciana/BioStat_Practica01 (remoto SSH `origin`,
+>   https://github.com/viciana/BioStat_Practicas (carpeta `Practica01/`; antes `BioStat_Practica01`, renombrado el 14-10-2026; remoto SSH `origin`,
 >   clave `~/.ssh/id_ed25519` del equipo original). Solo fuentes y
 >   recursos no regenerables; `make` lo regenera todo desde cero (≈ 30 s;
 >   probado en un clon limpio: PDF idéntico, datos idénticos byte a
@@ -70,7 +70,7 @@ recortadas y anotadas.
 | Bloque 2: estadística descriptiva | `bloque2.org` → `bloque2.pdf` (29 págs.) | Hecho (j06 y j07 quitadas el 28-09) |
 | Bloque 3: correlación y regresión | `bloque3.org` → `bloque3.pdf` (22 págs.) | Hecho, con capturas j08–j12 |
 | Presentación final unida | `practica01.org` → `practica01.pdf` (76 págs., con índice) | **Hecha** (29-09): portada común, 9 secciones; referencias a «bloque anterior» cambiadas por «Ejercicio 01» |
-| Repositorio y publicación | `../practica01/` → GitHub `viciana/BioStat_Practica01` | **Hecho** (29-09): fuentes + CC BY 4.0; datos y scripts en `bs2026` al día |
+| Repositorio y publicación | `Practica01/` → GitHub `viciana/BioStat_Practicas` (antes `BioStat_Practica01`) | **Hecho** (29-09): fuentes + CC BY 4.0; datos y scripts en `bs2026` al día |
 
 ## 3. Requisitos de software (equipo original)
 

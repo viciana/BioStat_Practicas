@@ -7,8 +7,8 @@ Temas del coordinador: **(4)** contraste de hipótesis y tipos de pruebas;
 contingencia; **(6)** comparación de dos medias independientes y
 dependientes: pruebas paramétricas y no paramétricas.
 
-Material de partida: `../S2/ppt02.org` (curso 2025-26). Formato y
-herramientas: los de `../practica01` (org → beamer, datos `.omv`
+Material de partida: `../../S2/ppt02.org` (curso 2025-26). Formato y
+herramientas: los de `../Practica01` (org → beamer, datos `.omv`
 simulados en R, gráficos R con su script enlazado en el PDF).
 
 ## Decisiones de diseño (propuestas)

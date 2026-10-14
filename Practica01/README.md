@@ -68,7 +68,7 @@ Salvo que se indique lo contrario, el contenido de este repositorio
 bajo la licencia **Creative Commons Reconocimiento 4.0 Internacional
 (CC BY 4.0)**: puede copiarse, adaptarse y redistribuirse, también con
 fines comerciales, citando la autoría (Fco. Viciana, Universidad de
-Sevilla). Texto legal completo en [`LICENSE`](LICENSE) y resumen en
+Sevilla). Texto legal completo en [`LICENSE`](../LICENSE) (en la raíz del repositorio) y resumen en
 <https://creativecommons.org/licenses/by/4.0/deed.es>.
 
 Excepciones (material de terceros, sujeto a sus propias condiciones):
