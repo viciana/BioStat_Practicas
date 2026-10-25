@@ -47,6 +47,7 @@ Descarga: [[https://epidemos.es/bs2026/poblacion.omv][poblacion.omv]] (N = 2000 
 | Sexo, GrupoSang         | nominal              |                                     |
 | Fumador, Infarto        | nominal (No/Sí)      | antecedente de infarto              |
 | Ejercicio               | ordinal              | Sedentario / Moderado / Intenso     |
+| Educa                   | ordinal              | Básicos / Medios / Superiores       |
 | Tratamiento             | nominal              | Placebo / Fármaco (aleatorizado)    |
 | PAS_basal, PAS_8sem     | cuantitativa (mmHg)  | misma persona, dos momentos         |
 | Mejora                  | nominal (No/Sí)      | baja de la PAS \geq 10 mmHg         |
