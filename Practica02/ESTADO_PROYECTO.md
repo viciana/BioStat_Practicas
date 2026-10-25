@@ -67,6 +67,9 @@ Resultados en las muestras (comprobados, para las soluciones):
 - Tratamiento × EfAdverso, **grande**: χ² p = 0,037, Yates p = 0,060, Fisher p = 0,058
   → ejemplo perfecto de Q.04 (la decisión cambia según la prueba). En la pequeña:
   16/0 vs 12/2, esperadas ≈ 1 → solo Fisher (p = 0,21).
+- Educa × Fumador (Q.05, 3×2): grande χ² p = 0,0014 (% fumadores 42 / 21 / 24;
+  en la población 35 / 26 / 18); pequeña p = 0,88, esperadas < 5.
+  Sustituye a Ejercicio × Mejora (p = 0,44: Mejora solo depende del tratamiento).
 - PAS_8sem por tratamiento: pequeña p = 0,16 (error tipo II), grande p < 0,001.
 - Colesterol por sexo: no significativo en ninguna muestra (diferencia real 2,4 mg/dL).
 - PCR por fumador (grande): t p = 0,004; Mann-Whitney p = 0,00002.

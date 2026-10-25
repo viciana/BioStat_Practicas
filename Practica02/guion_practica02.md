@@ -74,8 +74,8 @@ simulados en R, gráficos R con su script enlazado en el PDF).
 - **Jamovi: Frecuencias › Muestras independientes** (captura S2 actualizada)
 - **Q.03** Fumador × Infarto (muestra grande): χ², RR, OR
 - **Q.04** Tratamiento × Efecto adverso en la muestra pequeña: ¿χ² o Fisher? Comparar χ², Yates y Fisher
-- **Tablas N×M** (Ejercicio × Mejora, GrupoSang × Infarto) y residuos
-- **Q.05** Tabla N×M
+- **Tablas N×M** (Educa × Fumador, GrupoSang × Infarto) y residuos
+- **Q.05** Educa × Fumador (3×2, gl = 2): muestra grande p = 0,001; pequeña p = 0,88 con esperadas < 5
 - **(Opcional) Datos pareados: McNemar** (para saber más)
 
 ### 4. Comparación de dos medias (tema 6) (≈ 60 min)
