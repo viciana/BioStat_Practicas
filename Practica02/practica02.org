@@ -24,7 +24,7 @@
 
 - Pasar de *describir* una muestra a *inferir* sobre la población.
 - Entender la lógica del *contraste de hipótesis* y del /p-valor/.
-- Comparar *proporciones*: \chi^2, corrección de Yates, test exacto de Fisher.
+- Comparar *proporciones*: $\chi^2$, corrección de Yates, test exacto de Fisher.
 - Comparar *dos medias* (independientes y pareadas), con pruebas
   *paramétricas* y *no paramétricas*.
 
@@ -286,7 +286,7 @@ Código: \href{https://epidemos.es/bs2026/chi2.R}{chi2.R}
 \end{columns}
 #+END_EXPORT
 
-** \chi^2, corrección de Yates y test exacto de Fisher
+** $\chi^2$, corrección de Yates y test exacto de Fisher
 
 #+BEGIN_EXPORT latex
 \scriptsize
@@ -321,16 +321,16 @@ jamovi avisa en una nota cuando hay esperadas $<5$: ¡léela!
 ** Q.03 Fumador e infarto
 
 1. Con la *muestra grande*, tabla =Fumador= (filas) \times =Infarto=
-   (columnas): % por filas, \chi^2, RR y OR con IC.
+   (columnas): % por filas, $\chi^2$, RR y OR con IC.
 2. ¿Hay asociación? Interpreta el RR.
 3. Repite *sin filtro* (población). ¿Coincide? ¿Qué tipo de error
    pudo cometerse con la muestra?
 
-** Q.04 Efecto adverso: ¿\chi^2 o Fisher?
+** Q.04 Efecto adverso: ¿$\chi^2$ o Fisher?
 
 1. Con la *muestra pequeña*, tabla =Tratamiento= \times =EfAdverso=.
    Mira las frecuencias *esperadas*.
-2. Compara el p de \chi^2, \chi^2 con Yates y Fisher. ¿Cuál es el adecuado?
+2. Compara el p de $\chi^2$, $\chi^2$ con Yates y Fisher. ¿Cuál es el adecuado?
 3. Repite con la muestra grande: ¿se parecen ahora los tres p?
 
 ** Tablas N\times M
@@ -338,10 +338,13 @@ jamovi avisa en una nota cuando hay esperadas $<5$: ¡léela!
 \centering
 \captura{../../S2/imagenes/TablaNxN.png}{0.85\textwidth}
 
-** Q.05 Ejercicio físico y mejora
+** Q.05 Nivel educativo y tabaco
 
-1. Con la muestra grande, tabla =Ejercicio= \times =Mejora=. ¿Hay asociación?
-2. Repite =GrupoSang= \times =Infarto=. ¿Se cumplen las condiciones del \chi^2?
+1. Con la muestra grande, tabla =Educa= \times =Fumador= con % por filas.
+   ¿Hay asociación? ¿Cuántos grados de libertad tiene el $\chi^2$?
+2. ¿Qué nivel educativo se aparta más de lo esperado?
+3. Repite con la muestra pequeña. ¿Se cumplen las condiciones del $\chi^2$?
+4. Repite =GrupoSang= \times =Infarto= (muestra grande). ¿Y ahora?
 
 * Comparación de dos medias
 ** Condiciones de aplicación de la t de Student
