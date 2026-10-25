@@ -41,11 +41,22 @@ Los scripts `datos/*.R` siguen el patrón de practica01: en Rj usan `data`;
 en R descargan `poblacion.omv` de `epidemos.es/bs2026/` (**aún no subido**).
 
 ### Variables de `poblacion.omv`
-ID, Sexo, Edad, GrupoSang, Fumador, Ejercicio (ordinal), Tratamiento
+ID, Sexo, Edad, Educa (ordinal), GrupoSang, Fumador, Ejercicio (ordinal), Tratamiento
 (Placebo/Fármaco), PAS_basal, PAS_8sem, Mejora (bajada ≥ 10 mmHg),
 Colesterol, PCR (lognormal, asimétrica), Dolor (0-10), EfAdverso (raro:
 3 % placebo / 9 % fármaco → Fisher), Infarto (asociado a tabaco y edad),
 Muestra_grande, Muestra_peq.
+
+**Codificación (25-10):** las categóricas son **enteros con etiquetas**
+(jmvReadWrite no sabe escribirlas: `src/omv_enteros.R` retoca el `.omv`
+tras `write_omv`). En las dicotómicas **0 = referencia**: Sexo 0 Mujer /
+1 Hombre, Tratamiento 0 Placebo / 1 Fármaco, Fumador, Mejora, EfAdverso
+e Infarto 0 No / 1 Sí; así la media en jamovi es la proporción de 1.
+Ejercicio y Educa (1 Básicos, 2 Medios, 3 Superiores) son ordinales 1-3.
+**Educa** se simula al final del script (latente logística en terciles,
+~1/3 por nivel) a partir de Edad, Fumador y Ejercicio, para no alterar
+las demás variables: edad media 64 / 58 / 51, % fumadores 35 / 26 / 18,
+% sedentarios 60 / 47 / 33 (Básicos / Medios / Superiores).
 
 «Verdad» poblacional: bajada PAS 4,1 (placebo) vs 12,4 mmHg (fármaco);
 colesterol H 209,7 / M 212,1 (diferencia pequeña → error tipo II);
