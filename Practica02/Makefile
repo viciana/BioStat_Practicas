@@ -33,6 +33,14 @@ img/rj_pcr.pdf: src/15_rj_pcr.R datos/pcr.R datos/poblacion.omv
 	Rscript $<
 img/rj_glucosa.pdf: src/16_rj_glucosa.R datos/glucosa.R
 	Rscript $<
+img/rj_normal.pdf: src/17_rj_normal.R datos/normal.R
+	Rscript $<
+img/rj_tipifica.pdf: src/18_rj_tipifica.R datos/tipifica.R datos/poblacion.omv
+	Rscript $<
+img/rj_binomial.pdf: src/22_rj_binomial.R datos/binomial.R
+	Rscript $<
+img/rj_tcl.pdf: src/19_rj_tcl.R datos/tcl.R datos/poblacion.omv
+	Rscript $<
 
 ## Figuras LaTeX independientes (standalone; TikZ choca con ctable)
 STANDALONE = d=$$(mktemp -d) && \
@@ -40,14 +48,17 @@ STANDALONE = d=$$(mktemp -d) && \
 	cp $$d/$(basename $(notdir $<)).pdf $@ && rm -r $$d
 img/arbol_pruebas.pdf: src/20_arbol_pruebas.tex
 	$(STANDALONE)
+img/inferencia.pdf: src/21_inferencia.tex
+	$(STANDALONE)
 
 GRAFICOS = img/rj_ic.pdf img/rj_pvalor.pdf img/rj_chi2.pdf img/rj_pareadas.pdf \
            img/rj_forest.pdf img/rj_pcr.pdf img/rj_glucosa.pdf \
-           img/arbol_pruebas.pdf
+           img/rj_binomial.pdf img/rj_normal.pdf img/rj_tipifica.pdf img/rj_tcl.pdf \
+           img/arbol_pruebas.pdf img/inferencia.pdf
 graficos: $(GRAFICOS)
 
 ## Presentación ------------------------------------------------------------
-practica02.pdf: practica02.org myconfbeamer.org $(GRAFICOS)
+practica02.pdf: practica02.org myconfbeamer.org $(GRAFICOS) $(wildcard capturas/*.png)
 	$(EXPORTA)
 
 pdf: practica02.pdf

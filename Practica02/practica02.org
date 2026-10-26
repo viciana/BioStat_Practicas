@@ -77,63 +77,200 @@ comprobar cuándo la inferencia acierta y cuándo se equivoca.
 \end{columns}
 #+END_EXPORT
 
-** Descripción e inferencia
+** Estadística descriptiva frente a inferencial
 
 #+BEGIN_EXPORT latex
 \scriptsize
 \begin{itemize}
-\item \emph{Descriptiva}: resume la \textbf{muestra observada} ($\bar{x}$, $S$, \%).
-\item \emph{Inferencial}: deduce \textbf{parámetros de la población}
-  ($\mu$, $\sigma$, $\pi$) a partir de la muestra, de la teoría de la
-  probabilidad y de algunas asunciones.
+\item \textbf{Descriptiva}: \emph{resume} la información de una muestra
+  observada con \textbf{estadísticos muestrales} ($\bar{x}$, $S_{n}$, $p$\dots),
+  en forma de tablas y gráficos. Describe lo que \emph{vemos}.
+\item \textbf{Inferencial}: a partir de la muestra, de la teoría de la
+  probabilidad y de \textbf{asunciones} explícitas (muestreo aleatorio,
+  normalidad\dots) \emph{estima} los \textbf{parámetros poblacionales}
+  ($\mu$, $\sigma$, $\pi$), inobservables, y cuantifica el error de esa
+  estimación.
 \end{itemize}
 \centering
-\begin{tabular}{ccc}\toprule
-Estadístico muestral & Estimador & Parámetro (no observable)\\\midrule
-$\bar{x}$ & $\hat{\mu}=\bar{x}$ & $\mu$ \\
-$S_{n-1}$ & $\hat{\sigma}=S_{n-1}$ & $\sigma$ \\
-$p$ & $\hat{\pi}=p$ & $\pi$ \\\bottomrule
-\end{tabular}\\[2mm]
-\captura{../../S2/NewIMG/infererencia.png}{0.42\textwidth}
+\begin{tabular}{p{0.17\textwidth}p{0.22\textwidth}p{0.22\textwidth}p{0.24\textwidth}}\toprule
+ & \textbf{Parámetro} & \textbf{Estadístico} & \textbf{Estimador}\\
+ & \textbf{poblacional} & \textbf{muestral} & \textbf{del parámetro}\\\midrule
+¿Qué es? & fijo y desconocido (población) & calculado en \emph{esta} muestra & estadístico que estima el parámetro\\
+Media & $\mu$ & $\bar{x}$ & $\hat{\mu}=\bar{x}$\\
+Desv. típica & $\sigma$ & $S_{n}$ & $\hat{\sigma}=S_{n-1}$\\
+Proporción & $\pi$ & $p$ & $\hat{\pi}=p$\\
+Precisión & --- & --- & EE, IC 95\,\%, $p$-valor\\\bottomrule
+\end{tabular}
+\begin{recuadro}\scriptsize
+\textbf{Estimador}: fórmula (variable aleatoria) que cambia de muestra a
+muestra, p.\,ej. $\bar{X}$. \textbf{Estimación}: su valor en nuestra
+muestra, p.\,ej. $\bar{x}=151{,}2$. El parámetro $\mu$ es fijo.
+\end{recuadro}
 #+END_EXPORT
 
-* Error estándar e intervalos de confianza
-** Repaso: Normal, Z y t de Student
+** De la población a la muestra y vuelta
 
+#+BEGIN_EXPORT latex
 \centering
-\captura{../../S2/imagenes/tStudenZ.png}{0.8\textwidth}
+\href{https://epidemos.es/bs2026/inferencia.tex}{\includegraphics[width=\textwidth]{img/inferencia.pdf}}\\[1mm]
+\scriptsize Los \textbf{estadísticos} describen la muestra; con un modelo teórico y
+asunciones se convierten en \textbf{estimadores} de los parámetros,
+acompañados de una medida de su \textbf{error} (EE, IC, $p$).
+#+END_EXPORT
 
-\scriptsize Con muestras pequeñas y \sigma desconocida usamos la /t/ de
-Student: colas más largas que la Normal; converge a Z cuando n crece.
+* Normal, TCL e intervalos de confianza
+** De la binomial a la normal: lanzar monedas
 
-** Teorema central del límite y error estándar
+#+BEGIN_EXPORT latex
+\centering
+\href{https://epidemos.es/bs2026/binomial.R}{\includegraphics[width=\textwidth]{img/rj_binomial.pdf}}\\[1mm]
+\scriptsize
+Número de caras al lanzar $n$ monedas (puntos y líneas: masas de probabilidad de $B(n,0{,}5)$; rojo: curva normal
+con la misma media $np$ y desviación $\sqrt{npq}$). Con $n$ creciente la binomial \textbf{se
+parece cada vez más a una campana}.
+\begin{recuadro}\tiny
+\textbf{¿Por qué la «normal» es tan normal?} Casi ningún fenómeno tiene una
+sola causa: la altura, por ejemplo, es la \textbf{suma} de miles de factores
+pequeños (genética, nutrición, sueño\dots). Es muy improbable que todos
+empujen en el mismo sentido (las colas de la campana); lo habitual es que
+\textbf{se compensen} y el resultado quede cerca de la media (el centro).
+Código: \href{https://epidemos.es/bs2026/binomial.R}{binomial.R}
+\end{recuadro}
+#+END_EXPORT
+
+** La curva normal
 
 #+BEGIN_EXPORT latex
 \begin{columns}
-\begin{column}{0.45\textwidth}\scriptsize
-Las medias muestrales $\bar{x}$ se distribuyen (casi) como una Normal
-centrada en $\mu$ con desviación
-\[ EE = \frac{\sigma}{\sqrt{n}} \]
-\begin{recuadro}\scriptsize
-Cuadruplicar $n$ reduce el error estándar \textbf{a la mitad}.
-\end{recuadro}
+\begin{column}{0.56\textwidth}
+\href{https://epidemos.es/bs2026/normal.R}{\includegraphics[width=\textwidth]{img/rj_normal.pdf}}
 \end{column}
-\begin{column}{0.55\textwidth}
-\captura{../../S2/imagenes/CLTNormal.png}{\textwidth}
+\begin{column}{0.44\textwidth}\scriptsize
+Densidad con media $\mu$ y desviación típica $\sigma$:
+\[ f(x)=\frac{1}{\sigma\sqrt{2\pi}}\,e^{-\frac{(x-\mu)^2}{2\sigma^2}} \]
+\begin{itemize}
+\item Simétrica, con forma de campana: $\mu$ la centra y $\sigma$ la ensancha.
+\item \textbf{Puntos de inflexión} en $\mu\pm\sigma$ ($f''=0$): la curva pasa de \textcolor{blue}{cóncava} a \textcolor{OliveGreen}{convexa} y la tangente (roja) la cruza.
+\item Áreas: $\mu\pm1\sigma$ $\Rightarrow$ 68,3\,\%; $\pm2\sigma$ $\Rightarrow$ 95,4\,\%; $\pm3\sigma$ $\Rightarrow$ 99,7\,\%.
+\end{itemize}
+Código: \href{https://epidemos.es/bs2026/normal.R}{normal.R}
 \end{column}
 \end{columns}
 #+END_EXPORT
 
-** ¿Qué significa «95 % de confianza»? 100 muestras de n = 30
+** Normal tipificada Z
+
+#+BEGIN_EXPORT latex
+\centering
+\href{https://epidemos.es/bs2026/tipifica.R}{\includegraphics[width=0.88\textwidth]{img/rj_tipifica.pdf}}\\[1mm]
+\scriptsize
+\begin{columns}
+\begin{column}{0.4\textwidth}\centering
+$Z=\dfrac{X-\mu}{\sigma}\;\sim\;N(0,1)$
+\end{column}
+\begin{column}{0.6\textwidth}
+Variables con \textbf{unidades y escalas distintas} se vuelven comparables: $Z$ mide
+a cuántas desviaciones típicas está un valor de la media. Código:
+\href{https://epidemos.es/bs2026/tipifica.R}{tipifica.R}
+\end{column}
+\end{columns}
+#+END_EXPORT
+
+** Normal Z frente a t de Student
+
+\centering
+\captura{../../S2/imagenes/tStudenZ.png}{0.8\textwidth}
+
+\scriptsize En inferencia, si $\sigma$ es desconocida (lo habitual en la práctica),
+la distribución de referencia que usaremos es la /t/ de Student, con colas más
+largas que la Normal $Z$ (más incertidumbre). Converge a $Z$ cuando $n$ crece
+(a partir de $n\approx 40$ son casi idénticas).
+
+** Teorema central del límite y error estándar
+
+#+BEGIN_EXPORT latex
+\scriptsize
+\begin{itemize}
+\item Si extraemos muestras aleatorias de tamaño $n$ de una población con media $\mu$ y
+  varianza finita $\sigma^2$, las \textbf{medias muestrales} $\bar{X}$ se distribuyen
+  \textbf{(casi) como una Normal}, \emph{sea cual sea la forma de la distribución de la variable original (normal o no normal)}:
+  \[ \bar{X}\ \approx\ N\!\left(\mu,\ \frac{\sigma}{\sqrt{n}}\right),\qquad
+     EE=\frac{\sigma}{\sqrt{n}} \]
+\item El \textbf{error estándar} (EE) es la desviación típica del
+  \emph{estimador}: mide cuánto varía $\bar{x}$ de muestra a muestra. Se
+  estima con $EE=S_{n-1}/\sqrt{n}$.
+\end{itemize}
+\begin{recuadro}\scriptsize
+Cuadruplicar $n$ reduce el EE \textbf{a la mitad}. Es el \emph{«error»}
+de la estimación de $\mu$ que acompaña al estimador.
+\end{recuadro}
+#+END_EXPORT
+
+** TCL: población frente a medias muestrales
+
+#+BEGIN_EXPORT latex
+\centering
+\href{https://epidemos.es/bs2026/tcl.R}{\includegraphics[width=0.78\textwidth]{img/rj_tcl.pdf}}\\[1mm]
+\scriptsize Arriba: variable en la población ($N=2000$) y su media $\mu$ (punteada).
+Abajo: medias de 100 muestras con $n=3,9,27$; las rayas de color son la media
+de las medias (\emph{coincide con $\mu$}) y la anchura se reduce como $EE=\sigma/\sqrt{n}$,
+aunque \texttt{Dolor} sea discreta y \texttt{PCR} asimétrica.
+Código: \href{https://epidemos.es/bs2026/tcl.R}{tcl.R}
+#+END_EXPORT
+
+** jamovi Demonstrations: módulo /Central Limit Theorem/
 
 #+BEGIN_EXPORT latex
 \begin{columns}
-\begin{column}{0.58\textwidth}
+\begin{column}{0.56\textwidth}
+\captura{capturas/clt_normal_panel.png}{\textwidth}
+\end{column}
+\begin{column}{0.44\textwidth}\scriptsize
+\textbf{Instalación}: \texttt{Módulos} (+) $\rightarrow$ \emph{jamovi library}
+$\rightarrow$ \textbf{Demonstrations}. Después: \texttt{Demonstrations} $\rightarrow$
+\texttt{Central Limit Theorem}.
+\begin{itemize}
+\item \texttt{Source distribution}: distribución de la variable original.
+\item \texttt{Sample size}: tamaño $n$ de cada muestra (1-200).
+\item \texttt{No. of trials}: número de muestras (1-5000).
+\end{itemize}
+\textbf{Resultados}: tabla con la media de las medias, su desviación
+típica y el error estándar; gráfico de la distribución original frente a las
+medias muestrales y ampliación de la distribución de las medias con la
+curva normal.
+\end{column}
+\end{columns}
+#+END_EXPORT
+
+** El TCL con jamovi: tres distribuciones de partida
+
+#+BEGIN_EXPORT latex
+\begin{columns}[T]
+\begin{column}{0.33\textwidth}\centering\scriptsize\textbf{Normal}\\
+\captura{capturas/clt_normal.png}{\textwidth}\end{column}
+\begin{column}{0.33\textwidth}\centering\scriptsize\textbf{Uniforme}\\
+\captura{capturas/clt_uniforme.png}{\textwidth}\end{column}
+\begin{column}{0.33\textwidth}\centering\scriptsize\textbf{Asimétrica}\\
+\captura{capturas/clt_asimetrica.png}{\textwidth}\end{column}
+\end{columns}
+\begin{recuadro}\scriptsize
+$n=30$, 300 muestras. \textbf{Sea cual sea la distribución de partida}, las
+medias muestrales se distribuyen (casi) como una \textbf{Normal}, centrada en
+$\mu$ y con $EE=\sigma/\sqrt{n}$. Prueba a \textbf{cambiar $n$} (5, 30, 200): la
+aproximación mejora y la curva se estrecha.
+\end{recuadro}
+#+END_EXPORT
+
+** Aciertos en 100 muestras de 30 casos con $\alpha=0{,}05$
+
+#+BEGIN_EXPORT latex
+\begin{columns}
+\begin{column}{0.68\textwidth}
 \href{https://epidemos.es/bs2026/ic.R}{\includegraphics[width=\textwidth]{img/rj_ic.pdf}}
 \end{column}
-\begin{column}{0.42\textwidth}\scriptsize
-\textbf{La sala vota}: de 100 IC al 95\,\%, ¿cuántos esperáis que
-\emph{no} contengan la media real?
+\begin{column}{0.32\textwidth}\scriptsize
+Si repetimos con 100 muestras el cálculo del IC
+al 95\,\% de confianza, ¿cuántas veces \emph{no} acertaremos?
 \begin{itemize}
 \item Cada línea es el IC de una muestra distinta.
 \item En rojo, los IC que «fallan».
@@ -144,12 +281,6 @@ Código: \href{https://epidemos.es/bs2026/ic.R}{ic.R} (R o Rj)
 \end{columns}
 #+END_EXPORT
 
-** IC de una media y de una proporción en jamovi
-
-\centering
-\captura{../../S2/imagenes/IC_Jamovi.png}{0.48\textwidth}
-\captura{../../S2/imagenes/IC_Proporciones_Jv.png.pdf}{0.48\textwidth}
-
 ** Q.01 Intervalos de confianza
 
 1. Con la *muestra pequeña*, calcula el IC 95 % de la media del
@@ -157,6 +288,60 @@ Código: \href{https://epidemos.es/bs2026/ic.R}{ic.R} (R o Rj)
 2. Repite con la *muestra grande*. ¿Cómo cambia la anchura del IC?
 3. Sin filtro, calcula la media y la proporción *poblacionales*.
    ¿Están dentro de tus IC?
+
+** Resultado: IC de Colesterol y Fumador en jamovi
+
+#+BEGIN_EXPORT latex
+\begin{columns}[T]
+\begin{column}{0.33\textwidth}
+\captura{capturas/q01_panel.png}{\textwidth}\\[1mm]
+\tiny
+Con $n=300$ el IC del colesterol (208,5-216,8) es unas \textbf{3 veces más
+estrecho} que con $n=30$ (198,4-223,4); ambos contienen la media poblacional
+(210,8).\\[1mm]
+\texttt{Fumador} es 0/1: su media es la \textbf{proporción} de fumadores
+(0,40 con $n=30$, IC 0,21-0,59; 0,29 con $n=300$, IC 0,24-0,35; 0,26 en la
+población).
+\end{column}
+\begin{column}{0.67\textwidth}\scriptsize
+\textbf{Muestra pequeña} ($n=30$)\\
+\captura{capturas/q01_peq.png}{0.95\textwidth}\\[1.5mm]
+\textbf{Muestra grande} ($n=300$)\\
+\captura{capturas/q01_grande.png}{0.95\textwidth}\\[1.5mm]
+\textbf{Población} ($N=2000$)\\
+\captura{capturas/q01_pob.png}{0.62\textwidth}
+\end{column}
+\end{columns}
+#+END_EXPORT
+
+** IC de una proporción en jamovi
+
+#+BEGIN_EXPORT latex
+\begin{columns}[T]
+\begin{column}{0.38\textwidth}
+\captura{capturas/ic_prop_panel.png}{\textwidth}\\[1mm]
+\tiny
+\texttt{Frecuencias} $\rightarrow$ \texttt{Prueba de proporciones (2 resultados)}:
+variables \texttt{Fumador} y \texttt{Ejercicio}; en \emph{Estadísticas adicionales}
+marcar \textbf{Intervalos de confianza} (95\,\%). Jamovi da una fila por
+\textbf{nivel} con su recuento, proporción e IC.\\[1mm]
+El $p$ sale \texttt{NaN} porque no contrastamos nada (valor de prueba 0): nos
+interesa el \textbf{IC}. En la población (sin filtro) no tiene sentido: las
+proporciones son los parámetros.\\[1mm]
+\textbf{Comprobación}: los IC de las muestras (\textcolor{red}{rojo}) deben contener la
+proporción de la población (\textcolor{blue}{azul}). Aquí lo hacen en los 5 niveles; el de
+$n=30$ es mucho más ancho.
+\end{column}
+\begin{column}{0.62\textwidth}\scriptsize
+\textbf{Muestra pequeña} ($n=30$)\\
+\captura{capturas/ic_prop_peq.png}{0.7\textwidth}\\[1mm]
+\textbf{Muestra grande} ($n=300$)\\
+\captura{capturas/ic_prop_grande.png}{0.62\textwidth}\\[1mm]
+\textbf{Población} ($N=2000$)\\
+\captura{capturas/ic_prop_pob.png}{0.52\textwidth}
+\end{column}
+\end{columns}
+#+END_EXPORT
 
 * Contraste de hipótesis
 ** Lógica del contraste: el juicio
