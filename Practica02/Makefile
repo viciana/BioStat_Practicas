@@ -1,7 +1,8 @@
 # Práctica 2 de Bioestadística (2º Medicina): Inferencia estadística con JAMOVI
 # BORRADOR.  Ejecutar desde esta carpeta:
 #   make          -> todo (datos, gráficos y practica02.pdf)
-#   make datos    -> datos/poblacion.{csv,omv}
+#   make datos    -> datos/poblacion.{csv,omv} y datos/poblacion_filtros.omv
+#   make resultados -> img/res_*.tex (tablas de soluciones)
 #   make graficos -> img/*.pdf
 #   make pdf      -> practica02.pdf (org -> beamer, Emacs en modo batch)
 #   make clean    -> borra todo lo generado
@@ -10,13 +11,22 @@ $(shell mkdir -p img)
 
 EXPORTA = emacs --batch $< --eval "(progn (require 'ox-beamer) (org-beamer-export-to-pdf))"
 
-all: datos graficos pdf
+all: datos graficos resultados pdf
 
 ## Datos -----------------------------------------------------------------
 datos/poblacion.csv datos/poblacion.omv: src/01_simula_poblacion.R
 	Rscript $<
 
-datos: datos/poblacion.omv
+datos/poblacion_filtros.omv: src/02_filtros.R src/omv_enteros.R datos/poblacion.omv
+	Rscript $<
+
+datos: datos/poblacion.omv datos/poblacion_filtros.omv
+
+## Tablas de soluciones (img/res_*.tex, las escribe un único script) ------
+img/res_q02_t.tex: src/30_resultados.R src/estilo_jmv.R datos/poblacion.omv
+	Rscript $<
+
+resultados: img/res_q02_t.tex
 
 ## Gráficos (script de alumno datos/X.R + lanzador src/NN_rj_X.R) ---------
 img/rj_ic.pdf: src/10_rj_ic.R datos/ic.R datos/poblacion.omv
@@ -41,6 +51,8 @@ img/rj_binomial.pdf: src/22_rj_binomial.R datos/binomial.R
 	Rscript $<
 img/rj_tcl.pdf: src/19_rj_tcl.R datos/tcl.R datos/poblacion.omv
 	Rscript $<
+img/rj_zt.pdf: src/23_rj_zt.R datos/zt.R
+	Rscript $<
 
 ## Figuras LaTeX independientes (standalone; TikZ choca con ctable)
 STANDALONE = d=$$(mktemp -d) && \
@@ -54,11 +66,15 @@ img/inferencia.pdf: src/21_inferencia.tex
 GRAFICOS = img/rj_ic.pdf img/rj_pvalor.pdf img/rj_chi2.pdf img/rj_pareadas.pdf \
            img/rj_forest.pdf img/rj_pcr.pdf img/rj_glucosa.pdf \
            img/rj_binomial.pdf img/rj_normal.pdf img/rj_tipifica.pdf img/rj_tcl.pdf \
+           img/rj_zt.pdf \
            img/arbol_pruebas.pdf img/inferencia.pdf
 graficos: $(GRAFICOS)
 
 ## Presentación ------------------------------------------------------------
-practica02.pdf: practica02.org myconfbeamer.org $(GRAFICOS) $(wildcard capturas/*.png)
+# Capturas de jamovi (se ignoran los nombres con espacios, que rompen make)
+CAPTURAS = $(shell find capturas -name "*.png" ! -name "* *")
+practica02.pdf: practica02.org myconfbeamer.org $(GRAFICOS) img/res_q02_t.tex \
+                $(CAPTURAS)
 	$(EXPORTA)
 
 pdf: practica02.pdf
@@ -66,4 +82,4 @@ pdf: practica02.pdf
 clean:
 	rm -rf img practica02.pdf practica02.tex datos/*.csv datos/*.omv
 
-.PHONY: all datos graficos pdf clean
+.PHONY: all datos graficos resultados pdf clean

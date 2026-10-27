@@ -6,8 +6,9 @@ if (!exists("data") || !is.data.frame(data)) {
   download.file("https://epidemos.es/bs2026/poblacion.omv", fic, mode = "wb")
   data <- jmvReadWrite::read_omv(fic)
 }
-dif <- function(d) { tt <- t.test(d$PAS_8sem[d$Tratamiento == "Placebo"],
-                                  d$PAS_8sem[d$Tratamiento == "Fármaco"])
+dif <- function(d) { tt <- t.test(d$PAS_8sem[d$Tratamiento == "Placebo"],   # t de Student,
+                                  d$PAS_8sem[d$Tratamiento == "Fármaco"],   # como en jamovi
+                                  var.equal = TRUE)
   c(unname(tt$estimate[1] - tt$estimate[2]), tt$conf.int, tt$p.value) }
 r <- rbind(pequeña = dif(data[data$Muestra_peq == 1, ]),
            grande  = dif(data[data$Muestra_grande == 1, ]))

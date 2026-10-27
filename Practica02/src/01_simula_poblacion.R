@@ -30,6 +30,9 @@ PAS_basal <- round(150 + 0.25 * (Edad - 58) + 4 * Fumador + rnorm(N, 0, 12))
 PAS_8sem  <- round(PAS_basal - 4 - 8 * Tratamiento +
                    rnorm(N, 0, 9))
 Mejora    <- as.integer(PAS_basal - PAS_8sem >= 10)        # respuesta clínica
+## Hipertensión (PAS >= 140) en los dos momentos: proporciones pareadas (McNemar)
+HTA_basal <- as.integer(PAS_basal >= 140)
+HTA_8sem  <- as.integer(PAS_8sem >= 140)
 
 ## Colesterol: diferencia pequeña por sexo (difícil de detectar con n = 30)
 Colesterol <- round(rnorm(N, 205 + 6 * (Sexo == 0) + 8 * Fumador, 35))
@@ -62,7 +65,8 @@ Educa   <- cut(L_educa, quantile(L_educa, 0:3 / 3), include.lowest = TRUE,
                labels = FALSE)
 
 pob <- data.frame(ID = seq_len(N), Sexo, Edad, Educa, GrupoSang, Fumador, Ejercicio,
-                  Tratamiento, PAS_basal, PAS_8sem, Mejora, Colesterol, PCR,
+                  Tratamiento, PAS_basal, PAS_8sem, Mejora, HTA_basal, HTA_8sem,
+                  Colesterol, PCR,
                   Dolor, EfAdverso, Infarto, Muestra_grande, Muestra_peq)
 write.csv(pob, "datos/poblacion.csv", row.names = FALSE)
 
@@ -77,6 +81,8 @@ etiquetas <- list(
   Ejercicio   = c("1" = "Sedentario", "2" = "Moderado", "3" = "Intenso"),
   Tratamiento = c("0" = "Placebo", "1" = "Fármaco"),
   Mejora      = noSi,
+  HTA_basal   = noSi,
+  HTA_8sem    = noSi,
   EfAdverso   = noSi,
   Infarto     = noSi)
 desc <- list(
@@ -88,6 +94,8 @@ desc <- list(
   PAS_basal = "Presión arterial sistólica al inicio (mmHg)",
   PAS_8sem = "Presión arterial sistólica a las 8 semanas (mmHg)",
   Mejora = "Bajada de la PAS de 10 mmHg o más",
+  HTA_basal = "Hipertensión al inicio (PAS >= 140 mmHg)",
+  HTA_8sem = "Hipertensión a las 8 semanas (PAS >= 140 mmHg)",
   Colesterol = "Colesterol total (mg/dL)",
   PCR = "Proteína C reactiva (mg/L)",
   Dolor = "Cefalea al final del ensayo (escala 0-10)",
