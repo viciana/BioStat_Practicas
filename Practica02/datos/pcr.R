@@ -16,7 +16,7 @@ mtext(sprintf("Shapiro-Wilk p = %.1e", shapiro.test(d$PCR)$p.value), side = 3,
       line = 0.2, cex = 0.7)
 boxplot(PCR ~ Fumador, d, col = col, las = 1, xlab = "Fumador", ylab = "PCR (mg/L)",
         outcex = 0.5)
-pt <- t.test(PCR ~ Fumador, d)$p.value
+pt <- t.test(PCR ~ Fumador, d, var.equal = TRUE)$p.value   # t de Student, como en jamovi
 pw <- wilcox.test(PCR ~ Fumador, d, exact = FALSE)$p.value
 mtext(sprintf("t: p = %.4f\nM-W: p = %.6f", pt, pw), side = 3, line = 0.1, cex = 0.65)
 par(op)

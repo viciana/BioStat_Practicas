@@ -4,7 +4,7 @@
 > `Practica02/` (local: `sesiones/BioStat_Practicas/`). La carpeta antigua
 > `sesiones/practica02/` quedó como copia y ya no se mantiene.
 
-*Última actualización: 26-10-2026 (sesión de revisión diapositiva a diapositiva; ver §2b). Documento
+*Última actualización: 27-10-2026, tarde (secciones de contraste, proporciones y medias rehechas y 5 capturas de jamovi integradas; ver §2c y §3). Documento
 para retomar el trabajo en otra sesión de Claude: leer `CLAUDE.md`, este
 fichero y `guion_practica02.md`.*
 
@@ -72,7 +72,7 @@ Resultados en las muestras (comprobados, para las soluciones):
   Sustituye a Ejercicio × Mejora (p = 0,44: Mejora solo depende del tratamiento).
 - PAS_8sem por tratamiento: pequeña p = 0,16 (error tipo II), grande p < 0,001.
 - Colesterol por sexo: no significativo en ninguna muestra (diferencia real 2,4 mg/dL).
-- PCR por fumador (grande): t p = 0,004; Mann-Whitney p = 0,00002.
+- PCR por fumador (grande): t de Student p = 0,0003 (Welch p = 0,004; jamovi avisa de que Levene es significativo); Mann-Whitney p = 0,00002.
 - PAS basal vs 145: pequeña p = 0,002; media poblacional 151,0.
 - % mujeres vs 48 %: pob 47,5 %; ninguna muestra rechaza.
 
@@ -114,32 +114,99 @@ de normales estandarizadas, ya sustituida por `datos/tipifica.R`; se puede borra
 simulada (N = 2000, no 3000); en jamovi se usa Ejercicio en vez de GrupoSang
 para el IC de proporciones; Q.01 se pregunta antes de mostrar resultados.
 
+## 2c. Sesión del 27-10-2026: secciones 3-6 rehechas para jamovi (PDF ahora 78 págs.)
+
+Reescritas desde la pág. 22 siguiendo los temas 4, 5 y 6 del coordinador,
+con ejemplos sobre `poblacion_filtros.omv`. Todas las cifras de las
+soluciones se han comprobado **con el propio motor de jamovi** (`jmv` de la
+instalación flatpak, ver más abajo).
+
+**Datos**
+- `poblacion_filtros.omv` (el fichero de clase que creó el profesor a mano)
+  ahora lo genera `src/02_filtros.R` con `anade_filtros()` (en
+  `src/omv_enteros.R`): mismos filtros, fórmulas y descripciones
+  (`Filtrar 1`: `Muestra_grande == 1`, «Muestra de 300»; `Filtrar 2`:
+  `Muestra_peq == 1`, «Muestra de 30»; inactivos). Comprobado columna a
+  columna frente al original. **Falta abrirlo en jamovi para confirmar.**
+  `make clean` lo borra y `make datos` lo regenera.
+- Nuevas variables `HTA_basal` y `HTA_8sem` (PAS ≥ 140, No/Sí) para McNemar.
+  Son deterministas: el resto de los datos no cambia (comprobado).
+
+**Soluciones generadas**: `src/30_resultados.R` → `img/res_*.tex` (tablas
+booktabs con punto decimal, como jamovi), que el `.org` inserta con `\input`.
+Así los números de los «Resultado Q.xx» no se escriben a mano.
+
+**Cambios en 1-2**: tabla de variables en LaTeX (ya no se parte) con HTA;
+diapositiva de filtros explicada con `Filtrar 1/2`; «Precisión» ya no
+incluye el p-valor; Z frente a t con figura propia (`datos/zt.R`, sustituye
+`S2/imagenes/tStudenZ.png`); Q.01 dice qué filtro activar; nota de que el IC
+de proporciones de jamovi es exacto (Clopper-Pearson).
+
+**Sección 3 (tema 4)**: juicio; **cinco pasos** con H0: μ = 148 (ya
+unificado: figura `rj_pvalor` y Q.02 usan 148; pequeña p = 0,100 → error
+tipo II, grande p < 0,001); **bilateral/unilateral** (p unilateral 0,050, en
+el filo); **contraste ⇔ IC**; errores I/II como tabla LaTeX (sustituye la
+imagen de S2); glucosa; significación vs relevancia (ejemplo corregido: 8,3
+mmHg, IC 4,9 a 11,8); **tipos de pruebas**; árbol ampliado con pruebas de una
+muestra; **mapa de menús de jamovi**; t de una muestra y binomial; Q.02 + resultado.
+
+**Sección 4 (tema 5)**: tablas de contingencia; observadas/esperadas;
+χ² y condiciones; **Yates**; **Fisher con ejemplo resuelto** (3 tablas
+posibles, p = 0,209); cuándo cada una; medidas de efecto; panel de jamovi;
+Q.03-Q.05 con resultado; **residuos tipificados** en N×M; **McNemar** (Q.06).
+
+**Sección 5 (tema 6)**: independientes vs pareadas; paramétricas vs no
+paramétricas (ejemplo de rangos); supuestos; panel; Q.07 (PAS, con el
+forest plot), Q.08 (colesterol), Q.09 (PCR y Dolor), **Wilcoxon de rangos con
+signo** (propia), panel pareadas, Q.10 (incluye el p «mal» calculado como
+independientes); ANOVA/K-W «para saber más» con datos propios (PAS por Educa:
+p = 0,056 / 0,059). Q.11 con ejemplo de redacción.
+
+**Detalles de jamovi comprobados con `jmv`** (importantes para el profesor):
+- Tablas 2×2: el **RR de jamovi usa la primera columna (No) como suceso**:
+  Fumador × Infarto da RR = 1,16 (riesgo de *no* infarto), no 4,52. OR (5,24) y
+  diferencia (0,133) salen bien. Explicado en las diapositivas.
+- t de una muestra: jamovi da el IC de la **diferencia** μ − 148, no el de μ.
+- PCR: jamovi marca Levene significativo (nota ᵃ) → Welch.
+
+Etiquetas de jamovi en español tomadas de su traducción (`es.json` del
+flatpak) y escritas con la macro `\jmv{}` (sans serif azul). Para volver a
+comprobar resultados con el motor real de jamovi:
+`flatpak run --command=/app/lib/R/bin/Rscript org.jamovi.jamovi script.R`
+con `.libPaths("/app/lib/jamovi/modules/jmv/R")` y `LANG=C.UTF-8`.
+
 ## 3. Pendiente / ideas para la próxima sesión
 
-**Seguir la revisión desde la pág. 22 (sección «Contraste de hipótesis»)**, en este orden:
-1. Contraste de hipótesis (págs. 22-30): p-valor (`rj_pvalor`, el área apenas
-   se ve: probar H0: μ = 148), errores I/II, árbol de pruebas, Q.02
-   (el guion decía 150 mmHg y la diapositiva 145: unificar).
-2. Comparación de proporciones y de medias (págs. 31-52).
-3. Capturas de jamovi **aún provisionales** (de `../../S2`, otros datos):
-   filtros `Muestra_*` (no existe `img/c01_filtros.png`), t de una muestra,
-   tabla 2×2, tabla N×M, dos muestras independientes, pareadas, ANOVA.
-   Faltan también capturas de Mann-Whitney y de Fisher/Yates.
-4. Diapositivas prometidas en el guion y aún sin hacer: Wilcoxon de rangos
-   con signo (propia), McNemar, residuos en tablas N×M, prueba binomial,
-   medias con IC por grupo (opcional).
-5. Maquetación: tabla de variables (diapositiva 5, columna «Variable» se parte),
-   texto `Muestra_peq == 1` en la diapositiva de filtros; el texto de la
-   diapositiva 21 (IC proporciones) queda justo de espacio.
-6. Subir `poblacion.omv` y los `datos/*.R` a `epidemos.es/bs2026/` (los
-   enlaces del PDF aún no funcionan: `ic.R`, `normal.R`, `tcl.R`, `binomial.R`,
-   `tipifica.R`, `inferencia.tex`, etc.).
-7. Preguntas abiertas del guion (ANOVA/K-W, reparto 2 h + 2 h, regresión) y
-   actualizar `guion_practica02.md` con la nueva sección 2 (Normal, TCL e IC) y
-   las diapositivas añadidas.
+**Para retomar (28-10):** el profesor hará las 2 capturas opcionales
+(McNemar y residuos, detalle en el punto 1) y se integran; después, revisión
+diapositiva a diapositiva de las págs. 22-78 (punto 2).
 
-**Acordado antes (14-10):** el borrador «está bastante bien»; las capturas de
-jamovi se rehacen en otra sesión (en curso: se han rehecho las de IC).
+
+1. **Capturas de jamovi**: las 5 principales ya están integradas (27-10):
+   `filtros.png` (pág. 6), `t1m_panel.png` (34), `tc_panel.png` (45),
+   `tis_panel.png` (60) y `tps_panel_30.png` (71, muestra pequeña; la de la
+   grande, `tps_panel.png`, no se usa). Textos ajustados a las etiquetas reales
+   de jamovi («Rangos de Wilcoxon», «Descriptivas», «Gráfica Q-Q»…). Los residuos
+   de tablas N×M están en la sección **Pruebas post hoc**, no en Celdas (corregido).
+   **Opcionales pedidas** (irían en «Proporciones pareadas: McNemar» / «Resultado Q.06»
+   y en «Tablas N×M» / «Resultado Q.05»):
+   - `mcnemar_filtros.png` + `mcnemar_panel.png`: Filtrar 1 + nuevo filtro
+     `Tratamiento == 1`; Frecuencias → Tablas de Contingencia → Muestras Pareadas,
+     HTA_basal × HTA_8sem, χ² y χ² con corrección, % de fila. Debe dar 25/0/49/70,
+     χ² = 49,0 (corregido 47,0), p < .001, N = 144.
+   - `tc_residuos.png`: Filtrar 1; Educa × Fumador, Frecuencias esperadas, % fila,
+     Pruebas post hoc → Residuos tipificados (ajuste de Pearson), resaltar > 1,96.
+     Debe dar χ² = 13,18, gl 2, p = .001; residuos (Sí) 3,60 / −2,10 / −1,62.
+2. Revisar con el profesor las diapositivas 22-78 (contenido nuevo).
+3. Abrir `poblacion_filtros.omv` generado en jamovi y comprobar filtros y etiquetas.
+4. Subir `poblacion_filtros.omv`, `poblacion.omv` y los `datos/*.R` a
+   `epidemos.es/bs2026/` (los enlaces del PDF aún no funcionan; nuevo: `zt.R`).
+5. Tiempo: 78 páginas para 4 h; si sobra, candidatas a recortar: glucosa,
+   ANOVA, Wilcoxon de rangos con signo (concepto) o la de tipos de pruebas.
+6. Actualizar `guion_practica02.md` (sigue reflejando el borrador v0).
+7. (Hecho) Borrada la captura del terminal. El `Makefile` ignora los PNG con
+   espacios en el nombre.
+8. `src/NormalesNormalziadas.py` y `src/normal_standardization.svg` se pueden borrar.
 
 ## 4. Nota sobre CLAUDE.md
 

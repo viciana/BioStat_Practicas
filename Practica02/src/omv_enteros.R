@@ -56,3 +56,49 @@ etiqueta_enteros <- function(fic, etiquetas, ordinales = character(0)) {
   zip(fic_abs, ficheros, flags = "-q -X")
   invisible(fic)
 }
+
+# ---------------------------------------------------------------------
+# anade_filtros(): copia `fic` en `salida` añadiendo, al principio, columnas
+# de FILTRO de jamovi (como las crea el menú Datos > Filtros), inactivas.
+#   filtros: list(list(formula = "Muestra_grande == 1", valores = 0/1,
+#                      desc = "Muestra de 300"), ...)
+# data.bin guarda las columnas una tras otra (enteros de 4 bytes, decimales
+# de 8), así que basta con anteponer los valores 0/1 de cada filtro.
+# ---------------------------------------------------------------------
+anade_filtros <- function(fic, salida, filtros) {
+  tmp <- tempfile(); dir.create(tmp)
+  on.exit(unlink(tmp, recursive = TRUE))
+  unzip(fic, exdir = tmp)
+  mta <- read_json(file.path(tmp, "metadata.json"))
+  xda <- read_json(file.path(tmp, "xdata.json"))
+  ds  <- mta$dataSet
+  id0 <- max(vapply(ds$fields, `[[`, 0L, "id"))
+  nuevos <- lapply(seq_along(filtros), \(k) list(
+    name = paste("Filtrar", k), id = id0 + k, columnType = "Filter",
+    dataType = "Integer", measureType = "Nominal", formula = filtros[[k]]$formula,
+    formulaMessage = "", parentId = 0L, width = 78L, type = "integer",
+    importName = "", description = filtros[[k]]$desc, transform = 0L,
+    edits = list(), missingValues = list(), filterNo = k - 1L, active = FALSE))
+  ds$fields <- c(nuevos, ds$fields)
+  ds$columnCount <- length(ds$fields)
+  mta$dataSet <- ds
+  for (k in seq_along(filtros))
+    xda[[paste("Filtrar", k)]] <- list(labels = list(
+      list(0L, "0", "0", FALSE, TRUE, FALSE), list(1L, "1", "1", FALSE, TRUE, FALSE)))
+  xda <- xda[c(paste("Filtrar", seq_along(filtros)),
+               setdiff(names(xda), paste("Filtrar", seq_along(filtros))))]
+  bin <- file.path(tmp, "data.bin")
+  viejo <- readBin(bin, "raw", file.size(bin))
+  con <- file(bin, "wb")
+  for (f in filtros) writeBin(as.integer(f$valores), con, size = 4, endian = "little")
+  writeBin(viejo, con); close(con)
+  write_json(mta, file.path(tmp, "metadata.json"), auto_unbox = TRUE,
+             null = "null", digits = NA)
+  write_json(xda, file.path(tmp, "xdata.json"), auto_unbox = TRUE)
+  ficheros <- c("meta", setdiff(list.files(tmp, recursive = TRUE), "meta"))
+  sal_abs <- file.path(normalizePath(dirname(salida)), basename(salida))
+  if (file.exists(sal_abs)) invisible(file.remove(sal_abs))
+  old <- setwd(tmp); on.exit(setwd(old), add = TRUE, after = FALSE)
+  zip(sal_abs, ficheros, flags = "-q -X")
+  invisible(salida)
+}
