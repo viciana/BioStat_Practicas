@@ -265,7 +265,10 @@ diapositiva a diapositiva de las págs. 22-78 (punto 2).
    `../S2/NewIMG/matriz-errores-test`; va en `src/` porque `img/` no se versiona)
    y a la derecha un solo panel (enfermos con media 140) con etiquetas SANO /
    ENFERMO, H0 cierta / falsa, test negativo / positivo y flechas α (FP) y β (FN).
-   `datos/glucosa.R` reescrito (un panel; hay que **volver a subirlo** a la web).
+   `datos/glucosa.R` reescrito (un panel). Pág. 34: completado el texto de la
+   prueba de proporciones (Sexo, fila Mujer, 0.48). Apartado 4 renombrado
+   «Comparando proporciones en tablas con dos variables: tablas de contingencia».
+   Commit 5416624. `poblacion.omv` y `datos/*.R` ya **subidos a la web** (28-10).
    Diapositiva «Lógica del contraste: un juicio con jurado» (pág. 23) rehecha a
    partir del borrador del profesor `hipótesis metáfora juicio_original.txt`
    (UTF-16, sin versionar): tabla juicio ↔ contraste (defensa = H0, fiscal = H1,
