@@ -1,6 +1,6 @@
-# Guion propuesto — 2ª Práctica de Bioestadística: Inferencia estadística con JAMOVI
+# Guion — 2ª Práctica de Bioestadística: Inferencia estadística con JAMOVI
 
-*Borrador v0 · 14-10-2026 · 2º Medicina, Grupo B · 4 horas*
+*v1 · 28-10-2026 · 2º Medicina, Grupo B · 4 horas · `practica02.pdf` (81 págs.)*
 
 Temas del coordinador: **(4)** contraste de hipótesis y tipos de pruebas;
 **(5)** comparación de proporciones: χ², Fisher, Yates, tablas de
@@ -11,113 +11,107 @@ Material de partida: `../../S2/ppt02.org` (curso 2025-26). Formato y
 herramientas: los de `../Practica01` (org → beamer, datos `.omv`
 simulados en R, gráficos R con su script enlazado en el PDF).
 
-## Decisiones de diseño (propuestas)
+## Decisiones de diseño
 
-- **Una población conocida + dos muestras** (idea de `muestrasB2.omv`,
-  que funcionó): `poblacion.omv` (N = 2000) con los filtros
-  `Muestra_grande` (n = 300) y `Muestra_peq` (n = 30, dentro de la grande).
-  El alumno hace inferencia con la muestra y **contrasta con la verdad**
-  poblacional. Hilo conductor: un **ensayo clínico de un antihipertensivo**
-  (Placebo / Fármaco), que da de forma natural medias independientes,
-  pareadas (PAS basal / 8 semanas), proporciones y tablas 2×2.
-- **Se recorta** respecto al curso pasado: distribuciones Bernoulli/binomial
-  (quedan como 1 diapositiva de repaso), ANOVA/K-W (fuera de temario,
-  1 diapositiva «para saber más»), regresión lineal/logística (ya vista en
-  la práctica 1).
-- **Se amplía**: lógica del p-valor, errores α/β y potencia, elección de la
-  prueba (árbol de decisión), Yates y Fisher, no paramétricas.
-- **Elementos dinámicos nuevos**: simulación de 100 IC, «la sala vota»
-  (predecir antes de calcular), árbol de decisión de pruebas, gráfico
-  observado vs esperado en χ², gráfico de pendientes antes/después.
+- **Una población conocida + dos muestras**: `poblacion.omv` (N = 2000,
+  semilla 20261014) con dos filtros ya creados: `Filtrar 1` = muestra
+  grande (n = 300) y `Filtrar 2` = muestra pequeña (n = 30, dentro de la
+  grande). El alumno hace inferencia con la muestra y **contrasta con la
+  verdad** poblacional (quitando el filtro).
+- Hilo conductor: **ensayo clínico de un suplemento dietético frente a
+  placebo** en adultos con riesgo cardiovascular. Da de forma natural
+  medias independientes (PAS a 8 semanas por grupo), pareadas (PAS basal /
+  8 semanas), proporciones independientes (Fumador × Infarto, efecto
+  adverso) y pareadas (Sobrepeso basal / 8 semanas, McNemar).
+- **Punto decimal** en todo el material, como jamovi.
+- Etiquetas de jamovi en castellano tal como aparecen en el programa
+  (`\jmv{}` en las diapositivas); resultados numéricos verificados con el
+  propio `jmv` de jamovi.
+- **Se recorta** respecto al curso pasado: binomial (repaso), ANOVA/K-W
+  (1 diapositiva «para saber más»), regresión (ya vista en la práctica 1).
+- **Se amplía**: lógica del contraste (juicio con jurado), p-valor, errores
+  α/β y potencia, elección de la prueba (árbol), Yates y Fisher, residuos,
+  McNemar, no paramétricas.
 
-## Estructura jerárquica (sección › diapositiva › contenido)
+## Estructura (sección › diapositiva › contenido)
 
-### 0. Presentación (≈ 10 min)
-- **Datos de la práctica**
-  - Abrir `poblacion.omv`; diccionario de variables
-  - Cómo activar los filtros `Muestra_grande` / `Muestra_peq` en jamovi
-- **De la descripción a la inferencia** (de S2)
-  - Muestra ↔ población; estadístico ↔ estimador ↔ parámetro (tabla)
+### 1. Presentación: datos y objetivos (≈ 10 min)
+- **Objetivos**; **Los datos: `poblacion.omv`** (diccionario de variables)
+- **Muestra y población: los filtros de jamovi** (captura `filtros.png`)
+- Descriptiva frente a inferencial; de la población a la muestra y vuelta
 
-### 1. Bases: error estándar e intervalos de confianza (≈ 35 min)
-- **Repaso: Normal, Z y t de Student** (1 diapositiva, de S2)
-- **Teorema central del límite** (de S2 + simulación jamovi)
-  - Error estándar $\sigma/\sqrt{n}$
-- **100 intervalos de confianza** *(nuevo gráfico R: `rj_ic.pdf`)*
-  - ¿Cuántos IC no atrapan μ? → interpretación correcta del 95 %
-- **IC de una media y de una proporción en jamovi** (capturas S2)
-- **Q.01** IC del colesterol y de la % de fumadores: muestra grande vs pequeña vs población
+### 2. Normal, TCL e intervalos de confianza (≈ 40 min)
+- De la binomial a la normal; normal tipificada Z; Z frente a t (`rj_zt.pdf`)
+- **TCL y error estándar** (módulo *Demonstrations* de jamovi, tres distribuciones)
+- **100 intervalos de confianza** (`rj_ic.pdf`): interpretación del 95 %
+- **Q.01** IC del colesterol y de la proporción de fumadores: pequeña / grande / población
+- IC de una proporción en jamovi (Clopper-Pearson)
 
-### 2. Contraste de hipótesis (tema 4) (≈ 50 min)
-- **Lógica del contraste**
-  - H₀ / H₁, estadístico de contraste, regla de decisión
-  - Analogía del juicio: «inocente hasta que se demuestre lo contrario»
-- **El p-valor visto en la distribución t** *(nuevo: `rj_pvalor.pdf`)*
-  - Bilateral vs unilateral; α = 0,05
-  - Lo que el p-valor **no** es (recuadro naranja)
-- **Errores tipo I y II, potencia** (matriz de S2 + ejemplo glucosa/diabetes simulado en R, 5 → 1 diapositiva)
-- **Significación estadística vs relevancia clínica**
-  - IC de la diferencia como mejor resumen
-- **Tipos de pruebas: árbol de decisión** *(nuevo diagrama TikZ)*
-  - Tipo de variable respuesta × nº de grupos × independientes/pareadas × normalidad
-  - Paramétricas vs no paramétricas; una cola vs dos colas
-- **Comparar con un valor de referencia**: t para una muestra y prueba binomial
-- **Q.02** ¿La PAS basal media es 150 mmHg? ¿El 48 % son mujeres? (muestra pequeña / grande / población)
+### 3. Contraste de hipótesis y tipos de pruebas — tema 4 (≈ 50 min)
+- **Lógica del contraste: un juicio con jurado** (defensa = H₀, fiscal = H₁,
+  jurado = α, reconstrucción = estadístico, coartada = p-valor, veredicto)
+- **Los cinco pasos** (H₀: μ = 148); **el p-valor dibujado** (`rj_pvalor.pdf`)
+- Bilateral y unilateral; contraste ⇔ IC
+- **Errores tipo I y II, potencia** (tabla del juicio) y **glucosa/diabetes**:
+  matriz de errores + curvas SANO / ENFERMO (`rj_glucosa.pdf`)
+- Significación ≠ relevancia clínica
+- **Tipos de pruebas**, **árbol de decisión** (TikZ) y mapa de menús de jamovi
+- **Comparar con un valor de referencia** (captura `t1m_panel.png`):
+  t para una muestra y prueba de proporciones
+- **Q.02** ¿PAS basal media = 148? (pequeña p = 0.10: error tipo II; grande
+  la rechaza); ¿48 % de mujeres? (binomial)
 
-### 3. Comparación de proporciones (tema 5) (≈ 50 min)
-- **Tablas de contingencia 2×2**: frecuencias observadas y esperadas
-  - Gráfico observado vs esperado *(nuevo: `rj_chi2.pdf`)*
-- **Prueba χ² de Pearson**: estadístico, gl, condiciones (esperadas ≥ 5)
-- **Corrección de Yates**: cuándo y por qué (2×2, n moderado)
-- **Test exacto de Fisher**: frecuencias esperadas pequeñas
-- **Medidas de efecto**: diferencia de proporciones, RR, OR con IC
-- **Jamovi: Frecuencias › Muestras independientes** (captura S2 actualizada)
-- **Q.03** Fumador × Infarto (muestra grande): χ², RR, OR
-- **Q.04** Tratamiento × Efecto adverso en la muestra pequeña: ¿χ² o Fisher? Comparar χ², Yates y Fisher
-- **Tablas N×M** (Educa × Fumador, GrupoSang × Infarto) y residuos
-- **Q.05** Educa × Fumador (3×2, gl = 2): muestra grande p = 0,001; pequeña p = 0,88 con esperadas < 5
-- **(Opcional) Datos pareados: McNemar** (para saber más)
+### 4. Comparando proporciones en tablas con dos variables: tablas de contingencia — tema 5 (≈ 65 min)
+- Tablas de contingencia; frecuencias observadas y esperadas
+- **χ² de Pearson**, **Yates**, **Fisher** (ejemplo resuelto) y cuándo usar cada uno
+- **Medidas de efecto**: diferencia de proporciones, RR, OR con IC (aviso:
+  el RR de jamovi toma la primera columna como suceso)
+- **Tablas de contingencia en jamovi** (captura `tc_panel.png`)
+- **Q.03** Fumador × Infarto (grande: χ² = 15.5, p < 0.001; OR = 5.24)
+- **Q.04** Efecto adverso en la pequeña: χ², Yates o Fisher
+- **Tablas N×M**: grados de libertad y residuos (en *Pruebas post hoc*);
+  **tres tipos de residuos** (no tipificado, Pearson, tipificado)
+- **Q.05** Educa × Fumador (captura `tc_residuos.png`); pequeña con esperadas < 5
+- **Proporciones pareadas: McNemar** con Sobrepeso basal × 8 semanas
+  (captura `mcnemar_panel.png`; grande χ² = 12.46)
+- **Q.06** ¿Baja la proporción con sobrepeso? Pequeña, grande y por grupo
 
-### 4. Comparación de dos medias (tema 6) (≈ 60 min)
-- **Condiciones de aplicación de la t**: normalidad (Shapiro-Wilk, Q-Q), homogeneidad de varianzas (Levene) → Welch
-- **Dos medias independientes: t de Student / Welch**
-  - Gráfico de medias con IC por grupo *(R)*
-- **Q.06** PAS a las 8 semanas: Placebo vs Fármaco (muestra pequeña, grande, población)
-- **Q.07** Colesterol por sexo: diferencia real pequeña → error tipo II con n = 30
-- **Alternativa no paramétrica: U de Mann-Whitney**
-  - Cuando la variable es muy asimétrica (PCR) u ordinal (Dolor 0-10)
-- **Q.08** PCR en fumadores vs no fumadores: t vs Mann-Whitney
-- **Dos medias dependientes (pareadas)**: diferencias intra-individuo
-  - Gráfico de pendientes antes/después *(nuevo: `rj_pareadas.pdf`)*
-  - Error típico: analizar pareados como independientes
-- **Alternativa no paramétrica: Wilcoxon de rangos con signo**
-- **Q.09** ¿Baja la PAS de basal a 8 semanas? En cada grupo de tratamiento; t pareada vs Wilcoxon
-- **(Para saber más)** Más de dos grupos: ANOVA y Kruskal-Wallis (1 diapositiva, de S2)
+### 5. Comparación de dos medias — tema 6 (≈ 60 min)
+- Independientes y pareadas; paramétricas y no paramétricas (rangos)
+- **Condiciones de la t**: normalidad (Shapiro-Wilk, Q-Q), Levene → Welch
+- **Dos muestras independientes en jamovi** (captura `tis_panel.png`)
+- **Q.07** ¿Funciona el suplemento? PAS a 8 semanas (grande: t = 4.81,
+  dif. 8.35, IC 4.93–11.8) y diagrama de bosque (`rj_forest.pdf`)
+- **Q.08** Colesterol y sexo: diferencia real pequeña → error tipo II con n = 30
+- **U de Mann-Whitney**; PCR muy asimétrica (`rj_pcr.pdf`)
+- **Q.09** PCR y tabaco (Welch, p = 0.004); dolor y tratamiento
+- **Pareadas**: gráfico de pendientes (`rj_pareadas.pdf`), Wilcoxon de rangos
+  con signo, captura `tps_panel_30.png`
+- **Q.10** ¿Baja la PAS? En cada grupo (filtro `Tratamiento == 1`);
+  pareada frente a independiente
+- *(Para saber más)* más de dos grupos: ANOVA y Kruskal-Wallis
 
-### 5. Cierre (≈ 15 min)
-- **Tabla resumen: qué prueba usar** (tabla en una diapositiva)
-- **Q.10 integradora**: informe tipo «resultados de un artículo» del ensayo
-- **Enlaces**: datos y scripts R en `epidemos.es/bs2026/`
+### 6. Resumen (≈ 15 min)
+- **Tabla resumen: qué prueba usar**
+- **Q.11** Redactar los resultados del ensayo + ejemplo de redacción
+- Datos y scripts R en `epidemos.es/bs2026/`
 
-## Ficheros de datos y gráficos previstos
+## Ficheros
 
 | Fichero | Script | Estado |
 |---|---|---|
-| `datos/poblacion.{csv,omv}` | `src/01_simula_poblacion.R` | **Hecho** |
-| `img/rj_ic.pdf` (100 IC) | `src/10_rj_ic.R` + `datos/ic.R` | **Hecho** |
-| `img/rj_pvalor.pdf` | `src/11_rj_pvalor.R` + `datos/pvalor.R` | **Hecho** |
-| `img/rj_chi2.pdf` (obs. vs esperadas) | `src/12_rj_chi2.R` + `datos/chi2.R` | **Hecho** |
-| `img/rj_pareadas.pdf` | `src/13_rj_pareadas.R` + `datos/pareadas.R` | **Hecho** |
-| Árbol de decisión de pruebas (TikZ) | `src/20_arbol_pruebas.tex` | **Hecho** |
-| `img/rj_forest.pdf` (diferencia con IC, 3 tamaños) | `src/14_rj_forest.R` + `datos/forest.R` | **Hecho** |
-| `img/rj_pcr.pdf` (t vs Mann-Whitney) | `src/15_rj_pcr.R` + `datos/pcr.R` | **Hecho** |
-| `img/rj_glucosa.pdf` (FP/FN como errores I/II, simulación) | `src/16_rj_glucosa.R` + `datos/glucosa.R` | **Hecho** |
-| Medias con IC por grupo | — | Pendiente (opcional) |
-| Capturas jamovi nuevas (filtros, t, χ²) | — | Pendiente (manual) |
+| `datos/poblacion.csv`, `poblacion_base.omv` | `src/01_simula_poblacion.R` | Hecho |
+| `datos/poblacion.omv` (con filtros, el de clase) | `src/02_filtros.R` + `src/omv_enteros.R` | Hecho, subido |
+| Tablas de resultados `img/res_*.tex` | `src/30_resultados.R` | Hecho |
+| `img/rj_ic.pdf`, `rj_pvalor.pdf`, `rj_chi2.pdf`, `rj_pareadas.pdf`, `rj_forest.pdf`, `rj_pcr.pdf`, `rj_zt.pdf`, `rj_glucosa.pdf`… | `src/1x_rj_*.R` + `datos/*.R` | Hecho, subidos |
+| Matriz de errores | `src/matriz_errores.{pdf,svg}` (de S2) | Hecho |
+| Árbol de decisión (TikZ) | `src/20_arbol_pruebas.tex` | Hecho |
+| Capturas jamovi | `capturas/*.png` (filtros, t1m, tc, tc_residuos, mcnemar, tis, tps_30) | Hecho |
 
-## Preguntas abiertas para el profesor
+## Pendiente
 
-1. ¿Mantener una única población (`poblacion.omv`) o ampliar `pacientes.omv` de la práctica 1? (propuesta: nueva, por la idea muestra/población).
-2. ¿Se mantiene ANOVA/K-W y regresión del curso pasado o se eliminan del todo?
-3. Reparto de tiempos: ¿2 h + 2 h en dos días? (marcaría el corte tras la sección 2).
-4. Capturas de jamovi: ¿se reutilizan las de S2 o se rehacen con los datos nuevos?
+1. Revisión con el profesor de las diapositivas 22-81.
+2. Duración: 81 páginas para 4 h; valorar recortes (candidatas: repaso de
+   binomial/normal, «Tipos de pruebas» frente al árbol, segunda diapositiva
+   de resultados de Q.05/Q.06, ANOVA).
+3. Corte si se imparte en 2 + 2 h: tras la sección 3 (contraste).
