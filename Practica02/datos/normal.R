@@ -27,10 +27,10 @@ text(mu + 1.05 * s, dnorm(1, mu, s) + 0.07, "punto de\ninflexión", adj = 0, cex
 text(mu - 1.05 * s, dnorm(1, mu, s) + 0.07, "punto de\ninflexión", adj = 1, cex = 0.7, col = "#C0392B")
 axis(1, at = mu + (-3:3) * s,
      labels = expression(mu - 3 * sigma, mu - 2 * sigma, mu - sigma, mu, mu + sigma, mu + 2 * sigma, mu + 3 * sigma))
-text(mu, 0.14, "68,3 %", font = 2, cex = 0.9)
+text(mu, 0.14, "68.3 %", font = 2, cex = 0.9)
 text(mu, 0.27, "cóncava\n(f'' < 0)", cex = 0.7, col = "#1F4E9A")
 text(mu - 2.9 * s, 0.12, "convexa\n(f'' > 0)", cex = 0.7, col = "#1E8449")
 text(mu + 2.9 * s, 0.12, "convexa\n(f'' > 0)", cex = 0.7, col = "#1E8449")
-text(mu + 1.5 * s, 0.07, "95,4 %", cex = 0.7); text(mu - 1.5 * s, 0.07, "95,4 %", cex = 0.7)
-text(mu + 2.5 * s, 0.03, "99,7 %", cex = 0.65); text(mu - 2.5 * s, 0.03, "99,7 %", cex = 0.65)
+text(mu + 1.5 * s, 0.07, "95.4 %", cex = 0.7); text(mu - 1.5 * s, 0.07, "95.4 %", cex = 0.7)
+text(mu + 2.5 * s, 0.03, "99.7 %", cex = 0.65); text(mu - 2.5 * s, 0.03, "99.7 %", cex = 0.65)
 par(op)

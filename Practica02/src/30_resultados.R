@@ -39,7 +39,7 @@ names(q02) <- c("Muestra", "$\\bar{x}$", "$S$", "$t$", "gl", "$p$ ($\\neq$)", "$
                 "Dif. ($\\bar{x}-148$)", "IC 95\\,\\% dif.", "Shapiro-Wilk $p$")
 tabla_tex(q02, "res_q02_t.tex", "lrrrrrrrcr")
 
-## Q.02 prueba binomial: proporción de mujeres frente a 0,48 -----------
+## Q.02 prueba binomial: proporción de mujeres frente a 0.48 -----------
 q02b <- do.call(rbind, lapply(names(M), function(m) {
   x <- M[[m]]; k <- sum(x$Sexo == "Mujer"); n <- nrow(x); b <- binom.test(k, n, 0.48)
   data.frame(Muestra = m, Mujeres = k, n = n, Prop = f3(k / n),
@@ -111,24 +111,42 @@ q05 <- data.frame(Educa = rownames(t5),
                   Pob = sprintf("%s\\,\\%%", f1(100 * prop.table(tx[[3]], 1)[, 2])))
 names(q05) <- c("Educa", "No fuma", "Fuma", "$E$ (fuma)", "Residuo tipif.", "\\% fuma (pobl.)")
 tabla_tex(q05, "res_q05_tabla.tex", "lrrrrr")
+# Los tres residuos de jamovi (Pruebas post hoc), resaltando |r| > 2 como él
+res <- list(c5$observed - c5$expected, c5$residuals, c5$stdres)
+marca <- function(r, k) ifelse(k > 1 & abs(r) > 2,
+                               sprintf("\\textcolor{red}{\\textbf{%s}}", f2(r)), f2(r))
+fil <- sapply(seq_len(nrow(t5)), function(i) paste(c(rownames(t5)[i],
+  unlist(lapply(1:3, function(k) marca(res[[k]][i, ], k)))), collapse = " & "))
+writeLines(c("\\begin{tabular}{lrr@{\\hspace{6mm}}rr@{\\hspace{6mm}}rr}", "\\toprule",
+  " & \\multicolumn{2}{c}{No tipificado} & \\multicolumn{2}{c}{De Pearson} & \\multicolumn{2}{c}{Tipificado (ajustado)}\\\\",
+  " & \\multicolumn{2}{c}{$O-E$} & \\multicolumn{2}{c}{$(O-E)/\\sqrt{E}$} & \\multicolumn{2}{c}{$(O-E)/\\sqrt{E(1-p_f)(1-p_c)}$}\\\\",
+  "\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}\\cmidrule(lr){6-7}",
+  "Educa & No & Sí & No & Sí & No & Sí\\\\", "\\midrule",
+  paste(fil, "\\\\"), "\\midrule",
+  sprintf("Suma de cuadrados & \\multicolumn{2}{c}{---} & \\multicolumn{2}{c}{%s $=\\chi^2$} & \\multicolumn{2}{c}{---}\\\\",
+          f2(sum(c5$residuals^2))),
+  "\\bottomrule", "\\end{tabular}"), file.path("img", "res_residuos.tex"))
 q05p <- pruebas(c(tx[1:2], list(`GrupoSang × Infarto (grande)` =
                   table(G$GrupoSang, G$Infarto))))
 names(q05p) <- cab_pruebas; q05p[[1]] <- sub("×", "$\\\\times$", q05p[[1]])
 tabla_tex(q05p, "res_q05_pruebas.tex", "lrrrrrrr")
 
-## Q.06 McNemar: HTA basal frente a HTA a las 8 semanas (grande) ------------
-q06 <- do.call(rbind, lapply(c("Placebo", "Fármaco"), function(g) {
-  x <- G[G$Tratamiento == g, ]; t <- table(x$HTA_basal, x$HTA_8sem)
-  data.frame(Grupo = g, n = nrow(x),
-             Basal = sprintf("%s\\,\\%%", f1(100 * mean(x$HTA_basal == "Sí"))),
-             Sem8 = sprintf("%s\\,\\%%", f1(100 * mean(x$HTA_8sem == "Sí"))),
-             SiNo = t["Sí", "No"], NoSi = t["No", "Sí"],
-             chi = f2(mcnemar.test(t, correct = FALSE)$statistic),
-             p = fp(mcnemar.test(t, correct = FALSE)$p.value))
-}))
-names(q06) <- c("Grupo", "$n$", "HTA basal", "HTA 8 sem", "Sí$\\to$No", "No$\\to$Sí",
-                "$\\chi^2$ McNemar", "$p$")
-tabla_tex(q06, "res_q06.tex", "lrrrrrrr")
+## Q.06 McNemar: sobrepeso basal frente a 8 semanas ------------------------
+# Muestra grande y pequeña (todos) y, para comentar, la grande por grupo
+mcn <- function(x, m, g) {
+  t <- table(x$Sobrepeso_basal, x$Sobrepeso_8sem); mt <- mcnemar.test(t, correct = FALSE)
+  data.frame(Muestra = m, Grupo = g, n = nrow(x),
+             Basal = sprintf("%s\\,\\%%", f1(100 * mean(x$Sobrepeso_basal == "Sí"))),
+             Sem8 = sprintf("%s\\,\\%%", f1(100 * mean(x$Sobrepeso_8sem == "Sí"))),
+             NoNo = t["No", "No"], NoSi = t["No", "Sí"], SiNo = t["Sí", "No"], SiSi = t["Sí", "Sí"],
+             chi = f2(mt$statistic), p = fp(mt$p.value))
+}
+q06 <- rbind(mcn(G, "Grande", "Todos"), mcn(P, "Pequeña", "Todos"),
+             mcn(G[G$Tratamiento == "Placebo", ], "Grande", "Placebo"),
+             mcn(G[G$Tratamiento == "Suplemento", ], "Grande", "Suplemento"))
+names(q06) <- c("Muestra", "Grupo", "$n$", "Basal", "8 sem", "No$\\to$No", "No$\\to$Sí",
+                "Sí$\\to$No", "Sí$\\to$Sí", "$\\chi^2$", "$p$")
+tabla_tex(q06, "res_q06.tex", "llrrrrrrrrr")
 
 ## Dos medias independientes ------------------------------------------------
 indep <- function(var, grupo, lst = M[1:2]) do.call(rbind, lapply(names(lst), function(m) {
@@ -141,7 +159,7 @@ indep <- function(var, grupo, lst = M[1:2]) do.call(rbind, lapply(names(lst), fu
 }))
 cab_indep <- function(g1, g2) c("Muestra", sprintf("Medias (%s / %s)", g1, g2),
   "Diferencia", "IC 95\\,\\% dif.", "$t$", "$p$ Student", "$p$ Welch", "Levene $p$", "S-W $p$")
-q07 <- indep("PAS_8sem", "Tratamiento"); names(q07) <- cab_indep("Plac.", "Fárm.")
+q07 <- indep("PAS_8sem", "Tratamiento"); names(q07) <- cab_indep("Plac.", "Supl.")
 tabla_tex(q07, "res_q07.tex", "lrrcrrrrr")
 q08 <- indep("Colesterol", "Sexo"); names(q08) <- cab_indep("M", "H")
 tabla_tex(q08, "res_q08.tex", "lrrcrrrrr")
@@ -163,7 +181,7 @@ tabla_tex(q09, "res_q09.tex", "llrrrrrr")
 
 ## Q.10 Pareadas: PAS_basal - PAS_8sem ---------------------------------------
 q10 <- do.call(rbind, lapply(names(M)[1:2], function(m)
-  do.call(rbind, lapply(c("Todos", "Placebo", "Fármaco"), function(g) {
+  do.call(rbind, lapply(c("Todos", "Placebo", "Suplemento"), function(g) {
     x <- M[[m]]; if (g != "Todos") x <- x[x$Tratamiento == g, ]
     dif <- x$PAS_basal - x$PAS_8sem; tt <- t.test(dif)
     wi <- suppressWarnings(wilcox.test(x$PAS_basal, x$PAS_8sem, paired = TRUE))

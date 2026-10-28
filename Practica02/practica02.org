@@ -13,8 +13,8 @@
 
 # BORRADOR v1 (27-10-2026).  Estructura según guion_practica02.md.
 # Se genera con:  make practica02.pdf
-# Datos:     datos/poblacion.{csv,omv}         src/01_simula_poblacion.R
-#            datos/poblacion_filtros.omv       src/02_filtros.R (el de clase)
+# Datos:     datos/poblacion.csv, poblacion_base.omv  src/01_simula_poblacion.R
+#            datos/poblacion.omv (con filtros) src/02_filtros.R (el de clase)
 # Gráficos:  img/rj_*.pdf                      src/1x_rj_*.R + datos/*.R
 #            img/arbol_pruebas.pdf             src/20_arbol_pruebas.tex
 # Soluciones: img/res_*.tex                    src/30_resultados.R
@@ -34,18 +34,19 @@
 
 #+BEGIN_EXPORT latex
 \begin{recuadro}\small
-Hilo conductor: un \textbf{ensayo clínico} de un antihipertensivo
-(Placebo / Fármaco) en una población \emph{simulada}, que conocemos
+Hilo conductor: un \textbf{ensayo clínico} de un \textbf{suplemento dietético}
+frente a placebo en adultos con riesgo cardiovascular: ¿baja la presión arterial,
+la hipertensión y el sobrepeso? La población es \emph{simulada} y la conocemos
 entera. Haremos inferencia con muestras y \textbf{comprobaremos} si
 acertamos.
 \end{recuadro}
 #+END_EXPORT
 
-** Los datos: =poblacion_filtros.omv=
+** Los datos: =poblacion.omv=
 
 #+BEGIN_EXPORT latex
 \scriptsize
-Descarga: \href{https://epidemos.es/bs2026/poblacion_filtros.omv}{poblacion\_filtros.omv}
+Descarga: \href{https://epidemos.es/bs2026/poblacion.omv}{poblacion.omv}
 ($N=2000$ pacientes de un ensayo clínico simulado)\\[1mm]
 \centering
 \begin{tabular}{L{0.3\textwidth}L{0.2\textwidth}L{0.4\textwidth}}\toprule
@@ -54,9 +55,10 @@ Sexo, GrupoSang & nominal & \\
 Fumador, Infarto & nominal (No/Sí) & antecedente de infarto\\
 Ejercicio & ordinal & Sedentario / Moderado / Intenso\\
 Educa & ordinal & Básicos / Medios / Superiores\\
-Tratamiento & nominal & Placebo / Fármaco (aleatorizado)\\
+Tratamiento & nominal & Placebo / Suplemento (aleatorizado)\\
 PAS\_basal, PAS\_8sem & cuantitativa (mmHg) & misma persona, dos momentos\\
 HTA\_basal, HTA\_8sem & nominal (No/Sí) & PAS $\geq 140$ en cada momento\\
+Sobrepeso\_basal, Sobrepeso\_8sem & nominal (No/Sí) & IMC $\geq 25$ en cada momento\\
 Mejora & nominal (No/Sí) & baja de la PAS $\geq 10$ mmHg\\
 Colesterol, PCR & cuantitativa & PCR muy asimétrica\\
 Dolor & ordinal (0-10) & cefalea al final del ensayo\\
@@ -88,8 +90,9 @@ comprobar cuándo la inferencia acierta y cuándo se equivoca.
 \end{column}
 \begin{column}{0.57\textwidth}
 \captura{capturas/filtros.png}{\textwidth}\\
-\tiny Con \jmv{Filtrar 1} activo: 300 filas en juego (la barra inferior indica
-\jmv{Filtrado 1700}).
+\tiny Con \jmv{Filtrar 1} activo: las filas de la muestra grande llevan
+\textcolor{OliveGreen}{\checkmark}; las demás, en gris con \textcolor{red}{$\times$},
+no entran en los análisis (1700 de 2000).
 \end{column}
 \end{columns}
 #+END_EXPORT
@@ -121,7 +124,7 @@ Precisión & --- & --- & EE, IC 95\,\%\\\bottomrule
 \begin{recuadro}\scriptsize
 \textbf{Estimador}: fórmula (variable aleatoria) que cambia de muestra a
 muestra, p.\,ej. $\bar{X}$. \textbf{Estimación}: su valor en nuestra
-muestra, p.\,ej. $\bar{x}=151{,}2$. El parámetro $\mu$ es fijo.
+muestra, p.\,ej. $\bar{x}=151.2$. El parámetro $\mu$ es fijo.
 \end{recuadro}
 #+END_EXPORT
 
@@ -142,7 +145,7 @@ acompañados de una medida de su \textbf{error} (EE, IC, $p$).
 \centering
 \href{https://epidemos.es/bs2026/binomial.R}{\includegraphics[width=\textwidth]{img/rj_binomial.pdf}}\\[1mm]
 \scriptsize
-Número de caras al lanzar $n$ monedas (puntos y líneas: masas de probabilidad de $B(n,0{,}5)$; rojo: curva normal
+Número de caras al lanzar $n$ monedas (puntos y líneas: masas de probabilidad de $B(n, 0.5)$; rojo: curva normal
 con la misma media $np$ y desviación $\sqrt{npq}$). Con $n$ creciente la binomial \textbf{se
 parece cada vez más a una campana}.
 \begin{recuadro}\tiny
@@ -168,7 +171,7 @@ Densidad con media $\mu$ y desviación típica $\sigma$:
 \begin{itemize}
 \item Simétrica, con forma de campana: $\mu$ la centra y $\sigma$ la ensancha.
 \item \textbf{Puntos de inflexión} en $\mu\pm\sigma$ ($f''=0$): la curva pasa de \textcolor{blue}{cóncava} a \textcolor{OliveGreen}{convexa} y la tangente (roja) la cruza.
-\item Áreas: $\mu\pm1\sigma$ $\Rightarrow$ 68,3\,\%; $\pm2\sigma$ $\Rightarrow$ 95,4\,\%; $\pm3\sigma$ $\Rightarrow$ 99,7\,\%.
+\item Áreas: $\mu\pm1\sigma$ $\Rightarrow$ 68.3\,\%; $\pm2\sigma$ $\Rightarrow$ 95.4\,\%; $\pm3\sigma$ $\Rightarrow$ 99.7\,\%.
 \end{itemize}
 Código: \href{https://epidemos.es/bs2026/normal.R}{normal.R}
 \end{column}
@@ -183,7 +186,7 @@ Código: \href{https://epidemos.es/bs2026/normal.R}{normal.R}
 \scriptsize
 \begin{columns}
 \begin{column}{0.4\textwidth}\centering
-$Z=\dfrac{X-\mu}{\sigma}\;\sim\;N(0,1)$
+$Z=\dfrac{X-\mu}{\sigma}\;\sim\;N(0, 1)$
 \end{column}
 \begin{column}{0.6\textwidth}
 Variables con \textbf{unidades y escalas distintas} se vuelven comparables: $Z$ mide
@@ -201,7 +204,7 @@ a cuántas desviaciones típicas está un valor de la media. Código:
 \scriptsize En inferencia, si $\sigma$ es desconocida (lo habitual en la práctica),
 la distribución de referencia que usaremos es la \emph{t} de Student con $n-1$
 grados de libertad (gl), con colas más largas que la Normal $Z$ (más incertidumbre):
-el valor que deja el 2,5\,\% en cada cola es mayor que 1,96. Converge a $Z$ cuando
+el valor que deja el 2.5\,\% en cada cola es mayor que 1.96. Converge a $Z$ cuando
 $n$ crece (a partir de $n\approx 40$ son casi idénticas).
 Código: \href{https://epidemos.es/bs2026/zt.R}{zt.R}
 #+END_EXPORT
@@ -232,7 +235,7 @@ de la estimación de $\mu$ que acompaña al estimador.
 \centering
 \href{https://epidemos.es/bs2026/tcl.R}{\includegraphics[width=0.78\textwidth]{img/rj_tcl.pdf}}\\[1mm]
 \scriptsize Arriba: variable en la población ($N=2000$) y su media $\mu$ (punteada).
-Abajo: medias de 100 muestras con $n=3,9,27$; las rayas de color son la media
+Abajo: medias de 100 muestras con $n=3, 9, 27$; las rayas de color son la media
 de las medias (\emph{coincide con $\mu$}) y la anchura se reduce como $EE=\sigma/\sqrt{n}$,
 aunque \texttt{Dolor} sea discreta y \texttt{PCR} asimétrica.
 Código: \href{https://epidemos.es/bs2026/tcl.R}{tcl.R}
@@ -281,7 +284,7 @@ aproximación mejora y la curva se estrecha.
 \end{recuadro}
 #+END_EXPORT
 
-** Aciertos en 100 muestras de 30 casos con $\alpha=0{,}05$
+** Aciertos en 100 muestras de 30 casos con $\alpha=0.05$
 
 #+BEGIN_EXPORT latex
 \begin{columns}
@@ -317,11 +320,11 @@ Código: \href{https://epidemos.es/bs2026/ic.R}{ic.R} (R o Rj)
 \begin{column}{0.33\textwidth}
 \captura{capturas/q01_panel.png}{\textwidth}\\[1mm]
 \tiny
-Con $n=300$ el IC del colesterol (208,5-216,8) es unas \textbf{3 veces más
-estrecho} que con $n=30$ (198,4-223,4); ambos contienen la media poblacional
-(210,8).\\[1mm]
+Con $n=300$ el IC del colesterol (208.5-216.8) es unas \textbf{3 veces más
+estrecho} que con $n=30$ (198.4-223.4); ambos contienen la media poblacional
+(210.8).\\[1mm]
 \texttt{Fumador} es 0/1: su media es la \textbf{proporción} de fumadores
-(0,40 con $n=30$, IC 0,21-0,59; 0,29 con $n=300$, IC 0,24-0,35; 0,26 en la
+(0.40 con $n=30$, IC 0.21-0.59; 0.29 con $n=300$, IC 0.24-0.35; 0.26 en la
 población).
 \end{column}
 \begin{column}{0.67\textwidth}\scriptsize
@@ -367,24 +370,47 @@ $n=30$ es mucho más ancho.
 
 
 * Contraste de hipótesis y tipos de pruebas
-** Lógica del contraste: el juicio
+** Lógica del contraste: un juicio con jurado
 
 #+BEGIN_EXPORT latex
-\scriptsize
-\begin{itemize}
-\item $H_0$ (\emph{nula}): «no hay efecto / no hay diferencia / el parámetro vale
-  $\mu_0$». Es el \emph{acusado inocente}: se mantiene salvo pruebas en contra.
-\item $H_1$ (\emph{alternativa}): lo que el investigador quiere demostrar.
-\item Calculamos un \textbf{estadístico de contraste} ($t$, $\chi^2$, $U$\dots)
-  cuya distribución conocemos \emph{si $H_0$ fuera cierta}.
-\item \textbf{$p$-valor}: probabilidad de obtener un resultado tan extremo
-  o más que el observado \emph{si $H_0$ fuera cierta}.
-\item Si $p < \alpha$ (habitualmente 0,05) rechazamos $H_0$: el resultado es
-  \textbf{estadísticamente significativo}.
-\end{itemize}
+\tiny\centering
+\begin{tabular}{L{0.44\textwidth}L{0.5\textwidth}}\toprule
+\textbf{\scriptsize En el juicio} & \textbf{\scriptsize En el contraste de hipótesis}\\\midrule
+\textbf{Defensa}: «mi cliente es inocente; no hay pruebas claras contra él».
+  Se parte de la \textbf{presunción de inocencia}. &
+  $\mathbf{H_0}$ (\emph{nula}): «no hay efecto, no hay diferencia» ($\mu=\mu_0$,
+  $\pi_1=\pi_2$, independencia\dots). Es el punto de partida: se mantiene salvo
+  pruebas en contra.\\\addlinespace[1mm]
+\textbf{Fiscal}: «hay pruebas claras de que es culpable». La \textbf{carga de la
+  prueba} es suya. &
+  $\mathbf{H_1}$ (\emph{alternativa}): lo que el investigador quiere demostrar
+  ($\mu\neq\mu_0$, hay asociación\dots). Necesita datos que contradigan a $H_0$.\\\addlinespace[1mm]
+\textbf{Jurado}: más benévolo o más justiciero, decide cuánta duda acepta aún como
+  «razonable». Se elige \emph{antes} de ver las pruebas. &
+  $\boldsymbol{\alpha}$ (nivel de significación; 0.05, o 0.01 si equivocarse es grave):
+  riesgo máximo que aceptamos de \textbf{condenar a un inocente} (error tipo I).
+  Se fija \emph{antes} de ver los datos.\\\addlinespace[1mm]
+\textbf{Reconstrucción de los hechos}: con las pruebas (lo indiscutible) y lo que
+  sabemos de cómo funciona el mundo se reconstruye qué pasó. &
+  \textbf{Estadístico de contraste} ($t$, $\chi^2$, $U$\dots): resume la muestra; la
+  teoría (TCL, normal, $t$\dots) dice cómo se distribuiría \emph{si $H_0$ fuera cierta}.\\\addlinespace[1mm]
+\textbf{La coartada}: «estaba en casa durmiendo». Si fuera verdad, ¿qué probabilidad
+  había de encontrar sus huellas en la escena del crimen? &
+  \textbf{$p$-valor}: probabilidad de un resultado tan extremo o más que el
+  observado \emph{si $H_0$ fuera cierta}. Un $p$ pequeño son pruebas difíciles de
+  explicar si fuera inocente.\\\addlinespace[1mm]
+\textbf{Veredicto}: culpable \textbf{solo} si la duda deja de ser razonable, es
+  decir, si esas pruebas serían \textbf{muy improbables} siendo inocente. Si no,
+  absuelto (aunque quizá lo sea \emph{por falta de pruebas}). &
+  $p<\alpha$ $\Rightarrow$ \textbf{rechazamos $H_0$}: resultado \textbf{significativo}.
+  $p\geq\alpha$ $\Rightarrow$ no rechazamos $H_0$. Ej.: ¿PAS media = 148? Muestra
+  pequeña, $p=0.10$: no rechazamos (falta de pruebas); grande, $p<0.001$: rechazamos.\\\bottomrule
+\end{tabular}
+\raggedright
 \begin{recuadronaranja}\scriptsize
-No rechazar $H_0$ \textbf{no demuestra} que $H_0$ sea cierta («absuelto
-por falta de pruebas» $\neq$ «inocente»).
+El $p$ \textbf{no} es la probabilidad de que sea inocente ($H_0$ cierta). No
+rechazar $H_0$ \textbf{no demuestra} que sea cierta: «absuelto por falta de pruebas»
+$\neq$ «inocente».
 \end{recuadronaranja}
 #+END_EXPORT
 
@@ -395,12 +421,12 @@ por falta de pruebas» $\neq$ «inocente»).
 Ejemplo: ¿la PAS basal media de nuestros pacientes es de 148 mmHg? (muestra pequeña)
 \begin{enumerate}
 \item \textbf{Hipótesis}: $H_0$: $\mu=148$ \quad frente a \quad $H_1$: $\mu\neq148$ (bilateral).
-\item \textbf{Nivel de significación}: $\alpha=0{,}05$, fijado \emph{antes} de ver los datos.
+\item \textbf{Nivel de significación}: $\alpha=0.05$, fijado \emph{antes} de ver los datos.
 \item \textbf{Estadístico} y su distribución si $H_0$ es cierta:
   \[ t=\frac{\bar{x}-\mu_0}{S/\sqrt{n}}\ \sim\ t_{n-1} \]
-\item \textbf{Cálculo} con la muestra ($n=30$, $\bar{x}=151{,}0$, $S=9{,}7$):
-  $EE=9{,}7/\sqrt{30}=1{,}76$; \ $t=(151{,}0-148)/1{,}76=1{,}70$; \ gl $=29$; \ $p=0{,}10$.
-\item \textbf{Decisión e interpretación}: $p=0{,}10>0{,}05$ $\Rightarrow$ no se rechaza
+\item \textbf{Cálculo} con la muestra ($n=30$, $\bar{x}=151.0$, $S=9.7$):
+  $EE=9.7/\sqrt{30}=1.76$; \ $t=(151.0-148)/1.76=1.70$; \ gl $=29$; \ $p=0.10$.
+\item \textbf{Decisión e interpretación}: $p=0.10>0.05$ $\Rightarrow$ no se rechaza
   $H_0$. «Los datos son compatibles con una PAS media de 148 mmHg».
 \end{enumerate}
 \begin{recuadro}\scriptsize
@@ -418,8 +444,8 @@ jamovi hace los pasos 3 y 4; los pasos 1, 2 y 5 son \textbf{tuyos}.
 \begin{column}{0.42\textwidth}\scriptsize
 \begin{itemize}
 \item Curva: distribución de $t$ (29 gl) si $H_0$ es cierta.
-\item Rosa claro: región de rechazo ($\alpha=0{,}05$, bilateral: $|t|>2{,}05$).
-\item Rojo: \textbf{$p$-valor} (área más allá de $|t|=1{,}70$, en las dos colas).
+\item Rosa claro: región de rechazo ($\alpha=0.05$, bilateral: $|t|>2.05$).
+\item Rojo: \textbf{$p$-valor} (área más allá de $|t|=1.70$, en las dos colas).
 \end{itemize}
 El área roja es \textbf{mayor} que la de rechazo: no rechazamos $H_0$.\\[1mm]
 \textbf{Lo que el $p$-valor NO es}: la probabilidad de que $H_0$ sea
@@ -454,9 +480,9 @@ Código: \href{https://epidemos.es/bs2026/pvalor.R}{pvalor.R}
 \end{column}
 \end{columns}
 \begin{recuadronaranja}\scriptsize
-Muestra pequeña: bilateral $p=0{,}100$; unilateral ($>$) $p=0{,}050$\dots{} ¡justo
+Muestra pequeña: bilateral $p=0.100$; unilateral ($>$) $p=0.050$\dots{} ¡justo
 en el límite! Cambiar a una cola \emph{después} de ver los datos para conseguir
-$p<0{,}05$ es hacer trampa.
+$p<0.05$ es hacer trampa.
 \end{recuadronaranja}
 #+END_EXPORT
 
@@ -466,22 +492,22 @@ $p<0{,}05$ es hacer trampa.
 \scriptsize
 \begin{itemize}
 \item El IC 95\,\% contiene los valores de $\mu$ \textbf{compatibles} con los datos.
-\item Contraste bilateral con $\alpha=0{,}05$: \textbf{rechazamos $H_0$: $\mu=\mu_0$ si y
+\item Contraste bilateral con $\alpha=0.05$: \textbf{rechazamos $H_0$: $\mu=\mu_0$ si y
   solo si $\mu_0$ queda fuera del IC 95\,\%}.
 \end{itemize}
 \centering
 \begin{tabular}{lccc}\toprule
 PAS basal & IC 95\,\% de $\mu$ & ¿Contiene 148? & $p$ ($H_0$: $\mu=148$)\\\midrule
-Muestra pequeña ($n=30$) & 147,4 a 154,6 & sí & 0,100\\
-Muestra grande ($n=300$) & 150,3 a 153,1 & no & $<0{,}001$\\\bottomrule
+Muestra pequeña ($n=30$) & 147.4 a 154.6 & sí & 0.100\\
+Muestra grande ($n=300$) & 150.3 a 153.1 & no & $<0.001$\\\bottomrule
 \end{tabular}
 \begin{recuadro}\scriptsize
 El IC dice \textbf{más} que el $p$: además de si 148 es compatible, cuánto
-puede valer $\mu$ y con qué precisión. La media poblacional es 151,0: los dos IC
+puede valer $\mu$ y con qué precisión. La media poblacional es 151.0: los dos IC
 la atrapan, pero solo la muestra grande descarta el 148.
 \end{recuadro}
 {\raggedright\scriptsize jamovi (t de una muestra) da el IC de la \textbf{diferencia} $\mu-148$
-(pequeña: $-0{,}6$ a 6,6): se rechaza $H_0$ si ese IC \textbf{no contiene el 0}.}
+(pequeña: $-0.6$ a 6.6): se rechaza $H_0$ si ese IC \textbf{no contiene el 0}.}
 #+END_EXPORT
 
 ** Errores tipo I y II, potencia
@@ -498,28 +524,37 @@ la atrapan, pero solo la muestra grande descarta el 148.
 \end{tabular}
 \raggedright
 \begin{itemize}
-\item $\alpha=P(\text{rechazar }H_0\mid H_0\text{ cierta})$: lo fijamos nosotros (0,05).
+\item $\alpha=P(\text{rechazar }H_0\mid H_0\text{ cierta})$: lo fijamos nosotros (0.05).
 \item $\beta=P(\text{no rechazar }H_0\mid H_0\text{ falsa})$: depende del tamaño del efecto,
   de la variabilidad y, sobre todo, de $n$.
 \item \textbf{Potencia} $=1-\beta$: capacidad de detectar un efecto que existe.
   Crece con $n$ y con el tamaño del efecto.
 \end{itemize}
 \begin{recuadro}\scriptsize
-Con $H_0$: $\mu=148$, la muestra pequeña \textbf{no rechazó} ($p=0{,}10$), pero
-la verdad es $\mu=151{,}0$: hemos cometido un \textbf{error tipo II}.
+Con $H_0$: $\mu=148$, la muestra pequeña \textbf{no rechazó} ($p=0.10$), pero
+la verdad es $\mu=151.0$: hemos cometido un \textbf{error tipo II}.
 \end{recuadro}
 #+END_EXPORT
 
 ** Ejemplo: glucosa basal y diagnóstico de diabetes
 
 #+BEGIN_EXPORT latex
-\centering
-\href{https://epidemos.es/bs2026/glucosa.R}{\includegraphics[width=0.95\textwidth]{img/rj_glucosa.pdf}}\\[1mm]
-\scriptsize $H_0$: «no es diabético»; se rechaza si glucosa $>120$ mg/dL.
-\textcolor{BrickRed}{FP = error tipo I ($\alpha$)},
-\textcolor{OliveGreen}{FN = error tipo II ($\beta$)}.
-Si los grupos se acercan, $\beta$ crece (menos \textbf{potencia}).
-Simulación: \href{https://epidemos.es/bs2026/glucosa.R}{glucosa.R}
+\begin{columns}[c]
+\begin{column}{0.48\textwidth}\centering
+\includegraphics[width=\textwidth]{src/matriz_errores.pdf}
+\end{column}
+\begin{column}{0.52\textwidth}\centering
+\href{https://epidemos.es/bs2026/glucosa.R}{\includegraphics[width=\textwidth]{img/rj_glucosa.pdf}}
+\end{column}
+\end{columns}
+\vspace{1mm}
+\scriptsize $H_0$: «el individuo está \textbf{sano}»; el test es positivo (rechazamos
+$H_0$) si glucosa $>120$ mg/dL.
+\textcolor{BrickRed}{Falso positivo = error tipo I ($\alpha$)};
+\textcolor{OliveGreen}{falso negativo = error tipo II ($\beta$)}.
+Si sanos y enfermos se acercan, $\beta$ crece (menos \textbf{potencia}); si movemos
+el umbral, bajar $\alpha$ sube $\beta$. Simulación:
+\href{https://epidemos.es/bs2026/glucosa.R}{glucosa.R}
 #+END_EXPORT
 
 ** Significación estadística \ne relevancia clínica
@@ -528,15 +563,15 @@ Simulación: \href{https://epidemos.es/bs2026/glucosa.R}{glucosa.R}
 \scriptsize
 \begin{itemize}
 \item Con $n$ muy grande, diferencias \emph{clínicamente irrelevantes}
-  salen «significativas» (p.\,ej. 2,4 mg/dL de colesterol entre sexos).
+  salen «significativas» (p.\,ej. 2.4 mg/dL de colesterol entre sexos).
 \item Con $n$ pequeño, diferencias \emph{importantes} pueden no
   detectarse (error tipo II).
-\item El $p$ no mide la importancia del efecto: \textbf{$p=0{,}001$ no es «más efecto» que $p=0{,}04$}.
+\item El $p$ no mide la importancia del efecto: \textbf{$p=0.001$ no es «más efecto» que $p=0.04$}.
 \end{itemize}
 \begin{recuadro}\scriptsize
 Informar siempre: \textbf{tamaño del efecto + IC 95\,\% + $p$}.\\
-Ej. (muestra grande): «a las 8 semanas la PAS fue 8,3 mmHg menor con el fármaco que
-con placebo (IC 95\,\%: 4,9 a 11,8; $p<0{,}001$)».
+Ej. (muestra grande): «a las 8 semanas la PAS fue 8.3 mmHg menor con el suplemento que
+con placebo (IC 95\,\%: 4.9 a 11.8; $p<0.001$)».
 \end{recuadro}
 #+END_EXPORT
 
@@ -607,9 +642,11 @@ de la misma ventana (\jmv{Pruebas}); los supuestos están en
 \item \jmv{Diferencia de medias} e \jmv{Intervalo de confianza}
 \item \jmv{Descriptivas}, \jmv{Prueba de Normalidad}, \jmv{Gráfica Q-Q}
 \end{itemize}}
-$t=1{,}70$, $p=0{,}100$; diferencia 3,0 (IC $-0{,}6$ a 6,6).\\[1mm]
-\textbf{Proporción}: \jmv{Frecuencias} $\rightarrow$ \jmv{Prueba de Proporciones
-(2 Resultados)}, \jmv{Valor de prueba} 0,48.
+$t=1.70$, $p=0.100$; diferencia 3.0 (IC $-0.6$ a 6.6).\\[0.5mm]
+{\tiny\textbf{Proporción} (Q.02.3, ¿48\,\% de mujeres?):
+\jmv{Frecuencias} $\rightarrow$ \jmv{Prueba de Proporciones (2 Resultados)};
+\texttt{Sexo} a \jmv{Variables}, \jmv{Valor de prueba} 0.48. Contrasta cada
+nivel frente a 0.48: se lee la fila \emph{Mujer}.\par}
 \end{column}
 \end{columns}
 #+END_EXPORT
@@ -631,24 +668,24 @@ $t=1{,}70$, $p=0{,}100$; diferencia 3,0 (IC $-0{,}6$ a 6,6).\\[1mm]
 \scriptsize
 \textbf{PAS\_basal}, $H_0$: $\mu=148$ (t de una muestra)\\[0.5mm]
 \resizebox{\textwidth}{!}{\input{img/res_q02_t.tex}}\\[1mm]
-\textbf{Sexo = Mujer}, $H_0$: $\pi=0{,}48$ (prueba binomial)\\[0.5mm]
+\textbf{Sexo = Mujer}, $H_0$: $\pi=0.48$ (prueba binomial)\\[0.5mm]
 \resizebox{0.8\textwidth}{!}{\input{img/res_q02_bin.tex}}
 \begin{recuadro}\tiny
-\textbf{PAS}: la media poblacional es 151,0 $\Rightarrow$ $H_0$ es \emph{falsa}. La grande
+\textbf{PAS}: la media poblacional es 151.0 $\Rightarrow$ $H_0$ es \emph{falsa}. La grande
 la rechaza (acierto); la pequeña no (\textbf{error tipo II}: poca potencia). Con una cola
-la pequeña da $p=0{,}050$, en el filo. \textbf{Mujeres}: ninguna muestra rechaza; en la
-población hay 47,4\,\%, tan cerca de 48\,\% que no rechazar es lo razonable
+la pequeña da $p=0.050$, en el filo. \textbf{Mujeres}: ninguna muestra rechaza; en la
+población hay 47.4\,\%, tan cerca de 48\,\% que no rechazar es lo razonable
 (diferencia irrelevante). Shapiro-Wilk no indica falta de normalidad: la $t$ es adecuada.
 \end{recuadro}
 #+END_EXPORT
 
-* Comparación de proporciones: tablas de contingencia
+* Comparando proporciones en tablas con dos variables: tablas de contingencia
 ** Tablas de contingencia
 
 #+BEGIN_EXPORT latex
 \scriptsize
 \begin{columns}
-\begin{column}{0.5\textwidth}
+\begin{column}{0.44\textwidth}
 \begin{itemize}
 \item Cruzan \textbf{dos variables cualitativas}: cada celda es el número de
   individuos con esa combinación.
@@ -660,11 +697,11 @@ población hay 47,4\,\%, tan cerca de 48\,\% que no rechazar es lo razonable
   infartos es la misma en fumadores y no fumadores).
 \end{itemize}
 \end{column}
-\begin{column}{0.5\textwidth}\centering
+\begin{column}{0.54\textwidth}\centering
 Fumador $\times$ Infarto (muestra grande)\\[1mm]
-\input{img/res_q03_tabla.tex}\\[2mm]
+\resizebox{\linewidth}{!}{\input{img/res_q03_tabla.tex}}\\[2mm]
 \raggedright
-Infarto: \textbf{17,0\,\%} en fumadores frente a \textbf{3,8\,\%} en no
+Infarto: \textbf{17.0\,\%} en fumadores frente a \textbf{3.8\,\%} en no
 fumadores. ¿Es una diferencia real o puede deberse al azar del muestreo?
 \end{column}
 \end{columns}
@@ -680,7 +717,7 @@ fumadores. ¿Es una diferencia real o puede deberse al azar del muestreo?
 \begin{column}{0.45\textwidth}\scriptsize
 \textbf{Esperadas}: las que habría si $H_0$ (independencia) fuera cierta:
 \[ E_{ij} = \frac{\text{total fila}_i \times \text{total col.}_j}{n} \]
-Ej.: fumadores con infarto: $E=\dfrac{88\times23}{300}=6{,}75$, pero hemos
+Ej.: fumadores con infarto: $E=\dfrac{88\times23}{300}=6.75$, pero hemos
 \textbf{observado} 15.\\[1mm]
 Cuanto más se alejan las observadas de las esperadas, más evidencia contra $H_0$.\\[1mm]
 Código: \href{https://epidemos.es/bs2026/chi2.R}{chi2.R}
@@ -695,7 +732,7 @@ Código: \href{https://epidemos.es/bs2026/chi2.R}{chi2.R}
 \[ \chi^2 = \sum_{\text{celdas}} \frac{(O_{ij}-E_{ij})^2}{E_{ij}}\ \sim\ \chi^2_{gl},\qquad gl=(f-1)(c-1) \]
 \begin{itemize}
 \item Si $H_0$ es cierta, $\chi^2$ es pequeño; cuanto mayor, menor es el $p$.
-\item Fumador $\times$ Infarto (grande): $\chi^2=15{,}47$, gl $=1$, $p<0{,}001$
+\item Fumador $\times$ Infarto (grande): $\chi^2=15.47$, gl $=1$, $p<0.001$
   $\Rightarrow$ rechazamos la independencia: tabaco e infarto están \textbf{asociados}.
 \item \textbf{Condiciones de aplicación} (es una aproximación):
   \begin{itemize}\scriptsize
@@ -718,15 +755,15 @@ las muestra con \jmv{Celdas} $\rightarrow$ \jmv{Frecuencias esperadas}.
 \item $\chi^2$ es una distribución \emph{continua}, pero los recuentos son
   \emph{discretos}: en tablas $2\times2$ con $n$ moderado la aproximación da $p$
   algo \textbf{pequeños} (demasiados errores tipo I).
-\item Yates resta 0,5 a cada diferencia antes de elevar al cuadrado:
-  \[ \chi^2_{Yates}=\sum\frac{\left(|O_{ij}-E_{ij}|-0{,}5\right)^2}{E_{ij}} \]
+\item Yates resta 0.5 a cada diferencia antes de elevar al cuadrado:
+  \[ \chi^2_{Yates}=\sum\frac{\left(|O_{ij}-E_{ij}|-0.5\right)^2}{E_{ij}} \]
 \item Solo para tablas \textbf{$2\times2$}. Es \textbf{más conservadora}: $\chi^2$ menor,
   $p$ mayor.
 \item Con $n$ grande apenas cambia nada; con esperadas pequeñas no basta: mejor Fisher.
 \end{itemize}
 \begin{recuadro}\scriptsize
 En jamovi: \jmv{Estadísticas} $\rightarrow$ \jmv{$\chi^2$ con corrección de continuidad}.
-Fumador $\times$ Infarto (grande): $p=0{,}00008$ sin corregir y $p=0{,}0002$ con Yates.
+Fumador $\times$ Infarto (grande): $p=0.00008$ sin corregir y $p=0.0002$ con Yates.
 \end{recuadro}
 #+END_EXPORT
 
@@ -744,20 +781,20 @@ Fumador $\times$ Infarto (grande): $p=0{,}00008$ sin corregir y $p=0{,}0002$ con
 \item Válido \textbf{siempre}; imprescindible si hay esperadas $<5$.
 \end{itemize}
 Tratamiento $\times$ EfAdverso, \textbf{muestra pequeña}: 2 efectos adversos en 30
-pacientes; esperadas 1,07 y 0,93.
+pacientes; esperadas 1.07 y 0.93.
 \end{column}
 \begin{column}{0.53\textwidth}\centering
-Tablas posibles (filas Placebo/Fármaco; columnas No/Sí):\\[1mm]
+Tablas posibles (filas Placebo/Suplemento; columnas No/Sí):\\[1mm]
 \begin{tabular}{ccc}
 $\begin{array}{|cc|}\hline 14&2\\ 14&0\\\hline\end{array}$ &
 $\begin{array}{|cc|}\hline 15&1\\ 13&1\\\hline\end{array}$ &
 $\begin{array}{|cc|}\hline \mathbf{16}&\mathbf{0}\\ \mathbf{12}&\mathbf{2}\\\hline\end{array}$\\[2mm]
-$P=0{,}276$ & $P=0{,}515$ & $P=\mathbf{0{,}209}$\\
+$P=0.276$ & $P=0.515$ & $P=\mathbf{0.209}$\\
  & & (observada)
 \end{tabular}\\[2mm]
 \raggedright
-Ninguna otra tabla es menos probable que la observada: $p=0{,}209$.
-No hay evidencia de más efectos adversos con el fármaco\dots{} con solo 30
+Ninguna otra tabla es menos probable que la observada: $p=0.209$.
+No hay evidencia de más efectos adversos con el suplemento\dots{} con solo 30
 pacientes.
 \end{column}
 \end{columns}
@@ -773,13 +810,13 @@ En jamovi: \jmv{Estadísticas} $\rightarrow$ \jmv{Test exacto de Fisher} (tambi�
 \begin{tabular}{L{0.22\textwidth}L{0.33\textwidth}L{0.35\textwidth}}\toprule
 Prueba & Cuándo & Idea\\\midrule
 $\chi^2$ de Pearson & todas las $E_{ij}\geq 5$ (tablas $f\times c$: $\leq20\,\%$ con $E<5$, ninguna $<1$) & aproximación a la distribución $\chi^2$\\[1mm]
-Corrección de Yates & tablas $2\times2$, $n$ moderado & resta 0,5 a $|O-E|$: más conservadora\\[1mm]
+Corrección de Yates & tablas $2\times2$, $n$ moderado & resta 0.5 a $|O-E|$: más conservadora\\[1mm]
 Test exacto de Fisher & alguna $E_{ij}<5$ (o $n$ pequeño); válido siempre & probabilidad exacta (hipergeométrica)\\\bottomrule
 \end{tabular}
 \begin{recuadronaranja}\scriptsize
 Decide la prueba \textbf{antes} de mirar los $p$: según el tamaño de las
 esperadas, no según cuál da «significativo». Si los tres $p$ discrepan cerca de
-0,05, la evidencia es \textbf{débil} y así hay que contarlo.
+0.05, la evidencia es \textbf{débil} y así hay que contarlo.
 \end{recuadronaranja}
 #+END_EXPORT
 
@@ -832,9 +869,9 @@ su RR es el de \emph{no} enfermar. La OR y la diferencia sí sirven tal cual.
 \item \jmv{Celdas}: \jmv{Frecuencias observadas} y \jmv{esperadas};
   \jmv{Porcentajes}: \jmv{Fila}
 \end{itemize}
-Resultado: $\chi^2=15{,}5$, $p<0{,}001$; esperadas todas $\geq5$ (mínima 6,75).
+Resultado: $\chi^2=15.5$, $p<0.001$; esperadas todas $\geq5$ (mínima 6.75).
 \begin{recuadronaranja}\tiny
-\jmv{Riesgo relativo} = 1,16 \jmv{(Se comparan filas)}: jamovi toma la
+\jmv{Riesgo relativo} = 1.16 \jmv{(Se comparan filas)}: jamovi toma la
 \textbf{primera columna} (\emph{No}) como suceso. Ver Resultado Q.03.
 \end{recuadronaranja}
 \end{column}
@@ -861,19 +898,19 @@ Resultado: $\chi^2=15{,}5$, $p<0{,}001$; esperadas todas $\geq5$ (mínima 6,75).
 \end{column}
 \begin{column}{0.5\textwidth}\tiny
 \begin{itemize}
-\item \textbf{Grande}: asociación clara ($p<0{,}001$). Los fumadores tienen
-  \textbf{4,5 veces} más riesgo de infarto (RR 4,52; IC 1,99 a 10,27).
+\item \textbf{Grande}: asociación clara ($p<0.001$). Los fumadores tienen
+  \textbf{4.5 veces} más riesgo de infarto (RR 4.52; IC 1.99 a 10.27).
 \item \textbf{Pequeña}: 2 de 4 esperadas $<5$ $\Rightarrow$ \textbf{Fisher},
-  $p=0{,}018$: también se detecta.
-\item \textbf{Población}: RR = 4,30. Las muestras aciertan.
+  $p=0.018$: también se detecta.
+\item \textbf{Población}: RR = 4.30. Las muestras aciertan.
 \end{itemize}
 \end{column}
 \end{columns}
 \begin{recuadro}\tiny
-jamovi da OR = 5,24 y diferencia 0,133, pero \textbf{RR = 1,16}: es el riesgo de
-\emph{no} tener infarto (96,2\,\% / 83,0\,\%), porque toma la primera columna
+jamovi da OR = 5.24 y diferencia 0.133, pero \textbf{RR = 1.16}: es el riesgo de
+\emph{no} tener infarto (96.2\,\% / 83.0\,\%), porque toma la primera columna
 (\emph{No}) como suceso. El RR de infarto se obtiene de los \% por filas:
-$17{,}0/3{,}8=4{,}5$.
+$17.0/3.8=4.5$.
 \end{recuadro}
 #+END_EXPORT
 
@@ -901,10 +938,10 @@ Pequeña\\ \resizebox{\textwidth}{!}{\input{img/res_q04_tabla_peq.tex}}
 \vspace{1mm}
 \resizebox{\textwidth}{!}{\input{img/res_q04_pruebas.tex}}
 \begin{recuadro}\tiny
-\textbf{Grande}: esperadas $\geq5$, pero $\chi^2$ da $p=0{,}037$ y Yates y Fisher
-$p\approx0{,}06$: \textbf{la decisión depende de la prueba}. Evidencia débil (RR 2,30;
-IC 1,02 a 5,17). \textbf{Pequeña}: esperadas $\approx1$ $\Rightarrow$ solo Fisher
-($p=0{,}21$). \textbf{Población}: 9,4\,\% frente a 3,3\,\% (RR 2,88): el fármaco sí
+\textbf{Grande}: esperadas $\geq5$, pero $\chi^2$ da $p=0.037$ y Yates y Fisher
+$p\approx0.06$: \textbf{la decisión depende de la prueba}. Evidencia débil (RR 2.30;
+IC 1.02 a 5.17). \textbf{Pequeña}: esperadas $\approx1$ $\Rightarrow$ solo Fisher
+($p=0.21$). \textbf{Población}: 9.4\,\% frente a 3.3\,\% (RR 2.88): el suplemento sí
 aumenta los efectos adversos; con $n=30$ (y quizá con 300) se comete un
 \textbf{error tipo II}.
 \end{recuadro}
@@ -919,15 +956,36 @@ aumenta los efectos adversos; con $n=30$ (y quizá con 300) se comete un
   esperadas pequeñas. Yates no se aplica.
 \item Un $\chi^2$ significativo dice que \emph{hay} asociación, pero no
   \emph{dónde}. Para eso, los \textbf{residuos tipificados} (ajustados) de cada celda:
-  \[ r_{ij}=\frac{O_{ij}-E_{ij}}{\sqrt{E_{ij}\,(1-\text{prop. fila}_i)(1-\text{prop. col.}_j)}}\ \approx\ N(0,1) \]
-\item $|r_{ij}|>1{,}96$ $\Rightarrow$ esa celda se aparta de lo esperado
+  \[ r_{ij}=\frac{O_{ij}-E_{ij}}{\sqrt{E_{ij}\,(1-\text{prop. fila}_i)(1-\text{prop. col.}_j)}}\ \approx\ N(0, 1) \]
+\item $|r_{ij}|>1.96$ ($\approx2$) $\Rightarrow$ esa celda se aparta de lo esperado
   (más casos si $r>0$, menos si $r<0$).
 \end{itemize}
 \begin{recuadro}\scriptsize
 En jamovi: sección \jmv{Pruebas post hoc} $\rightarrow$
 \jmv{Residuos tipificados (ajuste de Pearson)}; con \jmv{Resalta los pesos
-mayores a} 1,96 se resaltan las celdas destacadas. Salen en una tabla aparte
-(\jmv{Contraste Post-Hoc}), debajo de las pruebas de $\chi^2$.
+mayores a} 2 (valor por defecto) se marcan en rojo las celdas destacadas. Salen en
+una tabla aparte (\jmv{Prueba Post Hoc}), debajo de las pruebas de $\chi^2$.
+\end{recuadro}
+#+END_EXPORT
+
+** Tres tipos de residuos: ¿cuál miro?
+
+#+BEGIN_EXPORT latex
+\scriptsize
+\textbf{Educa $\times$ Fumador}, muestra grande (en rojo, $|r|>2$, como en jamovi)\\[1mm]
+\resizebox{\textwidth}{!}{\input{img/res_residuos.tex}}
+\begin{itemize}
+\item \textbf{No tipificado} ($O-E$): en personas. 13.6 fumadores \emph{de más} en
+  Básicos son 13.6 no fumadores \emph{de menos}.
+\item \textbf{De Pearson}: su cuadrado es lo que la casilla \textbf{aporta al $\chi^2$}.
+  Divide por $\sqrt{E}$: pesa más en la columna rara (\emph{Sí}). Su varianza es
+  \textbf{menor que 1}, así que con el umbral de 2 se queda corto.
+\item \textbf{Tipificado}: corrige la varianza $\Rightarrow$ $N(0, 1)$. No y Sí, mismo
+  valor y signo contrario (\textbf{el mismo hecho}); Medios pasa de $-1.49$ a $-2.10$.
+\end{itemize}
+\begin{recuadro}\scriptsize
+Para decidir \textbf{dónde} está la asociación: \textbf{residuos tipificados} y
+$|r|>1.96$. En una $2\times2$ los cuatro valen $\pm\sqrt{\chi^2}$.
 \end{recuadro}
 #+END_EXPORT
 
@@ -935,24 +993,48 @@ mayores a} 1,96 se resaltan las celdas destacadas. Salen en una tabla aparte
 
 1. Con la muestra grande, tabla =Educa= \times =Fumador= con % por filas.
    ¿Hay asociación? ¿Cuántos grados de libertad tiene el $\chi^2$?
-2. Con los residuos tipificados: ¿qué nivel educativo se aparta más de lo esperado?
+2. Con los residuos tipificados (=Pruebas post hoc=): ¿qué nivel educativo
+   se aparta más de lo esperado?
 3. Repite con la muestra pequeña. ¿Se cumplen las condiciones del $\chi^2$?
 4. Repite =GrupoSang= \times =Infarto= (muestra grande). ¿Y ahora?
 
-** Resultado Q.05
+** Resultado Q.05: la muestra grande en jamovi
+
+#+BEGIN_EXPORT latex
+\begin{columns}[T]
+\begin{column}{0.6\textwidth}
+\captura{capturas/tc_residuos.png}{\textwidth}
+\end{column}
+\begin{column}{0.4\textwidth}\scriptsize
+\jmv{Filtrar 1} ($n=300$). Filas \texttt{Educa}, columnas \texttt{Fumador};
+\jmv{Frecuencias esperadas}, \jmv{Porcentajes}: \jmv{Fila};
+\jmv{Pruebas post hoc}: \jmv{Residuos tipificados (ajuste de Pearson)}.
+\begin{itemize}
+\item Hay asociación: $\chi^2=13.2$, gl $=(3-1)(2-1)=2$, $p=0.001$.
+\item Esperadas todas $\geq5$: el $\chi^2$ es válido.
+\item Fuman el 42.1 / 20.7 / 23.6\,\% (población: 35 / 26 / 18\,\%).
+\item Residuos: \textbf{Básicos} $+3.60$ (\textbf{más fumadores} de lo esperado),
+  \textbf{Medios} $-2.10$ (menos). Superiores ($-1.62$) no destaca.
+\end{itemize}
+\end{column}
+\end{columns}
+#+END_EXPORT
+
+** Resultado Q.05: muestra pequeña y grupo sanguíneo
 
 #+BEGIN_EXPORT latex
 \scriptsize
-\textbf{Educa $\times$ Fumador}, muestra grande\\[0.5mm]
-\resizebox{0.85\textwidth}{!}{\input{img/res_q05_tabla.tex}}\\[1mm]
 \resizebox{\textwidth}{!}{\input{img/res_q05_pruebas.tex}}
-\begin{recuadro}\tiny
-\textbf{Grande}: asociación ($\chi^2=13{,}18$, gl $=2$, $p=0{,}001$). El residuo de
-Básicos (3,60) indica \textbf{más fumadores de lo esperado} con estudios básicos;
-Medios ($-2{,}10$) tiene menos. En la población: 35 / 26 / 18\,\%. \textbf{Pequeña}:
-3 de 6 esperadas $<5$: el $\chi^2$ no es fiable (y con $n=30$ tampoco hay potencia).
-\textbf{GrupoSang $\times$ Infarto}: sin asociación (Fisher $p=0{,}67$); en la
-población tampoco la hay.
+\begin{itemize}
+\item \textbf{Pequeña}: 3 de 6 esperadas $<5$ $\Rightarrow$ el $\chi^2$ no es fiable;
+  Fisher tampoco ve asociación ($p=1.00$): con $n=30$ no hay potencia.
+\item \textbf{GrupoSang $\times$ Infarto}: 2 de 8 esperadas $<5$ (25\,\%, más del 20\,\%)
+  $\Rightarrow$ Fisher: sin asociación ($p=0.67$). En la población tampoco la hay
+  (el infarto depende del tabaco y la edad, no del grupo sanguíneo).
+\end{itemize}
+\begin{recuadro}\scriptsize
+No rechazar $H_0$ puede ser \textbf{acierto} (GrupoSang: no hay asociación) o
+\textbf{error tipo II} (pequeña: la asociación existe pero $n=30$ no la detecta).
 \end{recuadro}
 #+END_EXPORT
 
@@ -964,25 +1046,25 @@ población tampoco la hay.
 \begin{column}{0.55\textwidth}
 \begin{itemize}
 \item La misma variable dicotómica medida \textbf{dos veces en los mismos
-  individuos}: hipertensión (PAS $\geq140$) al inicio y a las 8 semanas.
+  individuos}: sobrepeso al inicio y a las 8 semanas.
 \item Los que no cambian no informan: solo cuentan las celdas
   \textbf{discordantes} $b$ (Sí$\to$No) y $c$ (No$\to$Sí).
   \[ \chi^2_{McNemar}=\frac{(b-c)^2}{b+c},\quad gl=1 \]
-\item $H_0$: la proporción de hipertensos no cambia ($b\approx c$).
+\item $H_0$: la proporción con sobrepeso no cambia ($b\approx c$).
 \end{itemize}
 \end{column}
 \begin{column}{0.45\textwidth}\centering
 \begin{tabular}{lcc}\toprule
- & \multicolumn{2}{c}{HTA 8 sem}\\
-HTA basal & No & Sí\\\midrule
+ & \multicolumn{2}{c}{Sobrepeso 8 sem}\\
+Sobrepeso basal & No & Sí\\\midrule
 No & $a$ & $c$\\
 Sí & $b$ & $d$\\\bottomrule
 \end{tabular}\\[2mm]
 \raggedright
 \textbf{En jamovi}: \jmv{Frecuencias} $\rightarrow$ \jmv{Tablas de
-Contingencia: Muestras Pareadas}; \jmv{Filas}: \texttt{HTA\_basal},
-\jmv{Columnas}: \texttt{HTA\_8sem}. Da $\chi^2$ con y sin corrección de
-continuidad.
+Contingencia} $\rightarrow$ \jmv{Muestras Pareadas}; \jmv{Filas}:
+\texttt{Sobrepeso\_basal}, \jmv{Columnas}: \texttt{Sobrepeso\_8sem}. Da $\chi^2$
+con y sin corrección de continuidad.
 \end{column}
 \end{columns}
 \begin{recuadronaranja}\scriptsize
@@ -991,30 +1073,49 @@ son muestras independientes (como la $t$ de Student frente a la $t$ pareada).
 \end{recuadronaranja}
 #+END_EXPORT
 
-** Q.06 ¿Baja la proporción de hipertensos?
+** Q.06 ¿Baja la proporción de pacientes con sobrepeso?
 
-1. Con la *muestra grande*, prueba de McNemar de =HTA_basal= frente a
-   =HTA_8sem= en el grupo *Fármaco*. Para seleccionarlo, crea un filtro
-   nuevo ~Tratamiento == 1~ y déjalo activo junto a =Filtrar 1= (los
-   filtros activos se combinan).
-2. ¿Cuántos pacientes dejan de ser hipertensos? ¿Y cuántos pasan a serlo?
-3. Cambia el filtro nuevo a ~Tratamiento == 0~ (*Placebo*). ¿Sorprende el resultado?
+1. Con la *muestra grande* (=Filtrar 1=), prueba de McNemar de
+   =Sobrepeso_basal= frente a =Sobrepeso_8sem=.
+2. ¿Cuántos pacientes dejan el sobrepeso? ¿Y cuántos lo adquieren? Con los
+   totales de la tabla, ¿cómo cambia el % con sobrepeso?
+3. Repite con la *muestra pequeña* (=Filtrar 2=). ¿Cuántos pacientes cambian?
+   ¿Qué concluyes?
 
-** Resultado Q.06
+** Resultado Q.06: la muestra grande en jamovi
 
 #+BEGIN_EXPORT latex
-\scriptsize\centering
-\input{img/res_q06.tex}
-\raggedright
+\centering
+\captura{capturas/mcnemar_panel.png}{0.92\textwidth}\\[1mm]
+\raggedright\scriptsize
+\jmv{Filtrar 1} ($n=300$). \jmv{Frecuencias} $\rightarrow$ \jmv{Tablas de Contingencia}
+$\rightarrow$ \jmv{Muestras Pareadas}: filas \texttt{Sobrepeso\_basal}, columnas
+\texttt{Sobrepeso\_8sem}; $\chi^2$ y \jmv{$\chi^2$ con corrección de continuidad}.
 \begin{itemize}
-\item \textbf{Fármaco}: los hipertensos pasan del 82,6\,\% al 48,6\,\%: 49 dejan de
-  serlo y ninguno pasa a serlo ($p<0{,}001$).
-\item \textbf{Placebo}: también bajan (del 87,2\,\% al 66,7\,\%; $p<0{,}001$).
+\item 22 pacientes \textbf{dejan} el sobrepeso y 4 lo \textbf{adquieren}; los 274 que no
+  cambian (147 + 127) no cuentan.
+\item Con sobrepeso: $149/300=49.7\,\%$ al inicio (total de fila) y $131/300=43.7\,\%$ a las
+  8 semanas (total de columna).
+\item McNemar: $\chi^2=12.5$, gl $=1$, $p<0.001$ (con corrección: 11.1).
+\end{itemize}
+#+END_EXPORT
+
+** Resultado Q.06: muestra pequeña y por grupo
+
+#+BEGIN_EXPORT latex
+\scriptsize
+\resizebox{\textwidth}{!}{\input{img/res_q06.tex}}
+\begin{itemize}
+\item \textbf{Pequeña}: solo 5 pacientes cambian (4 frente a 1): $p=0.18$. McNemar
+  depende de cuántos \textbf{cambian}, no del total: con tan pocos no hay potencia
+  (\textbf{error tipo II}: en la población el sobrepeso sí baja).
+\item \textbf{Por grupo} (muestra grande, con un filtro más por \texttt{Tratamiento}):
+  con el \textbf{suplemento} baja del 51.4\,\% al 39.6\,\% ($p<0.001$); con
+  \textbf{placebo} apenas cambia (48.1\,\% $\to$ 47.4\,\%; $p=0.71$).
 \end{itemize}
 \begin{recuadro}\scriptsize
-¿Por qué baja con placebo? \textbf{Efecto placebo}, mejor control y
-\textbf{regresión a la media}. Por eso el efecto del fármaco se mide
-\textbf{comparando con el grupo placebo} (Q.07), no con el inicio.
+Que el sobrepeso baje en el conjunto no prueba que sea por el suplemento: para
+atribuirle el efecto hay que \textbf{compararlo con el grupo placebo}.
 \end{recuadro}
 #+END_EXPORT
 
@@ -1026,7 +1127,7 @@ son muestras independientes (como la $t$ de Student frente a la $t$ pareada).
 \begin{tabular}{L{0.2\textwidth}L{0.36\textwidth}L{0.36\textwidth}}\toprule
  & \textbf{Independientes} & \textbf{Dependientes (pareadas)}\\\midrule
 Diseño & Individuos \textbf{distintos} en cada grupo & \textbf{Mismos} individuos medidos dos veces (o parejas emparejadas)\\[0.5mm]
-Ejemplo & \texttt{PAS\_8sem}: Placebo frente a Fármaco & \texttt{PAS\_basal} frente a \texttt{PAS\_8sem}\\[0.5mm]
+Ejemplo & \texttt{PAS\_8sem}: Placebo frente a Suplemento & \texttt{PAS\_basal} frente a \texttt{PAS\_8sem}\\[0.5mm]
 Datos en jamovi & \textbf{una} variable + variable de \textbf{agrupación} & \textbf{dos} variables (columnas), una por momento\\[0.5mm]
 Paramétrica & $t$ de Student (o de Welch) & $t$ pareada\\[0.5mm]
 No paramétrica & $U$ de Mann-Whitney & Wilcoxon de rangos con signo\\\bottomrule
@@ -1061,15 +1162,15 @@ variabilidad entre personas y el contraste gana \textbf{potencia}.
 \textbf{Ejemplo}: PCR (mg/L) de 8 pacientes\\[1mm]
 \centering
 \begin{tabular}{lcccc}\toprule
-No fuma & 1,2 & 2,0 & 3,1 & 5,4\\
+No fuma & 1.2 & 2.0 & 3.1 & 5.4\\
 \emph{rango} & 1 & 2 & 4 & 6\\\midrule
-Fuma & 2,8 & 4,6 & 7,9 & \textbf{48,0}\\
+Fuma & 2.8 & 4.6 & 7.9 & \textbf{48.0}\\
 \emph{rango} & 3 & 5 & 7 & \textbf{8}\\\bottomrule
 \end{tabular}\\[1mm]
 \raggedright
-Medias: 2,9 frente a \textbf{15,8} (el 48,0 la dispara). Sumas de rangos: 13
-frente a 23. Para los rangos, el 48,0 es solo «el mayor»: pesaría igual si
-fuera 8,0.
+Medias: 2.9 frente a \textbf{15.8} (el 48.0 la dispara). Sumas de rangos: 13
+frente a 23. Para los rangos, el 48.0 es solo «el mayor»: pesaría igual si
+fuera 8.0.
 \end{column}
 \end{columns}
 #+END_EXPORT
@@ -1081,10 +1182,10 @@ fuera 8,0.
 \begin{enumerate}
 \item \textbf{Independencia} de las observaciones (lo garantiza el diseño).
 \item \textbf{Normalidad} en cada grupo: \jmv{Prueba de Normalidad}
-  (Shapiro-Wilk; $p<0{,}05$ $\Rightarrow$ no normal) y \jmv{Gráfico Q-Q} (puntos
+  (Shapiro-Wilk; $p<0.05$ $\Rightarrow$ no normal) y \jmv{Gráfico Q-Q} (puntos
   sobre la diagonal). Con $n$ grande (más de 30-40 por grupo) la $t$ es robusta (TCL).
 \item \textbf{Igualdad de varianzas}: \jmv{Prueba de homogeneidad} (Levene;
-  $p<0{,}05$ $\Rightarrow$ varianzas distintas). Si no se cumple: \textbf{$t$ de Welch}.
+  $p<0.05$ $\Rightarrow$ varianzas distintas). Si no se cumple: \textbf{$t$ de Welch}.
 \end{enumerate}
 \begin{recuadro}\scriptsize
 Todo está en \jmv{Comprobaciones de Supuestos} de la ventana de la $t$.
@@ -1101,20 +1202,22 @@ pruebas \textbf{no paramétricas}.
 
 #+BEGIN_EXPORT latex
 \centering
-\captura{capturas/tis_panel.png}{0.86\textwidth}\\[0.5mm]
+\captura{capturas/tis_panel.png}{0.84\textwidth}\\[0.5mm]
 \raggedright\scriptsize
 \jmv{Pruebas t} $\rightarrow$ \jmv{Prueba t para Muestras Independientes}
 (\jmv{Filtrar 1}): \texttt{PAS\_8sem} en \jmv{Variables Dependientes},
-\texttt{Tratamiento} en \jmv{Variables de agrupación}; \jmv{t de Student},
-\jmv{Welch} y \jmv{U de Mann-Whitney}; \jmv{Diferencia de medias} con
-\jmv{Intervalo de confianza}; \jmv{Prueba de homogeneidad} (Levene) y
-\jmv{Prueba de Normalidad}. La diferencia es Grupo 1 $-$ Grupo 2 en el orden de los
-niveles: Placebo $-$ Fármaco $=8{,}35$ mmHg.
+\texttt{Tratamiento} en \jmv{Variables de agrupación}; \jmv{t de Student};
+\jmv{Diferencia de medias} con \jmv{Intervalo de confianza}; \jmv{Prueba de
+homogeneidad} (Levene) y \jmv{Prueba de Normalidad}. \jmv{Welch} y \jmv{U de
+Mann-Whitney} se marcan en la misma ventana cuando hacen falta. La diferencia es
+Grupo 1 $-$ Grupo 2 en el orden de los niveles: Placebo $-$ Suplemento $=8.35$ mmHg.
+Resultado: $t=4.81$, gl $=298$, $p<0.001$; IC 95\,\%: 4.93 a 11.8 mmHg.
+Supuestos: Shapiro-Wilk $p=0.323$ y Levene $p=0.966$ $\Rightarrow$ la t de Student es válida.
 #+END_EXPORT
 
-** Q.07 ¿Funciona el fármaco?
+** Q.07 ¿Funciona el suplemento?
 
-1. Compara la =PAS_8sem= entre =Tratamiento= Placebo y Fármaco con
+1. Compara la =PAS_8sem= entre =Tratamiento= Placebo y Suplemento con
    la *muestra pequeña* (t de Student). Anota la diferencia de medias, su IC y p.
 2. Revisa los supuestos (normalidad, Levene). ¿Cambia algo con Welch?
 3. Repite con la muestra grande y sin filtro. ¿Hubo algún error con la pequeña?
@@ -1129,10 +1232,10 @@ niveles: Placebo $-$ Fármaco $=8{,}35$ mmHg.
 \href{https://epidemos.es/bs2026/forest.R}{\includegraphics[width=\textwidth]{img/rj_forest.pdf}}
 \end{column}
 \begin{column}{0.45\textwidth}\tiny
-Supuestos correctos (Levene y Shapiro-Wilk $p>0{,}05$); Student y Welch coinciden.\\[1mm]
-\textbf{Grande}: el fármaco baja la PAS 8,3 mmHg (IC 4,9 a 11,8; $p<0{,}001$).\\[1mm]
-\textbf{Pequeña}: diferencia parecida (6,8) pero el IC ($-3{,}0$ a 16,6)
-contiene el 0: $p=0{,}17$. Diferencia real 8,4 mmHg $\Rightarrow$ \textbf{error tipo II}.\\[1mm]
+Supuestos correctos (Levene y Shapiro-Wilk $p>0.05$); Student y Welch coinciden.\\[1mm]
+\textbf{Grande}: el suplemento baja la PAS 8.3 mmHg (IC 4.9 a 11.8; $p<0.001$).\\[1mm]
+\textbf{Pequeña}: diferencia parecida (6.8) pero el IC ($-3.0$ a 16.6)
+contiene el 0: $p=0.17$. Diferencia real 8.4 mmHg $\Rightarrow$ \textbf{error tipo II}.\\[1mm]
 Código: \href{https://epidemos.es/bs2026/forest.R}{forest.R}
 \end{column}
 \end{columns}
@@ -1152,11 +1255,11 @@ Código: \href{https://epidemos.es/bs2026/forest.R}{forest.R}
 \scriptsize
 \resizebox{\textwidth}{!}{\input{img/res_q08.tex}}
 \begin{itemize}
-\item Ninguna muestra rechaza $H_0$ ($p=0{,}51$ y $p=0{,}25$).
-\item Diferencia real (población): \textbf{2,4 mg/dL}, con una desviación típica
+\item Ninguna muestra rechaza $H_0$ ($p=0.51$ y $p=0.25$).
+\item Diferencia real (población): \textbf{2.4 mg/dL}, con una desviación típica
   de unos 35: para detectarla con potencia del 80\,\% harían falta unos
   \textbf{3300 pacientes por grupo}.
-\item Los IC son honestos: contienen el 2,4 real y dicen que la diferencia
+\item Los IC son honestos: contienen el 2.4 real y dicen que la diferencia
   es, como mucho, de unos 13 mg/dL (muestra grande).
 \end{itemize}
 \begin{recuadro}\scriptsize
@@ -1204,14 +1307,14 @@ potente que la t. Código: \href{https://epidemos.es/bs2026/pcr.R}{pcr.R}
 \scriptsize
 \resizebox{\textwidth}{!}{\input{img/res_q09.tex}}
 \begin{itemize}
-\item \textbf{PCR}: nada normal (Shapiro-Wilk $p<0{,}001$, cola larga a la derecha) y
-  varianzas distintas (jamovi avisa: Levene significativo; Welch $p=0{,}004$).
+\item \textbf{PCR}: nada normal (Shapiro-Wilk $p<0.001$, cola larga a la derecha) y
+  varianzas distintas (jamovi avisa: Levene significativo; Welch $p=0.004$).
   Las \textbf{medias} se inflan con los extremos; mejor describir con
-  \textbf{medianas} (2,3 frente a 3,8 en la grande) y contrastar con
+  \textbf{medianas} (2.3 frente a 3.8 en la grande) y contrastar con
   \textbf{Mann-Whitney}, que da un $p$ mucho menor que la $t$ en la muestra grande.
 \item Pequeña: ninguna prueba detecta la diferencia ($n$ = 18 / 12).
 \item \textbf{Dolor}: variable \textbf{ordinal} $\Rightarrow$ Mann-Whitney. Menos
-  dolor con el fármaco (mediana 3 frente a 4; $p<0{,}001$ en la grande).
+  dolor con el suplemento (mediana 3 frente a 4; $p<0.001$ en la grande).
 \end{itemize}
 #+END_EXPORT
 
@@ -1279,9 +1382,9 @@ $\rightarrow$ \jmv{Prueba de rangos con signo de Wilcoxon}.
 \item \jmv{Descriptivas}, \jmv{Gráficas descriptivas}
 \item \jmv{Prueba de Normalidad} (de las \emph{diferencias})
 \end{itemize}}
-Bajada media 6,7 mmHg (IC 2,9 a 10,4; $p<0{,}001$).
+Bajada media 6.7 mmHg (IC 2.9 a 10.4; $p<0.001$).
 ¡Los IC de las dos medias del gráfico \textbf{se solapan}! (Q.10).\\[1mm]
-Por tratamiento: otro filtro, \texttt{Tratamiento == 1} (Fármaco) o
+Por tratamiento: otro filtro, \texttt{Tratamiento == 1} (Suplemento) o
 \texttt{== 0} (Placebo).
 \end{column}
 \end{columns}
@@ -1291,8 +1394,10 @@ Por tratamiento: otro filtro, \texttt{Tratamiento == 1} (Fármaco) o
 
 1. Con la muestra pequeña, compara =PAS_basal= y =PAS_8sem= (t
    pareada y Wilcoxon). Anota la bajada media, su IC y p.
-2. Repite separando por =Tratamiento= (el filtro ~Tratamiento == 0~ o
-   ~Tratamiento == 1~ de la Q.06). ¿Baja también con placebo? ¿Por qué?
+2. Repite separando por =Tratamiento=: crea un filtro nuevo
+   ~Tratamiento == 1~ (Suplemento) y déjalo activo junto a =Filtrar 2=
+   (los filtros activos se combinan); después cámbialo a ~Tratamiento == 0~
+   (Placebo). ¿Baja también con placebo? ¿Por qué?
 3. Repite con la muestra grande.
 4. Mira en =Descriptivas= los IC 95 % de la PAS basal y de la PAS a 8
    semanas por separado: ¿se solapan? ¿Por qué la t pareada detecta la
@@ -1304,19 +1409,19 @@ Por tratamiento: otro filtro, \texttt{Tratamiento == 1} (Fármaco) o
 \scriptsize
 \resizebox{\textwidth}{!}{\input{img/res_q10.tex}}
 \begin{itemize}
-\item La PAS baja en los dos grupos; con el \textbf{fármaco} el triple (13,2 frente a
-  4,4 mmHg en la grande). Población: 12,4 y 4,1 mmHg.
-\item Pequeña, placebo: bajada de 3,2 mmHg no significativa ($n=16$): error tipo II.
+\item La PAS baja en los dos grupos; con el \textbf{suplemento} el triple (13.2 frente a
+  4.4 mmHg en la grande). Población: 12.4 y 4.1 mmHg.
+\item Pequeña, placebo: bajada de 3.2 mmHg no significativa ($n=16$): error tipo II.
 \item Wilcoxon y $t$ pareada llevan a las mismas conclusiones.
-\item Pequeña: los IC de las medias \textbf{se solapan} (basal 147,4 a 154,6; 8 sem
-  139,4 a 149,3), pero la $t$ pareada da $p<0{,}001$. Comparar IC separados no sirve
+\item Pequeña: los IC de las medias \textbf{se solapan} (basal 147.4 a 154.6; 8 sem
+  139.4 a 149.3), pero la $t$ pareada da $p<0.001$. Comparar IC separados no sirve
   para datos pareados.
 \end{itemize}
 \begin{recuadronaranja}\scriptsize
 Última columna: $p$ si se analizasen \textbf{(mal)} como muestras independientes.
 Siempre es mayor: al ignorar el emparejamiento, la variabilidad entre pacientes
 (DT $\approx12$) tapa el cambio dentro de cada paciente. En el placebo pequeño
-pasaría de $p=0{,}12$ a $p=0{,}46$.
+pasaría de $p=0.12$ a $p=0.46$.
 \end{recuadronaranja}
 #+END_EXPORT
 
@@ -1340,8 +1445,8 @@ pasaría de $p=0{,}12$ a $p=0{,}46$.
 \texttt{PAS\_basal} por \texttt{Educa} (grande)\\[1mm]
 \input{img/res_anova.tex}\\[1mm]
 \raggedright
-ANOVA: $F(2;\,297)=2{,}91$, $p=0{,}056$.\\
-Kruskal-Wallis: $\chi^2=5{,}65$, gl $=2$, $p=0{,}059$.\\[1mm]
+ANOVA: $F(2;\,297)=2.91$, $p=0.056$.\\
+Kruskal-Wallis: $\chi^2=5.65$, gl $=2$, $p=0.059$.\\[1mm]
 \tiny Al límite: la PAS basal sube con la edad, y la edad es mayor con estudios básicos.
 \end{column}
 \end{columns}
@@ -1371,7 +1476,7 @@ supuestos y decidiendo la prueba \textbf{antes} de ver los resultados.
 ** Q.11 Redacta los resultados del ensayo
 
 Con la *muestra grande*, escribe un párrafo de «Resultados» como en un
-artículo: efecto del fármaco sobre la PAS a las 8 semanas (diferencia, IC,
+artículo: efecto del suplemento sobre la PAS a las 8 semanas (diferencia, IC,
 p) y sobre los efectos adversos (porcentajes, RR, IC, prueba usada).
 Compáralo con la verdad poblacional.
 
@@ -1380,17 +1485,17 @@ Compáralo con la verdad poblacional.
 #+BEGIN_EXPORT latex
 \scriptsize
 \begin{recuadro}\small
-Se incluyeron 300 pacientes (156 placebo, 144 fármaco). A las 8 semanas, la PAS
-media fue de 138,7 mmHg con el fármaco y de 147,1 mmHg con placebo, una diferencia
-de \textbf{8,3 mmHg} (IC 95\,\%: 4,9 a 11,8; $t$ de Student, $p<0{,}001$). Presentaron
-efectos adversos el 11,8\,\% de los tratados con el fármaco y el 5,1\,\% con placebo
-(\textbf{RR 2,30}; IC 95\,\%: 1,02 a 5,17; $\chi^2$ $p=0{,}037$; test exacto de Fisher
-$p=0{,}058$).
+Se incluyeron 300 pacientes (156 placebo, 144 suplemento). A las 8 semanas, la PAS
+media fue de 138.7 mmHg con el suplemento y de 147.1 mmHg con placebo, una diferencia
+de \textbf{8.3 mmHg} (IC 95\,\%: 4.9 a 11.8; $t$ de Student, $p<0.001$). Presentaron
+efectos adversos el 11.8\,\% de los tratados con el suplemento y el 5.1\,\% con placebo
+(\textbf{RR 2.30}; IC 95\,\%: 1.02 a 5.17; $\chi^2$ $p=0.037$; test exacto de Fisher
+$p=0.058$).
 \end{recuadro}
 \begin{itemize}
-\item \textbf{Población}: diferencia de 8,4 mmHg y RR de efectos adversos 2,88.
+\item \textbf{Población}: diferencia de 8.4 mmHg y RR de efectos adversos 2.88.
   Las dos estimaciones aciertan (los IC contienen el valor real).
 \item Sobre los efectos adversos la evidencia de la muestra es \textbf{débil}
-  (depende de la prueba): hay que decirlo así, no «el fármaco es seguro».
+  (depende de la prueba): hay que decirlo así, no «el suplemento es seguro».
 \end{itemize}
 #+END_EXPORT

@@ -22,20 +22,20 @@ Material del curso anterior: `../../S2/ppt02.org` (+ `imagenes/`, `NewIMG/`).
 
 ## 2. Hecho en esta sesión (BORRADOR v0, sin revisar por el profesor)
 
-| Pieza | Fichero | Estado |
-|---|---|---|
-| Guion (3 niveles: sección › diapositiva › contenido) | `guion_practica02.md` | Propuesta v0, con 4 preguntas abiertas al final |
-| Datos: población simulada N = 2000 con filtros `Muestra_grande` (300) y `Muestra_peq` (30 ⊂ grande) | `src/01_simula_poblacion.R` → `datos/poblacion.{csv,omv}` | Hecho (semilla 20261014) |
-| Gráfico 100 IC (n = 30, colesterol) | `datos/ic.R` + `src/10_rj_ic.R` → `img/rj_ic.pdf` | Hecho |
-| Gráfico p-valor sobre la t (H0: μ = 145, muestra pequeña) | `datos/pvalor.R` + `src/11_rj_pvalor.R` | Hecho |
-| Observadas vs esperadas Fumador × Infarto | `datos/chi2.R` + `src/12_rj_chi2.R` | Hecho (ver nota abajo) |
-| Pareadas PAS basal/8 sem (pendientes + diferencias) | `datos/pareadas.R` + `src/13_rj_pareadas.R` | Hecho |
-| Forest plot: diferencia PAS Placebo−Fármaco con IC (pequeña / grande / población) | `datos/forest.R` + `src/14_rj_forest.R` | Hecho |
-| PCR por tabaco: histograma + cajas, t vs Mann-Whitney | `datos/pcr.R` + `src/15_rj_pcr.R` | Hecho |
-| Glucosa basal y diabetes: simulación 1000 sanos / 1000 diabéticos, umbral 120, FP = tipo I, FN = tipo II, dos escenarios (media 175 y 140) | `datos/glucosa.R` (autónomo, sin datos) + `src/16_rj_glucosa.R` | Hecho (pág. 18); sustituye las 5 figuras de S2 |
-| Árbol de decisión de pruebas (TikZ standalone) | `src/20_arbol_pruebas.tex` → `img/arbol_pruebas.pdf` | Hecho |
-| Presentación | `practica02.org` → `practica02.pdf` (47 págs., 6 secciones, Q.01–Q.10) | Borrador; `make clean && make` regenera todo desde cero |
-| Build | `Makefile`, `myconfbeamer.org` (copiado de practica01), `.gitignore`, `LICENSE` | Hecho; `make pdf` funciona |
+| Pieza                                                                                                                                      | Fichero                                                                         | Estado                                                  |
+|--------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|---------------------------------------------------------|
+| Guion (3 niveles: sección › diapositiva › contenido)                                                                                       | `guion_practica02.md`                                                           | Propuesta v0, con 4 preguntas abiertas al final         |
+| Datos: población simulada N = 2000 con filtros `Muestra_grande` (300) y `Muestra_peq` (30 ⊂ grande)                                        | `src/01_simula_poblacion.R` → `datos/poblacion.{csv,omv}`                       | Hecho (semilla 20261014)                                |
+| Gráfico 100 IC (n = 30, colesterol)                                                                                                        | `datos/ic.R` + `src/10_rj_ic.R` → `img/rj_ic.pdf`                               | Hecho                                                   |
+| Gráfico p-valor sobre la t (H0: μ = 145, muestra pequeña)                                                                                  | `datos/pvalor.R` + `src/11_rj_pvalor.R`                                         | Hecho                                                   |
+| Observadas vs esperadas Fumador × Infarto                                                                                                  | `datos/chi2.R` + `src/12_rj_chi2.R`                                             | Hecho (ver nota abajo)                                  |
+| Pareadas PAS basal/8 sem (pendientes + diferencias)                                                                                        | `datos/pareadas.R` + `src/13_rj_pareadas.R`                                     | Hecho                                                   |
+| Forest plot: diferencia PAS Placebo−Fármaco con IC (pequeña / grande / población)                                                          | `datos/forest.R` + `src/14_rj_forest.R`                                         | Hecho                                                   |
+| PCR por tabaco: histograma + cajas, t vs Mann-Whitney                                                                                      | `datos/pcr.R` + `src/15_rj_pcr.R`                                               | Hecho                                                   |
+| Glucosa basal y diabetes: simulación 1000 sanos / 1000 diabéticos, umbral 120, FP = tipo I, FN = tipo II, dos escenarios (media 175 y 140) | `datos/glucosa.R` (autónomo, sin datos) + `src/16_rj_glucosa.R`                 | Hecho (pág. 18); sustituye las 5 figuras de S2          |
+| Árbol de decisión de pruebas (TikZ standalone)                                                                                             | `src/20_arbol_pruebas.tex` → `img/arbol_pruebas.pdf`                            | Hecho                                                   |
+| Presentación                                                                                                                               | `practica02.org` → `practica02.pdf` (47 págs., 6 secciones, Q.01–Q.10)          | Borrador; `make clean && make` regenera todo desde cero |
+| Build                                                                                                                                      | `Makefile`, `myconfbeamer.org` (copiado de practica01), `.gitignore`, `LICENSE` | Hecho; `make pdf` funciona                              |
 
 Los scripts `datos/*.R` siguen el patrón de practica01: en Rj usan `data`;
 en R descargan `poblacion.omv` de `epidemos.es/bs2026/` (**aún no subido**).
@@ -84,21 +84,21 @@ Si se cambia la semilla o el orden de las llamadas a `rbinom/sample` en
 Se revisó la presentación **en orden**, con el profesor decidiendo cada cambio.
 Numeración actual (PDF):
 
-| Pág. | Diapositiva | Qué se hizo |
-|---|---|---|
-| 7 | Estadística descriptiva frente a inferencial | Texto y tabla reescritos: parámetro poblacional / estadístico muestral / **estimador del parámetro** (no «estimador muestral»); recuadro estimador vs estimación |
-| 8 | De la población a la muestra y vuelta | Diagrama TikZ nuevo `src/21_inferencia.tex` → `img/inferencia.pdf` (sustituye la imagen de S2) |
-| 10 | De la binomial a la normal: lanzar monedas | NUEVA. Masas de probabilidad (punto + línea) de B(n; 0,5), n = 1, 4, 10, 40, con la normal encima. `datos/binomial.R`. Recuadro «por qué la normal es tan normal» |
-| 11 | La curva normal | Curva teórica sin histograma: μ, σ, **puntos de inflexión en μ±σ** (curva coloreada cóncava/convexa + tangentes), áreas 68,3/95,4/99,7 %. `datos/normal.R` |
-| 12 | Normal tipificada Z | 3 variables reales (Edad, PAS, Colesterol) y sus Z. `datos/tipifica.R` (sustituye la figura Python) |
-| 13 | Z frente a t de Student | Pie reescrito («si σ es desconocida… la referencia que usaremos es la t») |
-| 14 | TCL y error estándar | «…sea cual sea la forma de la distribución de la variable original (normal o no normal)» |
-| 15 | TCL: población frente a medias muestrales | Fila superior: población (N = 2000) con μ punteada; inferior: densidades de **100 muestras** con n = 3, 9, 27 y rayas de color = media de las medias. Eje X común (PCR recortada a 0-25). `datos/tcl.R` |
-| 16-17 | jamovi Demonstrations: *Central Limit Theorem* | NUEVAS, con `capturas/clt_*.png` (instalación del módulo y 3 distribuciones de partida) |
-| 18 | Aciertos en 100 muestras de 30 casos con α = 0,05 | Título en una línea, texto sin «La sala vota», gráfico mayor, rótulo con μ y coma decimal |
-| 19 | Q.01 Intervalos de confianza | Ahora va **antes** de su resultado |
-| 20 | Resultado: IC de Colesterol y Fumador en jamovi | NUEVA, con `capturas/q01_*.png` (panel + tablas pequeña/grande/población) |
-| 21 | IC de una proporción en jamovi | NUEVA (sustituye a la antigua Q.01 y a las capturas de S2): Fumador y **Ejercicio**; recuadro azul = proporción poblacional, rojos = IC de las muestras, con texto de comprobación. `capturas/ic_prop_*.png` |
+| Pág.  | Diapositiva                                       | Qué se hizo                                                                                                                                                                                                  |
+|-------|---------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 7     | Estadística descriptiva frente a inferencial      | Texto y tabla reescritos: parámetro poblacional / estadístico muestral / **estimador del parámetro** (no «estimador muestral»); recuadro estimador vs estimación                                             |
+| 8     | De la población a la muestra y vuelta             | Diagrama TikZ nuevo `src/21_inferencia.tex` → `img/inferencia.pdf` (sustituye la imagen de S2)                                                                                                               |
+| 10    | De la binomial a la normal: lanzar monedas        | NUEVA. Masas de probabilidad (punto + línea) de B(n; 0,5), n = 1, 4, 10, 40, con la normal encima. `datos/binomial.R`. Recuadro «por qué la normal es tan normal»                                            |
+| 11    | La curva normal                                   | Curva teórica sin histograma: μ, σ, **puntos de inflexión en μ±σ** (curva coloreada cóncava/convexa + tangentes), áreas 68,3/95,4/99,7 %. `datos/normal.R`                                                   |
+| 12    | Normal tipificada Z                               | 3 variables reales (Edad, PAS, Colesterol) y sus Z. `datos/tipifica.R` (sustituye la figura Python)                                                                                                          |
+| 13    | Z frente a t de Student                           | Pie reescrito («si σ es desconocida… la referencia que usaremos es la t»)                                                                                                                                    |
+| 14    | TCL y error estándar                              | «…sea cual sea la forma de la distribución de la variable original (normal o no normal)»                                                                                                                     |
+| 15    | TCL: población frente a medias muestrales         | Fila superior: población (N = 2000) con μ punteada; inferior: densidades de **100 muestras** con n = 3, 9, 27 y rayas de color = media de las medias. Eje X común (PCR recortada a 0-25). `datos/tcl.R`      |
+| 16-17 | jamovi Demonstrations: *Central Limit Theorem*    | NUEVAS, con `capturas/clt_*.png` (instalación del módulo y 3 distribuciones de partida)                                                                                                                      |
+| 18    | Aciertos en 100 muestras de 30 casos con α = 0,05 | Título en una línea, texto sin «La sala vota», gráfico mayor, rótulo con μ y coma decimal                                                                                                                    |
+| 19    | Q.01 Intervalos de confianza                      | Ahora va **antes** de su resultado                                                                                                                                                                           |
+| 20    | Resultado: IC de Colesterol y Fumador en jamovi   | NUEVA, con `capturas/q01_*.png` (panel + tablas pequeña/grande/población)                                                                                                                                    |
+| 21    | IC de una proporción en jamovi                    | NUEVA (sustituye a la antigua Q.01 y a las capturas de S2): Fumador y **Ejercicio**; recuadro azul = proporción poblacional, rojos = IC de las muestras, con texto de comprobación. `capturas/ic_prop_*.png` |
 
 Ficheros nuevos de código: `datos/{binomial,normal,tipifica,tcl}.R` con sus
 lanzadores `src/{22_rj_binomial,17_rj_normal,18_rj_tipifica,19_rj_tcl}.R`
@@ -117,13 +117,13 @@ para el IC de proporciones; Q.01 se pregunta antes de mostrar resultados.
 ## 2c. Sesión del 27-10-2026: secciones 3-6 rehechas para jamovi (PDF ahora 78 págs.)
 
 Reescritas desde la pág. 22 siguiendo los temas 4, 5 y 6 del coordinador,
-con ejemplos sobre `poblacion_filtros.omv`. Todas las cifras de las
+con ejemplos sobre el fichero de clase con filtros (hoy `poblacion.omv`, ver §2d). Todas las cifras de las
 soluciones se han comprobado **con el propio motor de jamovi** (`jmv` de la
 instalación flatpak, ver más abajo).
 
 **Datos**
-- `poblacion_filtros.omv` (el fichero de clase que creó el profesor a mano)
-  ahora lo genera `src/02_filtros.R` con `anade_filtros()` (en
+- El fichero de clase con filtros (creado primero a mano por el profesor)
+	ahora lo genera `src/02_filtros.R` con `anade_filtros()` (en
   `src/omv_enteros.R`): mismos filtros, fórmulas y descripciones
   (`Filtrar 1`: `Muestra_grande == 1`, «Muestra de 300»; `Filtrar 2`:
   `Muestra_peq == 1`, «Muestra de 30»; inactivos). Comprobado columna a
@@ -175,6 +175,53 @@ comprobar resultados con el motor real de jamovi:
 `flatpak run --command=/app/lib/R/bin/Rscript org.jamovi.jamovi script.R`
 con `.libPaths("/app/lib/jamovi/modules/jmv/R")` y `LANG=C.UTF-8`.
 
+## 2d. Sesión del 28-10-2026: decisiones de formato y de nombre del fichero
+
+- **Punto decimal anglosajón en toda la presentación** (texto, tablas y rótulos
+  de las figuras R), como lo muestra jamovi: la coma decimal se confundía con
+  la coma de las listas de resultados. Los pares de parámetros llevan coma y
+  espacio: $N(0, 1)$, $B(n, 0.5)$. Mantenerlo en las diapositivas nuevas.
+- **El fichero de clase con filtros se llama `poblacion.omv`** (así se subirá a
+  la web). `src/01_simula_poblacion.R` escribe el intermedio
+  `datos/poblacion_base.omv` (sin filtros) y `src/02_filtros.R` le añade
+  `Filtrar 1/2` y escribe `datos/poblacion.omv`. Los scripts `datos/*.R` y los
+  lanzadores leen `poblacion.omv` con filtros sin cambios (tablas de soluciones
+  idénticas, comprobado). Ya no existe `poblacion_filtros.omv`.
+- Q.05: retirada la pregunta sobre los residuos de Pearson (la diapositiva
+  «Tres tipos de residuos» se mantiene).
+
+## 2e. Sesión del 28-10-2026 (2): suplemento dietético y McNemar con sobrepeso
+
+- **Nuevo enfoque del ensayo**: un **suplemento dietético** frente a placebo en
+  adultos con riesgo cardiovascular (un antihipertensivo en personas sin
+  hipertensión era artificial). Solo cambia la etiqueta: `Tratamiento` 0 Placebo /
+  1 **Suplemento**. **Todos los números anteriores se mantienen** (también la
+  bajada de PAS de 8 mmHg, aunque sea generosa para un suplemento). Texto de
+  las diapositivas, `datos/forest.R`, `datos/pareadas.R` y `30_resultados.R`
+  actualizados.
+- **McNemar con sobrepeso** (sustituye al de HTA, que tenía casillas a 0 y
+  necesitaba un filtro extra): `Sobrepeso_basal` y `Sobrepeso_8sem` (No/Sí,
+  «IMC ≥ 25»), simuladas al **final** de `01_simula_poblacion.R` (el resto de
+  datos idéntico, comprobado). Más sobrepeso con PAS alta (93 % de hipertensos
+  con sobrepeso frente a 76 % sin él), edad y sedentarismo; lo dejan el 8 % con
+  placebo y el 28 % con suplemento, lo adquieren el 4 %.
+  Resultados: **grande** 147 / 4 / 22 / 127 (No→No, No→Sí, Sí→No, Sí→Sí),
+  49.7 % → 43.7 %, χ² = 12.46, p < .001; **pequeña** 12 / 1 / 4 / 13, p = 0.18;
+  grande por grupo: placebo p = 0.71, suplemento p < .001.
+- Q.06 nueva («¿Baja la proporción de pacientes con sobrepeso?») con dos
+  diapositivas de resultado (captura de jamovi + tabla `res_q06.tex`). La Q.10
+  explica ahora cómo crear el filtro por tratamiento (antes remitía a la Q.06).
+- Se mantienen `HTA_basal` y `HTA_8sem` en los datos (no se usan en las
+  diapositivas; útiles para relacionar sobrepeso e hipertensión). PDF: 81 págs.
+
+**Capturas a (re)hacer por el cambio de etiqueta y el nuevo McNemar:**
+- `mcnemar_panel.png` (nueva, pág. 57): `Filtrar 1`; Frecuencias → Tablas de
+  Contingencia → Muestras Pareadas; filas `Sobrepeso_basal`, columnas
+  `Sobrepeso_8sem`; χ², χ² con corrección de continuidad, % de fila.
+- `tis_panel.png`: la nota de jamovi dice «μ Placebo ≠ μ Fármaco».
+- `filtros.png`: la columna `Tratamiento` de la hoja de datos muestra «Fármaco».
+  (Las demás capturas no muestran el nombre del grupo.)
+
 ## 3. Pendiente / ideas para la próxima sesión
 
 **Para retomar (28-10):** el profesor hará las 2 capturas opcionales
@@ -188,18 +235,46 @@ diapositiva a diapositiva de las págs. 22-78 (punto 2).
    grande, `tps_panel.png`, no se usa). Textos ajustados a las etiquetas reales
    de jamovi («Rangos de Wilcoxon», «Descriptivas», «Gráfica Q-Q»…). Los residuos
    de tablas N×M están en la sección **Pruebas post hoc**, no en Celdas (corregido).
-   **Opcionales pedidas** (irían en «Proporciones pareadas: McNemar» / «Resultado Q.06»
-   y en «Tablas N×M» / «Resultado Q.05»):
-   - `mcnemar_filtros.png` + `mcnemar_panel.png`: Filtrar 1 + nuevo filtro
-     `Tratamiento == 1`; Frecuencias → Tablas de Contingencia → Muestras Pareadas,
-     HTA_basal × HTA_8sem, χ² y χ² con corrección, % de fila. Debe dar 25/0/49/70,
-     χ² = 49,0 (corregido 47,0), p < .001, N = 144.
-   - `tc_residuos.png`: Filtrar 1; Educa × Fumador, Frecuencias esperadas, % fila,
-     Pruebas post hoc → Residuos tipificados (ajuste de Pearson), resaltar > 1,96.
-     Debe dar χ² = 13,18, gl 2, p = .001; residuos (Sí) 3,60 / −2,10 / −1,62.
+   **28-10:** integrada `tc_residuos.png` (umbral de resaltado 2, el de jamovi por
+   defecto) en «Resultado Q.05: la muestra grande en jamovi» (pág. 53); nueva
+   diapositiva «Tres tipos de residuos: ¿cuál miro?» (pág. 51) con la tabla
+   `img/res_residuos.tex` (no tipificado, Pearson y tipificado, generada en
+   `30_resultados.R`); Q.05 pregunta además por qué Pearson marca menos casillas;
+   el resultado de la pequeña y GrupoSang va en su propia diapositiva (pág. 54).
+   PDF: 80 págs. **28-10 (2):** el McNemar pasa a sobrepeso. **28-10 (3):**
+   integradas `mcnemar_panel.png` (pág. 57, captura a todo el ancho; sin % de
+   fila: los % se calculan con los totales 149/300 y 131/300), `tis_panel.png`
+   (pág. 63; ya con «Suplemento», solo t de Student y con la tabla de resultados
+   **cortada a la derecha: no se ve el IC de la diferencia**; se podría rehacer
+   ensanchando el panel de resultados) y `filtros.png` (pág. 6; sin la barra
+   de estado). PDF: 81 págs.
+   **28-10 (4):** la `tis_panel.png` rehecha a las 12:14 **no vale**: analiza
+   `PAS_basal` sin filtro (gl = 1998, población; dif. 0.05, p = .928) en vez de
+   `PAS_8sem` con `Filtrar 1` (dif. 8.35). **Rehacerla**: `Filtrar 1`,
+   `PAS_8sem` por `Tratamiento`, panel de resultados ancho para que se vea el IC.
+   (La de PAS_basal en la población serviría para una diapositiva de
+   «comprobación de la aleatorización», si se quisiera.)
+   **28-10 (5):** integrada la `tis_panel.png` buena (13:53; `PAS_8sem`,
+   `Filtrar 1`: t = 4.81, gl 298, dif. 8.35, IC 4.93-11.8; Shapiro p = .323,
+   Levene p = .966), pág. 63, con una línea de resultado y supuestos. Pág. 38
+   «Tablas de contingencia»: la tabla Fumador × Infarto se cortaba (no se veía
+   «Sí» ni «Total»); ahora con `\resizebox` y columnas 0.44/0.54.
+   **28-10 (6):** pág. 29 «Ejemplo: glucosa basal y diagnóstico de diabetes»
+   rehecha combinando las D.17 y D.18 de la versión antigua: a la izquierda la
+   matriz de errores (`src/matriz_errores.pdf`/`.svg`, copiada de
+   `../S2/NewIMG/matriz-errores-test`; va en `src/` porque `img/` no se versiona)
+   y a la derecha un solo panel (enfermos con media 140) con etiquetas SANO /
+   ENFERMO, H0 cierta / falsa, test negativo / positivo y flechas α (FP) y β (FN).
+   `datos/glucosa.R` reescrito (un panel; hay que **volver a subirlo** a la web).
+   Diapositiva «Lógica del contraste: un juicio con jurado» (pág. 23) rehecha a
+   partir del borrador del profesor `hipótesis metáfora juicio_original.txt`
+   (UTF-16, sin versionar): tabla juicio ↔ contraste (defensa = H0, fiscal = H1,
+   jurado = α, reconstrucción = estadístico, coartada = p-valor, veredicto).
+   Corregida la definición del borrador que tomaba el p-valor como «probabilidad
+   de que estuviera en la escena del crimen».
 2. Revisar con el profesor las diapositivas 22-78 (contenido nuevo).
-3. Abrir `poblacion_filtros.omv` generado en jamovi y comprobar filtros y etiquetas.
-4. Subir `poblacion_filtros.omv`, `poblacion.omv` y los `datos/*.R` a
+3. Abrir `datos/poblacion.omv` generado (con filtros) en jamovi y comprobar filtros y etiquetas.
+4. Subir `datos/poblacion.omv` (con filtros) y los `datos/*.R` a
    `epidemos.es/bs2026/` (los enlaces del PDF aún no funcionan; nuevo: `zt.R`).
 5. Tiempo: 78 páginas para 4 h; si sobra, candidatas a recortar: glucosa,
    ANOVA, Wilcoxon de rangos con signo (concepto) o la de tipos de pruebas.
