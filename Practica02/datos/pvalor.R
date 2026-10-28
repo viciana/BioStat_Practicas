@@ -17,8 +17,8 @@ tc <- qt(0.975, gl)
 cola(-4.5, -tc, "#F5B7B1"); cola(tc, 4.5, "#F5B7B1")      # región de rechazo (alfa)
 cola(abs(t0), 4.5, "#C0392B80"); cola(-4.5, -abs(t0), "#C0392B80")  # p-valor
 abline(v = t0, col = "steelblue", lwd = 2)
-text(t0, dt(0, gl) * 0.55, sub(".", ",", sprintf("t = %.2f", t0), fixed = TRUE), pos = ifelse(t0 > 0, 4, 2),
+text(t0, dt(0, gl) * 0.55, sprintf("t = %.2f", t0), pos = ifelse(t0 > 0, 4, 2),
      col = "steelblue", cex = 0.8)
-mtext(sub(".", ",", sprintf("H0: mu = %d   p = %.3f   (alfa = 0,05)", mu0, tt$p.value), fixed = TRUE),
+mtext(sprintf("H0: mu = %d   p = %.3f   (alfa = 0.05)", mu0, tt$p.value),
       side = 3, line = 0.1, cex = 0.8)
 par(op)

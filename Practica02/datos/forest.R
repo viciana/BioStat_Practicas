@@ -1,4 +1,4 @@
-# poblacion.omv: diferencia de PAS a las 8 semanas (Placebo - Fármaco) con su IC 95 %
+# poblacion.omv: diferencia de PAS a las 8 semanas (Placebo - Suplemento) con su IC 95 %
 # en la muestra pequeña, la grande y la población (valor real, sin IC)
 # En Rj (JAMOVI) los datos ya están en 'data'; en R se descargan de la web
 if (!exists("data") || !is.data.frame(data)) {
@@ -7,17 +7,17 @@ if (!exists("data") || !is.data.frame(data)) {
   data <- jmvReadWrite::read_omv(fic)
 }
 dif <- function(d) { tt <- t.test(d$PAS_8sem[d$Tratamiento == "Placebo"],   # t de Student,
-                                  d$PAS_8sem[d$Tratamiento == "Fármaco"],   # como en jamovi
+                                  d$PAS_8sem[d$Tratamiento == "Suplemento"],   # como en jamovi
                                   var.equal = TRUE)
   c(unname(tt$estimate[1] - tt$estimate[2]), tt$conf.int, tt$p.value) }
 r <- rbind(pequeña = dif(data[data$Muestra_peq == 1, ]),
            grande  = dif(data[data$Muestra_grande == 1, ]))
 real <- with(data, mean(PAS_8sem[Tratamiento == "Placebo"]) -
-                   mean(PAS_8sem[Tratamiento == "Fármaco"]))
+                   mean(PAS_8sem[Tratamiento == "Suplemento"]))
 op <- par(mar = c(3, 7.5, 1.2, 4.2), mgp = c(1.8, 0.6, 0), cex.axis = 0.8, cex.lab = 0.9)
 y <- c(3, 2, 1)
 plot(NA, xlim = range(0, r[, 2:3], real) + c(-1, 1), ylim = c(0.5, 3.5), yaxt = "n",
-     bty = "l", xlab = "Diferencia de PAS, Placebo - Fármaco (mmHg)", ylab = "")
+     bty = "l", xlab = "Diferencia de PAS, Placebo - Suplemento (mmHg)", ylab = "")
 axis(2, y, c("Muestra pequeña\n(n = 30)", "Muestra grande\n(n = 300)", "Población\n(N = 2000)"),
      las = 1, tick = FALSE, cex.axis = 0.75)
 abline(v = 0, lty = 2, col = "grey40")                        # «sin efecto»

@@ -16,6 +16,6 @@ segments(ic[, 1], 1:100, ic[, 2], 1:100, lwd = 1.4,
          col = ifelse(falla, "firebrick", "steelblue"))
 points(rowMeans(ic), 1:100, pch = 20, cex = 0.4)
 abline(v = mu, lty = 2)
-mtext(bquote(.(sum(falla)) ~ "de 100 IC no contienen a" ~ mu == .(format(round(mu, 1), nsmall = 1, decimal.mark = ","))),
+mtext(bquote(.(sum(falla)) ~ "de 100 IC no contienen a" ~ mu == .(format(round(mu, 1), nsmall = 1))),
       side = 3, line = 0.1, cex = 0.8, col = "firebrick")
 par(op)

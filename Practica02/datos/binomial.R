@@ -1,4 +1,4 @@
-# De la binomial a la normal: nº de caras al lanzar n monedas (p = 0,5)
+# De la binomial a la normal: nº de caras al lanzar n monedas (p = 0.5)
 # No necesita datos: es teoría
 op <- par(mfrow = c(1, 4), mar = c(3, 3.2, 2, 0.4), mgp = c(1.8, 0.6, 0),
           cex.axis = 0.85, cex.lab = 0.9, cex.main = 1)

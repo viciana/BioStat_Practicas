@@ -1,7 +1,7 @@
 # Práctica 2 de Bioestadística (2º Medicina): Inferencia estadística con JAMOVI
 # BORRADOR.  Ejecutar desde esta carpeta:
 #   make          -> todo (datos, gráficos y practica02.pdf)
-#   make datos    -> datos/poblacion.{csv,omv} y datos/poblacion_filtros.omv
+#   make datos    -> datos/poblacion.csv y datos/poblacion.omv (con filtros)
 #   make resultados -> img/res_*.tex (tablas de soluciones)
 #   make graficos -> img/*.pdf
 #   make pdf      -> practica02.pdf (org -> beamer, Emacs en modo batch)
@@ -14,13 +14,13 @@ EXPORTA = emacs --batch $< --eval "(progn (require 'ox-beamer) (org-beamer-expor
 all: datos graficos resultados pdf
 
 ## Datos -----------------------------------------------------------------
-datos/poblacion.csv datos/poblacion.omv: src/01_simula_poblacion.R
+datos/poblacion.csv datos/poblacion_base.omv: src/01_simula_poblacion.R
 	Rscript $<
 
-datos/poblacion_filtros.omv: src/02_filtros.R src/omv_enteros.R datos/poblacion.omv
+datos/poblacion.omv: src/02_filtros.R src/omv_enteros.R datos/poblacion_base.omv
 	Rscript $<
 
-datos: datos/poblacion.omv datos/poblacion_filtros.omv
+datos: datos/poblacion.omv
 
 ## Tablas de soluciones (img/res_*.tex, las escribe un único script) ------
 img/res_q02_t.tex: src/30_resultados.R src/estilo_jmv.R datos/poblacion.omv

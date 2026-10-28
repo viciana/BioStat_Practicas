@@ -1,12 +1,15 @@
 # ---------------------------------------------------------------------
 # 01_simula_poblacion.R
-# Simula una POBLACIÓN conocida (N = 2000) de pacientes hipertensos de un
-# ensayo clínico (Placebo / Fármaco) y marca dos muestras aleatorias:
+# Simula una POBLACIÓN conocida (N = 2000) de adultos con riesgo
+# cardiovascular en un ensayo clínico de un SUPLEMENTO dietético frente a
+# placebo (efecto sobre la PAS, la hipertensión y el sobrepeso) y marca dos
+# muestras aleatorias:
 #   Muestra_grande (n = 300) y Muestra_peq (n = 30, contenida en la grande)
 # La idea (heredada de muestrasB2.omv, curso 2025-26): los alumnos hacen
 # inferencia con las muestras (filtros de jamovi) y la comparan con la
 # «verdad» de la población, que aquí sí conocemos.
-#   datos/poblacion.csv   datos/poblacion.omv
+#   datos/poblacion.csv   datos/poblacion_base.omv (sin filtros; src/02_filtros.R
+#   le añade los filtros de jamovi y escribe datos/poblacion.omv, el de clase)
 # Las categóricas se guardan como ENTEROS con etiquetas (como al importar
 # un CSV en jamovi): en las dicotómicas 0 es la categoría de referencia
 # («No», Mujer, Placebo), así su media en jamovi es la proporción de 1.
@@ -23,7 +26,7 @@ Edad      <- round(pmin(pmax(rnorm(N, 58, 12), 25), 90))
 GrupoSang <- sample(c("O", "A", "B", "AB"), N, TRUE, c(.43, .42, .11, .04))
 Fumador   <- rbinom(N, 1, 0.25)                           # 0 No, 1 Sí
 Ejercicio <- sample(1:3, N, TRUE, c(.45, .40, .15))       # ordinal
-Tratamiento <- rbinom(N, 1, 0.5)                          # 0 Placebo, 1 Fármaco
+Tratamiento <- rbinom(N, 1, 0.5)                          # 0 Placebo, 1 Suplemento
 
 ## Presión arterial sistólica: basal y a las 8 semanas (medidas pareadas)
 PAS_basal <- round(150 + 0.25 * (Edad - 58) + 4 * Fumador + rnorm(N, 0, 12))
@@ -64,8 +67,19 @@ L_educa <- -1.1 * (Edad - 58) / 12 - 1.0 * Fumador + 0.7 * (Ejercicio - 2) +
 Educa   <- cut(L_educa, quantile(L_educa, 0:3 / 3), include.lowest = TRUE,
                labels = FALSE)
 
+## Sobrepeso al inicio y a las 8 semanas (proporciones pareadas: McNemar) ---
+## También al final, para no alterar lo anterior. Más sobrepeso con PAS alta
+## (los que tienen sobrepeso son más a menudo hipertensos), más edad y
+## sedentarismo. A las 8 semanas lo dejan el 8 % con placebo y el 28 % con el
+## suplemento; lo adquieren el 4 % en ambos grupos (tabla sin ceros).
+Sobrepeso_basal <- rbinom(N, 1, plogis(-0.35 + 0.06 * (PAS_basal - 150) +
+                                       0.02 * (Edad - 58) + 0.4 * (Ejercicio == 1)))
+Sobrepeso_8sem  <- rbinom(N, 1, ifelse(Sobrepeso_basal == 1,
+                                       1 - (0.08 + 0.20 * Tratamiento), 0.04))
+
 pob <- data.frame(ID = seq_len(N), Sexo, Edad, Educa, GrupoSang, Fumador, Ejercicio,
                   Tratamiento, PAS_basal, PAS_8sem, Mejora, HTA_basal, HTA_8sem,
+                  Sobrepeso_basal, Sobrepeso_8sem,
                   Colesterol, PCR,
                   Dolor, EfAdverso, Infarto, Muestra_grande, Muestra_peq)
 write.csv(pob, "datos/poblacion.csv", row.names = FALSE)
@@ -79,10 +93,12 @@ etiquetas <- list(
   Educa       = c("1" = "Básicos", "2" = "Medios", "3" = "Superiores"),
   Fumador     = noSi,
   Ejercicio   = c("1" = "Sedentario", "2" = "Moderado", "3" = "Intenso"),
-  Tratamiento = c("0" = "Placebo", "1" = "Fármaco"),
+  Tratamiento = c("0" = "Placebo", "1" = "Suplemento"),
   Mejora      = noSi,
   HTA_basal   = noSi,
   HTA_8sem    = noSi,
+  Sobrepeso_basal = noSi,
+  Sobrepeso_8sem  = noSi,
   EfAdverso   = noSi,
   Infarto     = noSi)
 desc <- list(
@@ -90,12 +106,14 @@ desc <- list(
   Sexo = "Sexo", Edad = "Edad (años)",
   Educa = "Nivel educativo", GrupoSang = "Grupo sanguíneo",
   Fumador = "Fumador actual", Ejercicio = "Actividad física habitual",
-  Tratamiento = "Grupo del ensayo (asignación aleatoria)",
+  Tratamiento = "Grupo del ensayo: placebo o suplemento dietético (asignación aleatoria)",
   PAS_basal = "Presión arterial sistólica al inicio (mmHg)",
   PAS_8sem = "Presión arterial sistólica a las 8 semanas (mmHg)",
   Mejora = "Bajada de la PAS de 10 mmHg o más",
   HTA_basal = "Hipertensión al inicio (PAS >= 140 mmHg)",
   HTA_8sem = "Hipertensión a las 8 semanas (PAS >= 140 mmHg)",
+  Sobrepeso_basal = "Sobrepeso al inicio (IMC >= 25)",
+  Sobrepeso_8sem = "Sobrepeso a las 8 semanas (IMC >= 25)",
   Colesterol = "Colesterol total (mg/dL)",
   PCR = "Proteína C reactiva (mg/L)",
   Dolor = "Cefalea al final del ensayo (escala 0-10)",
@@ -105,8 +123,8 @@ desc <- list(
   Muestra_peq = "1 = pertenece a la muestra pequeña (n = 30)")
 for (v in names(desc)) attr(omv[[v]], "jmv-desc") <- desc[[v]]
 attr(omv$ID, "jmv-id") <- TRUE
-write_omv(omv, "datos/poblacion.omv", frcWrt = TRUE)
-etiqueta_enteros("datos/poblacion.omv", etiquetas,
+write_omv(omv, "datos/poblacion_base.omv", frcWrt = TRUE)
+etiqueta_enteros("datos/poblacion_base.omv", etiquetas,
                  ordinales = c("Educa", "Ejercicio"))
 
 ## Comprobaciones rápidas (la «verdad» poblacional) -----------------------
