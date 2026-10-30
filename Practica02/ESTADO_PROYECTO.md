@@ -4,7 +4,7 @@
 > `Practica02/` (local: `sesiones/BioStat_Practicas/`). La carpeta antigua
 > `sesiones/practica02/` quedó como copia y ya no se mantiene.
 
-*Última actualización: 27-10-2026, tarde (secciones de contraste, proporciones y medias rehechas y 5 capturas de jamovi integradas; ver §2c y §3). Documento
+*Última actualización: 30-10-2026 (§2f); antes 27-10-2026, tarde (secciones de contraste, proporciones y medias rehechas y 5 capturas de jamovi integradas; ver §2c y §3). Documento
 para retomar el trabajo en otra sesión de Claude: leer `CLAUDE.md`, este
 fichero y `guion_practica02.md`.*
 
@@ -38,7 +38,7 @@ Material del curso anterior: `../../S2/ppt02.org` (+ `imagenes/`, `NewIMG/`).
 | Build                                                                                                                                      | `Makefile`, `myconfbeamer.org` (copiado de practica01), `.gitignore`, `LICENSE` | Hecho; `make pdf` funciona                              |
 
 Los scripts `datos/*.R` siguen el patrón de practica01: en Rj usan `data`;
-en R descargan `poblacion.omv` de `epidemos.es/bs2026/` (**aún no subido**).
+en R descargan `poblacion.omv` de `epidemos.es/bs2026/` (subido; ver §2f).
 
 ### Variables de `poblacion.omv`
 ID, Sexo, Edad, Educa (ordinal), GrupoSang, Fumador, Ejercicio (ordinal), Tratamiento
@@ -222,6 +222,52 @@ con `.libPaths("/app/lib/jamovi/modules/jmv/R")` y `LANG=C.UTF-8`.
 - `filtros.png`: la columna `Tratamiento` de la hoja de datos muestra «Fármaco».
   (Las demás capturas no muestran el nombre del grupo.)
 
+## 2f. Sesión del 30-10-2026: sincronización con la web y págs. 27-34
+
+**Web `epidemos.es/bs2026/` (comprobado el 30-10):** `poblacion.omv` es
+idéntico al generado (todos los ficheros internos). De los scripts,
+`binomial`, `chi2`, `normal`, `tcl`, `tipifica` y `zt` coinciden; **`forest`,
+`glucosa`, `ic`, `pareadas`, `pcr` y `pvalor` están desactualizados**: se
+subieron desde la carpeta antigua `sesiones/practica02/` (idénticos a los de
+allí: «Fármaco», H0 = 145, glucosa de dos paneles, Welch). **`inferencia.tex`
+da 404**: el diagrama de la pág. 8 enlaza a él (subir `src/21_inferencia.tex`
+con ese nombre o quitar el enlace). Para comprobarlo de nuevo: descargar cada
+URL del `.org` y comparar con `cmp`.
+
+**Cambios en las diapositivas:**
+- Pág. 27 (contraste e IC): la nota del IC de la diferencia en jamovi va dentro del recuadro.
+- Pág. 29 (glucosa): la matriz de errores es ahora una tabla LaTeX legible
+  (ya no usa `src/matriz_errores.pdf`, que se puede borrar con su `.svg`);
+  la leyenda de `glucosa.R` usa α y β.
+- Pág. 30 (significación ≠ relevancia): figura nueva `datos/relevancia.R` +
+  `src/24_rj_relevancia.R` → `img/rj_relevancia.pdf`: IC de la diferencia de
+  PAS frente a la franja irrelevante (< 5 mmHg); filas: muestra grande (8.35,
+  4.93 a 11.77: significativo y relevante), pequeña (6.79, −3.00 a 16.57: no
+  concluyente) y dos ensayos **hipotéticos** (1.5 con n = 40 000:
+  significativo pero irrelevante; 0.3 con n = 6000: sin efecto relevante).
+- Pág. 34 (valor de referencia en jamovi): captura `t1m_panel.png` recortada
+  con `trim` (sin menús ni gráfica Q-Q) a todo el ancho y texto debajo en dos columnas.
+- Pág. 13 (Z frente a t): figura a la izquierda y, a la derecha, los
+  estadísticos $Z=(\bar X-\mu)/(\sigma/\sqrt n)$ y $t=(\bar X-\mu)/(S/\sqrt n)$ con
+  $S$, y las densidades de la normal y de la t; `zt.R` con punto decimal.
+- Pág. 18 (100 IC), **primer borrador, diseño por decidir con el profesor**:
+  `ic.R` añade debajo la distribución t (29 gl) bajo $H_0$: $\mu=210.8$,
+  **alineada** con el eje de colesterol ($x=\mu+t\cdot\sigma/\sqrt n$), región
+  crítica $|t|>2.045$ en rojo y el $t$ de cada muestra como punto con ruido
+  vertical. Los 7 IC rojos son exactamente los 7 $t$ de la región crítica
+  (comprobado). Mismos 100 IC que antes (misma semilla). **Ahora es la pág. 19.**
+- Pág. 13: título «Z-normal y t de Student».
+- **Pág. 18 nueva**, «IC y contraste, paso a paso: dos muestras de 30 casos»:
+  `datos/ic_dos.R` + `src/25_rj_ic_dos.R` → `img/rj_ic_dos.pdf` y la tabla
+  `img/res_ic_dos.tex`; recuadros con los 30 valores de cada muestra
+  (`img/res_ic_dos_{A,B}.tex`); regiones de aceptación/rechazo de H0 rotuladas y
+  líneas verticales en el valor crítico ±2.045. Se presentan como muestras
+  **A y B** (internamente, las 23 (x̄ 206.7, s 30.7, EE 5.60, IC 195.2 a
+  218.2, t = −0.74, p = .466) y 77 (x̄ 227.7, s 29.9, EE 5.46, IC 216.6 a 238.9,
+  t = 3.09, p = .004) de las mismas 100); flecha de cada media muestral a su t
+  sobre la t (29 gl) bajo H0: μ = 210.8. La 77 es un error tipo I. **Desde aquí,
+  todas las págs. siguientes se desplazan +1** (PDF: 82 págs.).
+
 ## 3. Pendiente / ideas para la próxima sesión
 
 **Para retomar (28-10):** el profesor hará las 2 capturas opcionales
@@ -277,8 +323,10 @@ diapositiva a diapositiva de las págs. 22-78 (punto 2).
    de que estuviera en la escena del crimen».
 2. Revisar con el profesor las diapositivas 22-78 (contenido nuevo).
 3. Abrir `datos/poblacion.omv` generado (con filtros) en jamovi y comprobar filtros y etiquetas.
-4. Subir `datos/poblacion.omv` (con filtros) y los `datos/*.R` a
-   `epidemos.es/bs2026/` (los enlaces del PDF aún no funcionan; nuevo: `zt.R`).
+4. **Web (30-10):** volver a subir a `epidemos.es/bs2026/`, **desde
+   `BioStat_Practicas/Practica02/datos/`**, los scripts desactualizados
+   (`forest.R`, `glucosa.R`, `ic.R`, `pareadas.R`, `pcr.R`, `pvalor.R`), el
+   nuevos `relevancia.R` e `ic_dos.R`, y `zt.R` (cambiado el 30-10); decidir qué hacer con `inferencia.tex` (ver §2f).
 5. Tiempo: 78 páginas para 4 h; si sobra, candidatas a recortar: glucosa,
    ANOVA, Wilcoxon de rangos con signo (concepto) o la de tipos de pruebas.
 6. Actualizar `guion_practica02.md` (sigue reflejando el borrador v0).

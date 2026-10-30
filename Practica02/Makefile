@@ -43,6 +43,10 @@ img/rj_pcr.pdf: src/15_rj_pcr.R datos/pcr.R datos/poblacion.omv
 	Rscript $<
 img/rj_glucosa.pdf: src/16_rj_glucosa.R datos/glucosa.R
 	Rscript $<
+img/rj_ic_dos.pdf img/res_ic_dos.tex img/res_ic_dos_A.tex img/res_ic_dos_B.tex: src/25_rj_ic_dos.R datos/ic_dos.R src/estilo_jmv.R datos/poblacion.omv
+	Rscript $<
+img/rj_relevancia.pdf: src/24_rj_relevancia.R datos/relevancia.R datos/poblacion.omv
+	Rscript $<
 img/rj_normal.pdf: src/17_rj_normal.R datos/normal.R
 	Rscript $<
 img/rj_tipifica.pdf: src/18_rj_tipifica.R datos/tipifica.R datos/poblacion.omv
@@ -66,14 +70,14 @@ img/inferencia.pdf: src/21_inferencia.tex
 GRAFICOS = img/rj_ic.pdf img/rj_pvalor.pdf img/rj_chi2.pdf img/rj_pareadas.pdf \
            img/rj_forest.pdf img/rj_pcr.pdf img/rj_glucosa.pdf \
            img/rj_binomial.pdf img/rj_normal.pdf img/rj_tipifica.pdf img/rj_tcl.pdf \
-           img/rj_zt.pdf \
+           img/rj_zt.pdf img/rj_relevancia.pdf img/rj_ic_dos.pdf \
            img/arbol_pruebas.pdf img/inferencia.pdf
 graficos: $(GRAFICOS)
 
 ## Presentación ------------------------------------------------------------
 # Capturas de jamovi (se ignoran los nombres con espacios, que rompen make)
 CAPTURAS = $(shell find capturas -name "*.png" ! -name "* *")
-practica02.pdf: practica02.org myconfbeamer.org $(GRAFICOS) img/res_q02_t.tex \
+practica02.pdf: practica02.org myconfbeamer.org $(GRAFICOS) img/res_q02_t.tex img/res_ic_dos.tex \
                 $(CAPTURAS)
 	$(EXPORTA)
 
