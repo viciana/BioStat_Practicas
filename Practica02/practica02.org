@@ -8,6 +8,8 @@
 #+LATEX_HEADER: \usepackage{array}\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 #+LATEX_HEADER: \newcommand{\jmv}[1]{\textsf{\color{MidnightBlue}#1}}
 #+LATEX_HEADER: \newcommand{\captura}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}{\fbox{\parbox{#2}{\centering\vspace{8mm}\small Captura pendiente:\\ \texttt{\detokenize{#1}}\vspace{8mm}}}}}
+#+LATEX_HEADER: % Nº de diapositiva (= página del PDF) abajo a la izquierda, sobre el fondo: no ocupa sitio
+#+LATEX_HEADER: \setbeamertemplate{background}{\vbox to \paperheight{\vfill\hbox to \paperwidth{\hspace*{1.5mm}\tiny\color{gray}\insertpagenumber\hfill}\vspace*{1mm}}}
 #+OPTIONS: H:2
 #+OPTIONS: toc:nil ^:{}
 
@@ -178,22 +180,21 @@ Código: \href{https://epidemos.es/bs2026/normal.R}{normal.R}
 \end{columns}
 #+END_EXPORT
 
-** Normal tipificada Z
+** De cualquier normal $N(\mu,\sigma)$ a la $Z(0, 1)$
 
 #+BEGIN_EXPORT latex
-\centering
-\href{https://epidemos.es/bs2026/tipifica.R}{\includegraphics[width=0.88\textwidth]{img/rj_tipifica.pdf}}\\[1mm]
-\scriptsize
-\begin{columns}
-\begin{column}{0.4\textwidth}\centering
-$Z=\dfrac{X-\mu}{\sigma}\;\sim\;N(0, 1)$
-\end{column}
-\begin{column}{0.6\textwidth}
-Variables con \textbf{unidades y escalas distintas} se vuelven comparables: $Z$ mide
-a cuántas desviaciones típicas está un valor de la media. Código:
-\href{https://epidemos.es/bs2026/tipifica.R}{tipifica.R}
-\end{column}
-\end{columns}
+\centering\scriptsize
+$X\sim N(\mu,\sigma)\quad f(x)=\dfrac{1}{\sigma\sqrt{2\pi}}\,e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
+\quad$\begin{array}{c}\xrightarrow{\;z\,=\,\frac{x-\mu}{\sigma}\;}\\[-0.5mm]
+\xleftarrow[\;x\,=\,\mu+\sigma z\;]{}\end{array}$\quad
+$Z\sim N(0, 1)\quad \varphi(z)=\dfrac{1}{\sqrt{2\pi}}\,e^{-\frac{z^2}{2}}$\\[1mm]
+\href{https://epidemos.es/bs2026/normal_z.R}{\includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{img/rj_normal_z.pdf}}\\[0.5mm]
+\raggedright\tiny
+Todas las normales (misma escala, área = 1) se transforman en la $Z$:
+\textbf{restar $\mu$} la traslada al 0 y \textbf{dividir por $\sigma$} la estrecha o
+ensancha hasta $\sigma=1$. Las áreas no cambian: $P(X\le x)=P\!\left(Z\le\frac{x-\mu}{\sigma}\right)$,
+así que basta una sola tabla (la de la $Z$). Código:
+\href{https://epidemos.es/bs2026/normal_z.R}{normal\_z.R}
 #+END_EXPORT
 
 ** Z-normal y t de Student
@@ -225,33 +226,29 @@ Código: \href{https://epidemos.es/bs2026/zt.R}{zt.R}
 ** Teorema central del límite y error estándar
 
 #+BEGIN_EXPORT latex
-\scriptsize
+\begin{columns}[c]
+\begin{column}{0.52\textwidth}\scriptsize
 \begin{itemize}
-\item Si extraemos muestras aleatorias de tamaño $n$ de una población con media $\mu$ y
-  varianza finita $\sigma^2$, las \textbf{medias muestrales} $\bar{X}$ se distribuyen
-  \textbf{(casi) como una Normal}, \emph{sea cual sea la forma de la distribución de la variable original (normal o no normal)}:
+\item Muestras aleatorias de tamaño $n$ de una población con media $\mu$ y
+  varianza finita $\sigma^2$: las \textbf{medias muestrales} $\bar{X}$ se distribuyen
+  \textbf{(casi) como una Normal}, \emph{sea cual sea la distribución de la variable}:
   \[ \bar{X}\ \approx\ N\!\left(\mu,\ \frac{\sigma}{\sqrt{n}}\right),\qquad
      EE=\frac{\sigma}{\sqrt{n}} \]
 \item El \textbf{error estándar} (EE) es la desviación típica del
-  \emph{estimador}: mide cuánto varía $\bar{x}$ de muestra a muestra. Se
-  estima con $EE=S_{n-1}/\sqrt{n}$.
+  \emph{estimador}: cuánto varía $\bar{x}$ de muestra a muestra. Se
+  estima con $EE=S/\sqrt{n}$.
+\item La \textbf{PCR} es muy asimétrica, pero sus medias con $n=30$
+  forman una campana centrada en $\mu$.
 \end{itemize}
 \begin{recuadro}\scriptsize
-Cuadruplicar $n$ reduce el EE \textbf{a la mitad}. Es el \emph{«error»}
-de la estimación de $\mu$ que acompaña al estimador.
+Cuadruplicar $n$ reduce el EE \textbf{a la mitad}.
 \end{recuadro}
-#+END_EXPORT
-
-** TCL: población frente a medias muestrales
-
-#+BEGIN_EXPORT latex
-\centering
-\href{https://epidemos.es/bs2026/tcl.R}{\includegraphics[width=0.78\textwidth]{img/rj_tcl.pdf}}\\[1mm]
-\scriptsize Arriba: variable en la población ($N=2000$) y su media $\mu$ (punteada).
-Abajo: medias de 100 muestras con $n=3, 9, 27$; las rayas de color son la media
-de las medias (\emph{coincide con $\mu$}) y la anchura se reduce como $EE=\sigma/\sqrt{n}$,
-aunque \texttt{Dolor} sea discreta y \texttt{PCR} asimétrica.
-Código: \href{https://epidemos.es/bs2026/tcl.R}{tcl.R}
+Código: \href{https://epidemos.es/bs2026/tcl_ee.R}{tcl\_ee.R}
+\end{column}
+\begin{column}{0.48\textwidth}\centering
+\href{https://epidemos.es/bs2026/tcl_ee.R}{\includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{img/rj_tcl_ee.pdf}}
+\end{column}
+\end{columns}
 #+END_EXPORT
 
 ** jamovi Demonstrations: módulo /Central Limit Theorem/
@@ -278,23 +275,31 @@ curva normal.
 \end{columns}
 #+END_EXPORT
 
-** El TCL con jamovi: tres distribuciones de partida
+** De la distribución de $\bar{x}$ al intervalo de confianza
 
 #+BEGIN_EXPORT latex
-\begin{columns}[T]
-\begin{column}{0.33\textwidth}\centering\scriptsize\textbf{Normal}\\
-\captura{capturas/clt_normal.png}{\textwidth}\end{column}
-\begin{column}{0.33\textwidth}\centering\scriptsize\textbf{Uniforme}\\
-\captura{capturas/clt_uniforme.png}{\textwidth}\end{column}
-\begin{column}{0.33\textwidth}\centering\scriptsize\textbf{Asimétrica}\\
-\captura{capturas/clt_asimetrica.png}{\textwidth}\end{column}
-\end{columns}
-\begin{recuadro}\scriptsize
-$n=30$, 300 muestras. \textbf{Sea cual sea la distribución de partida}, las
-medias muestrales se distribuyen (casi) como una \textbf{Normal}, centrada en
-$\mu$ y con $EE=\sigma/\sqrt{n}$. Prueba a \textbf{cambiar $n$} (5, 30, 200): la
-aproximación mejora y la curva se estrecha.
+\begin{columns}[c]
+\begin{column}{0.6\textwidth}\centering
+\href{https://epidemos.es/bs2026/ic_logica.R}{\includegraphics[width=\textwidth]{img/rj_ic_logica.pdf}}
+\end{column}
+\begin{column}{0.4\textwidth}\scriptsize\raggedright
+\textbf{Arriba} (TCL): el 95\,\% de las medias $\bar{x}$ cae a menos de
+$1.96\,EE$ de $\mu$.\\[1mm]
+\textbf{Abajo}: le damos la vuelta. Si $\bar{x}$ está a menos de $1.96\,EE$
+de $\mu$, \emph{$\mu$ está a menos de $1.96\,EE$ de $\bar{x}$}:
+{\tiny
+\[ P(\mu-1.96\,EE\le\bar{X}\le\mu+1.96\,EE)=0.95 \]
+\[ \Updownarrow \]
+\[ P(\bar{X}-1.96\,EE\le\mu\le\bar{X}+1.96\,EE)=0.95 \]}
+\begin{recuadro}\scriptsize\raggedright
+Sin conocer $\mu$, \textbf{inferimos} por dónde cae: $\bar{x}\pm1.96\,EE$ es el
+\textbf{IC 95\,\%}. De cada 100 muestras, $\approx$95 lo atrapan
+(\textcolor{RoyalBlue}{azul}) y $\approx$5 no (\textcolor{BrickRed}{rojo}, como B).
 \end{recuadro}
+{\tiny Aquí $\sigma$ conocida ($Z$: 1.96); con $S$ usamos la $t_{n-1}$ (2.045 con $n=30$).
+Código: \href{https://epidemos.es/bs2026/ic_logica.R}{ic\_logica.R}}
+\end{column}
+\end{columns}
 #+END_EXPORT
 
 ** IC y contraste, paso a paso: dos muestras de 30 casos
@@ -343,6 +348,29 @@ al 95\,\% de confianza, ¿cuántas veces \emph{no} acertaremos?
   \emph{IC que no contiene $\mu_0$ $\Leftrightarrow$ rechazar $H_0$}.
 \end{itemize}
 Código: \href{https://epidemos.es/bs2026/ic.R}{ic.R} (R o Rj)
+\end{column}
+\end{columns}
+#+END_EXPORT
+
+** Ley de los grandes números: $\bar{x}$ se acerca a $\mu$
+
+#+BEGIN_EXPORT latex
+\begin{columns}[c]
+\begin{column}{0.6\textwidth}\centering
+\href{https://epidemos.es/bs2026/lgn.R}{\includegraphics[width=\textwidth]{img/rj_lgn.pdf}}
+\end{column}
+\begin{column}{0.4\textwidth}\scriptsize
+Seis investigadores toman pacientes al azar de la población y recalculan la
+media del colesterol con cada paciente nuevo ($n=1, 2, \dots, 1000$).
+\begin{itemize}
+\item Con $n$ pequeño, cada $\bar{x}$ \textbf{va por su lado}.
+\item Al crecer $n$, \textbf{todas convergen a $\mu$}:
+  \[ \bar{X}_n \xrightarrow[\;n\to\infty\;]{} \mu \]
+  (\textbf{ley de los grandes números}).
+\item La franja gris, $\mu\pm1.96\,\sigma/\sqrt{n}$, se estrecha como
+  $1/\sqrt{n}$: \emph{cuánto} se acerca lo dice el TCL.
+\end{itemize}
+Código: \href{https://epidemos.es/bs2026/lgn.R}{lgn.R}
 \end{column}
 \end{columns}
 #+END_EXPORT

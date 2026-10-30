@@ -49,6 +49,14 @@ img/rj_relevancia.pdf: src/24_rj_relevancia.R datos/relevancia.R datos/poblacion
 	Rscript $<
 img/rj_normal.pdf: src/17_rj_normal.R datos/normal.R
 	Rscript $<
+img/rj_normal_z.pdf: src/26_rj_normal_z.R datos/normal_z.R
+	Rscript $<
+img/rj_lgn.pdf: src/27_rj_lgn.R datos/lgn.R datos/poblacion.omv
+	Rscript $<
+img/rj_tcl_ee.pdf: src/28_rj_tcl_ee.R datos/tcl_ee.R datos/poblacion.omv
+	Rscript $<
+img/rj_ic_logica.pdf: src/29_rj_ic_logica.R datos/ic_logica.R datos/poblacion.omv
+	Rscript $<
 img/rj_tipifica.pdf: src/18_rj_tipifica.R datos/tipifica.R datos/poblacion.omv
 	Rscript $<
 img/rj_binomial.pdf: src/22_rj_binomial.R datos/binomial.R
@@ -69,8 +77,9 @@ img/inferencia.pdf: src/21_inferencia.tex
 
 GRAFICOS = img/rj_ic.pdf img/rj_pvalor.pdf img/rj_chi2.pdf img/rj_pareadas.pdf \
            img/rj_forest.pdf img/rj_pcr.pdf img/rj_glucosa.pdf \
-           img/rj_binomial.pdf img/rj_normal.pdf img/rj_tipifica.pdf img/rj_tcl.pdf \
+           img/rj_binomial.pdf img/rj_normal.pdf img/rj_normal_z.pdf img/rj_tipifica.pdf img/rj_tcl.pdf \
            img/rj_zt.pdf img/rj_relevancia.pdf img/rj_ic_dos.pdf \
+           img/rj_lgn.pdf img/rj_tcl_ee.pdf img/rj_ic_logica.pdf \
            img/arbol_pruebas.pdf img/inferencia.pdf
 graficos: $(GRAFICOS)
 
@@ -83,7 +92,11 @@ practica02.pdf: practica02.org myconfbeamer.org $(GRAFICOS) img/res_q02_t.tex im
 
 pdf: practica02.pdf
 
+## Diapositivas descartadas (no forma parte de 'all')
+descartes.pdf: descartes.org myconfbeamer.org $(GRAFICOS) $(CAPTURAS)
+	$(EXPORTA)
+
 clean:
-	rm -rf img practica02.pdf practica02.tex datos/*.csv datos/*.omv
+	rm -rf img practica02.pdf practica02.tex descartes.pdf descartes.tex datos/*.csv datos/*.omv
 
 .PHONY: all datos graficos resultados pdf clean
