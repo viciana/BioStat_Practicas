@@ -196,16 +196,29 @@ a cuántas desviaciones típicas está un valor de la media. Código:
 \end{columns}
 #+END_EXPORT
 
-** Normal Z frente a t de Student
+** Z-normal y t de Student
 
 #+BEGIN_EXPORT latex
-\centering
-\href{https://epidemos.es/bs2026/zt.R}{\includegraphics[width=0.78\textwidth]{img/rj_zt.pdf}}\\[1mm]
-\scriptsize En inferencia, si $\sigma$ es desconocida (lo habitual en la práctica),
-la distribución de referencia que usaremos es la \emph{t} de Student con $n-1$
-grados de libertad (gl), con colas más largas que la Normal $Z$ (más incertidumbre):
-el valor que deja el 2.5\,\% en cada cola es mayor que 1.96. Converge a $Z$ cuando
-$n$ crece (a partir de $n\approx 40$ son casi idénticas).
+\begin{columns}[c]
+\begin{column}{0.55\textwidth}\centering
+\href{https://epidemos.es/bs2026/zt.R}{\includegraphics[width=\textwidth]{img/rj_zt.pdf}}
+\end{column}
+\begin{column}{0.45\textwidth}\scriptsize
+\textbf{Estadístico para la media} ($n$ datos):\\[1mm]
+$\sigma$ conocida:\quad $Z=\dfrac{\bar{X}-\mu}{\sigma/\sqrt{n}}\;\sim\;N(0, 1)$\\[2mm]
+$\sigma$ desconocida:\quad $t=\dfrac{\bar{X}-\mu}{S/\sqrt{n}}\;\sim\;t_{n-1}$\\[1mm]
+{\tiny con $S=\sqrt{\dfrac{\sum_i (x_i-\bar{x})^2}{n-1}}$ (DE de la muestra)}\\[2mm]
+\textbf{Funciones de densidad:}\\[1mm]
+$\varphi(z)=\dfrac{1}{\sqrt{2\pi}}\,e^{-z^2/2}$\\[2mm]
+$f(t)=\dfrac{\Gamma\!\left(\frac{\nu+1}{2}\right)}{\sqrt{\nu\pi}\;\Gamma\!\left(\frac{\nu}{2}\right)}
+\left(1+\dfrac{t^2}{\nu}\right)^{-\frac{\nu+1}{2}}$\\[1mm]
+{\tiny $\nu=n-1$ grados de libertad (gl); si $\nu\to\infty$, $f(t)\to\varphi(t)$}
+\end{column}
+\end{columns}
+\vspace{1mm}
+\scriptsize Si $\sigma$ es desconocida (lo habitual), usamos la \emph{t} de Student
+con $n-1$ gl: colas más largas que la $Z$ (más incertidumbre), así que el valor que
+deja el 2.5\,\% en cada cola es mayor que 1.96. Con $n\gtrsim 40$ son casi idénticas.
 Código: \href{https://epidemos.es/bs2026/zt.R}{zt.R}
 #+END_EXPORT
 
@@ -284,20 +297,50 @@ aproximación mejora y la curva se estrecha.
 \end{recuadro}
 #+END_EXPORT
 
+** IC y contraste, paso a paso: dos muestras de 30 casos
+
+#+BEGIN_EXPORT latex
+\vspace*{-2mm}
+\begin{columns}[T]
+\begin{column}{0.8\textwidth}\centering
+\href{https://epidemos.es/bs2026/ic_dos.R}{\includegraphics[width=\textwidth]{img/rj_ic_dos.pdf}}\\[0.5mm]
+\resizebox{\textwidth}{!}{\input{img/res_ic_dos.tex}}
+\end{column}
+\begin{column}{0.2\textwidth}\centering
+\vspace*{10mm}
+\begin{recuadro}\fontsize{4.5}{5.6}\selectfont\centering\input{img/res_ic_dos_A.tex}\end{recuadro}
+\vspace{2mm}
+\begin{recuadronaranja}\fontsize{4.5}{5.6}\selectfont\centering\input{img/res_ic_dos_B.tex}\end{recuadronaranja}
+\end{column}
+\end{columns}
+\vspace{1mm}
+\raggedright\tiny
+Dos de las posibles muestras de nuestra población, \textbf{A} y \textbf{B} ($n=30$).
+$H_0$: $\mu=210.8$ (aquí conocemos la verdad); valor crítico $t_{0.975;\,29}=2.045$.
+A cae en la región de \textcolor{RoyalBlue}{aceptación} y su IC contiene 210.8; B cae en
+la de \textcolor{BrickRed}{rechazo} y su IC no lo contiene: \textbf{es un error tipo I},
+porque $H_0$ es cierta. Código: \href{https://epidemos.es/bs2026/ic_dos.R}{ic\_dos.R}
+
+#+END_EXPORT
+
 ** Aciertos en 100 muestras de 30 casos con $\alpha=0.05$
 
 #+BEGIN_EXPORT latex
 \begin{columns}
-\begin{column}{0.68\textwidth}
-\href{https://epidemos.es/bs2026/ic.R}{\includegraphics[width=\textwidth]{img/rj_ic.pdf}}
+\begin{column}{0.6\textwidth}
+\vspace*{-3mm}
+\href{https://epidemos.es/bs2026/ic.R}{\includegraphics[width=\textwidth,height=0.86\textheight,keepaspectratio]{img/rj_ic.pdf}}
 \end{column}
-\begin{column}{0.32\textwidth}\scriptsize
+\begin{column}{0.4\textwidth}\scriptsize
 Si repetimos con 100 muestras el cálculo del IC
 al 95\,\% de confianza, ¿cuántas veces \emph{no} acertaremos?
 \begin{itemize}
 \item Cada línea es el IC de una muestra distinta.
 \item En rojo, los IC que «fallan».
 \item La confianza es del \textbf{método}, no de un IC concreto.
+\item \textbf{Abajo}: el $t$ de cada muestra para $H_0$: $\mu=210.8$.
+  Los 7 IC rojos son justo los 7 $t$ que caen en la \textbf{región crítica}:
+  \emph{IC que no contiene $\mu_0$ $\Leftrightarrow$ rechazar $H_0$}.
 \end{itemize}
 Código: \href{https://epidemos.es/bs2026/ic.R}{ic.R} (R o Rj)
 \end{column}
@@ -504,10 +547,10 @@ Muestra grande ($n=300$) & 150.3 a 153.1 & no & $<0.001$\\\bottomrule
 \begin{recuadro}\scriptsize
 El IC dice \textbf{más} que el $p$: además de si 148 es compatible, cuánto
 puede valer $\mu$ y con qué precisión. La media poblacional es 151.0: los dos IC
-la atrapan, pero solo la muestra grande descarta el 148.
+la atrapan, pero solo la muestra grande descarta el 148.\\[0.5mm]
+\jmv{jamovi} (t de una muestra) da el IC de la \textbf{diferencia} $\mu-148$
+(pequeña: $-0.6$ a 6.6): se rechaza $H_0$ si ese IC \textbf{no contiene el 0}.
 \end{recuadro}
-{\raggedright\scriptsize jamovi (t de una muestra) da el IC de la \textbf{diferencia} $\mu-148$
-(pequeña: $-0.6$ a 6.6): se rechaza $H_0$ si ese IC \textbf{no contiene el 0}.}
 #+END_EXPORT
 
 ** Errores tipo I y II, potencia
@@ -540,10 +583,18 @@ la verdad es $\mu=151.0$: hemos cometido un \textbf{error tipo II}.
 
 #+BEGIN_EXPORT latex
 \begin{columns}[c]
-\begin{column}{0.48\textwidth}\centering
-\includegraphics[width=\textwidth]{src/matriz_errores.pdf}
+\begin{column}{0.45\textwidth}\centering\tiny
+\renewcommand{\arraystretch}{1.3}\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}l|c|c@{}}
+ & \textbf{SANO} & \textbf{ENFERMO}\\
+ & $H_0$ cierta & $H_0$ falsa\\\hline
+\textbf{Test $-$} & \textcolor{OliveGreen}{\textbf{Verdadero $-$}} & \textcolor{BrickRed}{\textbf{Falso $-$}}\\
+no rechazo $H_0$ & especificidad, $1-\alpha$ & error II, $\beta$\\\hline
+\textbf{Test $+$} & \textcolor{BrickRed}{\textbf{Falso $+$}} & \textcolor{OliveGreen}{\textbf{Verdadero $+$}}\\
+rechazo $H_0$ & error I, $\alpha$ & sensibilidad, $1-\beta$\\
+\end{tabular}
 \end{column}
-\begin{column}{0.52\textwidth}\centering
+\begin{column}{0.55\textwidth}\centering
 \href{https://epidemos.es/bs2026/glucosa.R}{\includegraphics[width=\textwidth]{img/rj_glucosa.pdf}}
 \end{column}
 \end{columns}
@@ -568,6 +619,10 @@ el umbral, bajar $\alpha$ sube $\beta$. Simulación:
   detectarse (error tipo II).
 \item El $p$ no mide la importancia del efecto: \textbf{$p=0.001$ no es «más efecto» que $p=0.04$}.
 \end{itemize}
+\vspace{-1mm}
+\centering
+\href{https://epidemos.es/bs2026/relevancia.R}{\includegraphics[width=0.72\textwidth]{img/rj_relevancia.pdf}}\\
+\raggedright
 \begin{recuadro}\scriptsize
 Informar siempre: \textbf{tamaño del efecto + IC 95\,\% + $p$}.\\
 Ej. (muestra grande): «a las 8 semanas la PAS fue 8.3 mmHg menor con el suplemento que
@@ -629,24 +684,24 @@ de la misma ventana (\jmv{Pruebas}); los supuestos están en
 ** Comparar con un valor de referencia en jamovi
 
 #+BEGIN_EXPORT latex
+\vspace*{-2mm}
+\centering
+% recorte de la captura (px = bp a 72 ppp): sin la barra de menús ni la gráfica Q-Q
+\includegraphics[width=\textwidth,trim=0 408 0 170,clip]{capturas/t1m_panel.png}\\[1mm]
+\raggedright\tiny
 \begin{columns}[T]
-\begin{column}{0.64\textwidth}
-\captura{capturas/t1m_panel.png}{\textwidth}
+\begin{column}{0.5\textwidth}
+\jmv{Pruebas t} $\rightarrow$ \jmv{Prueba t de una Muestra} (\jmv{Filtrar 2}: $n=30$):
+\texttt{PAS\_basal} a \jmv{Variables Dependientes}; \jmv{Valor de prueba} 148 ($\neq$);
+\jmv{Diferencia de medias}, \jmv{Intervalo de confianza}, \jmv{Descriptivas} y
+\jmv{Prueba de Normalidad}.\\
+\textbf{$t=1.70$, $p=0.100$}; diferencia 3.0 (IC $-0.6$ a 6.6).
 \end{column}
-\begin{column}{0.36\textwidth}\scriptsize
-\jmv{Pruebas t} $\rightarrow$ \jmv{Prueba t de una Muestra} (\jmv{Filtrar 2}: $n=30$)
-{\tiny\begin{itemize}
-\item \texttt{PAS\_basal} a \jmv{Variables Dependientes}
-\item \jmv{t de Student} y \jmv{Rangos de Wilcoxon}
-\item \jmv{Valor de prueba}: 148 ($\neq$)
-\item \jmv{Diferencia de medias} e \jmv{Intervalo de confianza}
-\item \jmv{Descriptivas}, \jmv{Prueba de Normalidad}, \jmv{Gráfica Q-Q}
-\end{itemize}}
-$t=1.70$, $p=0.100$; diferencia 3.0 (IC $-0.6$ a 6.6).\\[0.5mm]
-{\tiny\textbf{Proporción} (Q.02.3, ¿48\,\% de mujeres?):
+\begin{column}{0.5\textwidth}
+\textbf{Proporción} (Q.02.3, ¿48\,\% de mujeres?):
 \jmv{Frecuencias} $\rightarrow$ \jmv{Prueba de Proporciones (2 Resultados)};
 \texttt{Sexo} a \jmv{Variables}, \jmv{Valor de prueba} 0.48. Contrasta cada
-nivel frente a 0.48: se lee la fila \emph{Mujer}.\par}
+nivel frente a 0.48: se lee la fila \emph{Mujer}.
 \end{column}
 \end{columns}
 #+END_EXPORT

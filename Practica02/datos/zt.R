@@ -7,7 +7,7 @@ curve(dnorm(x), -4.5, 4.5, n = 400, lwd = 2.5, las = 1, bty = "l",
       xlab = "Valor del estadístico", ylab = "Densidad")
 for (i in seq_along(gl)) curve(dt(x, gl[i]), add = TRUE, n = 400, lwd = 1.6, col = col[i], lty = 2)
 abline(v = c(-1, 1) * qnorm(0.975), col = "grey40", lty = 3)
-leg <- c("Normal Z", sprintf("t con %d gl:  t(0,975) = %s", gl,
+leg <- c("Normal Z", sprintf("t con %d gl:  t(0.975) = %s", gl,
          sprintf("%.2f", qt(0.975, gl))))
 legend("topright", leg, col = c("black", col), lwd = c(2.5, 1.6, 1.6, 1.6),
        lty = c(1, 2, 2, 2), bty = "n", cex = 0.7)

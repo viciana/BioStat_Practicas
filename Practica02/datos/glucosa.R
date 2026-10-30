@@ -46,8 +46,8 @@ arrows(105, 0.0125, 113, 0.0040, length = 0.05, col = "darkgreen")
 text(102, 0.0145, expression(beta ~ "(FN)"), col = "darkgreen", cex = 0.75, font = 2)
 legend("topright", inset = c(0, 0.10), bty = "n", cex = 0.55, text.col =
          c("firebrick", "darkgreen", "black", "black"),
-       legend = c(sprintf("FP = %d  (tipo I, alfa = %.1f %%)", FP, FP / 10),
-                  sprintf("FN = %d  (tipo II, beta = %.1f %%)", FN, FN / 10),
+       legend = c(bquote("FP =" ~ .(FP) ~ "(tipo I," ~ alpha == .(sprintf("%.1f %%)", FP / 10))),
+                  bquote("FN =" ~ .(FN) ~ "(tipo II," ~ beta == .(sprintf("%.1f %%)", FN / 10))),
                   sprintf("Especificidad = %.1f %%", VN / 10),
                   sprintf("Sensibilidad = %.1f %%", VP / 10)))
 par(op)
