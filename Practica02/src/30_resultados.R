@@ -86,31 +86,31 @@ efecto <- function(t) {
 }
 cab_efecto <- c("Medida", "Valor", "IC 95\\,\\%")
 
-## Q.03 Fumador x Infarto
+## Q.07 Fumador x Infarto
 tf <- lapply(M, function(x) table(Fumador = x$Fumador, Infarto = x$Infarto))
-tabla_pc(tf[[2]], "res_q03_tabla.tex", "Fumador", "Infarto")
-q03 <- pruebas(tf); names(q03) <- cab_pruebas; tabla_tex(q03, "res_q03_pruebas.tex", "lrrrrrrr")
-e03 <- rbind(cbind(Muestra = "Grande", efecto(tf[[2]])), cbind(Muestra = "Población", efecto(tf[[3]])))
-names(e03)[-1] <- cab_efecto; tabla_tex(e03, "res_q03_efecto.tex", "llrc")
+tabla_pc(tf[[2]], "res_q07_tabla.tex", "Fumador", "Infarto")
+q07 <- pruebas(tf); names(q07) <- cab_pruebas; tabla_tex(q07, "res_q07_pruebas.tex", "lrrrrrrr")
+e07 <- rbind(cbind(Muestra = "Grande", efecto(tf[[2]])), cbind(Muestra = "Población", efecto(tf[[3]])))
+names(e07)[-1] <- cab_efecto; tabla_tex(e07, "res_q07_efecto.tex", "llrc")
 
-## Q.04 Tratamiento x EfAdverso
+## Q.08 Tratamiento x EfAdverso
 te <- lapply(M, function(x) table(Tratamiento = x$Tratamiento, EfAdverso = x$EfAdverso))
-tabla_pc(te[[1]], "res_q04_tabla_peq.tex", "Tratamiento", "EfAdverso")
-tabla_pc(te[[2]], "res_q04_tabla_gr.tex", "Tratamiento", "EfAdverso")
-q04 <- pruebas(te); names(q04) <- cab_pruebas; tabla_tex(q04, "res_q04_pruebas.tex", "lrrrrrrr")
-e04 <- rbind(cbind(Muestra = "Grande", efecto(te[[2]])), cbind(Muestra = "Población", efecto(te[[3]])))
-names(e04)[-1] <- cab_efecto; tabla_tex(e04, "res_q04_efecto.tex", "llrc")
+tabla_pc(te[[1]], "res_q08_tabla_peq.tex", "Tratamiento", "EfAdverso")
+tabla_pc(te[[2]], "res_q08_tabla_gr.tex", "Tratamiento", "EfAdverso")
+q08 <- pruebas(te); names(q08) <- cab_pruebas; tabla_tex(q08, "res_q08_pruebas.tex", "lrrrrrrr")
+e08 <- rbind(cbind(Muestra = "Grande", efecto(te[[2]])), cbind(Muestra = "Población", efecto(te[[3]])))
+names(e08)[-1] <- cab_efecto; tabla_tex(e08, "res_q08_efecto.tex", "llrc")
 
-## Q.05 Educa x Fumador (3x2) y GrupoSang x Infarto (4x2)
+## Q.09 Educa x Fumador (3x2) y GrupoSang x Infarto (4x2)
 tx <- lapply(M, function(x) table(Educa = x$Educa, Fumador = x$Fumador))
 t5 <- tx[[2]]; c5 <- chi(t5); pc <- 100 * prop.table(t5, 1)
-q05 <- data.frame(Educa = rownames(t5),
+q09 <- data.frame(Educa = rownames(t5),
                   No = sprintf("%d (%s\\,\\%%)", t5[, 1], f1(pc[, 1])),
                   Si = sprintf("%d (%s\\,\\%%)", t5[, 2], f1(pc[, 2])),
                   E = f1(c5$expected[, 2]), R = f2(c5$stdres[, 2]),
                   Pob = sprintf("%s\\,\\%%", f1(100 * prop.table(tx[[3]], 1)[, 2])))
-names(q05) <- c("Educa", "No fuma", "Fuma", "$E$ (fuma)", "Residuo tipif.", "\\% fuma (pobl.)")
-tabla_tex(q05, "res_q05_tabla.tex", "lrrrrr")
+names(q09) <- c("Educa", "No fuma", "Fuma", "$E$ (fuma)", "Residuo tipif.", "\\% fuma (pobl.)")
+tabla_tex(q09, "res_q09_tabla.tex", "lrrrrr")
 # Los tres residuos de jamovi (Pruebas post hoc), resaltando |r| > 2 como él
 res <- list(c5$observed - c5$expected, c5$residuals, c5$stdres)
 marca <- function(r, k) ifelse(k > 1 & abs(r) > 2,
@@ -126,12 +126,12 @@ writeLines(c("\\begin{tabular}{lrr@{\\hspace{6mm}}rr@{\\hspace{6mm}}rr}", "\\top
   sprintf("Suma de cuadrados & \\multicolumn{2}{c}{---} & \\multicolumn{2}{c}{%s $=\\chi^2$} & \\multicolumn{2}{c}{---}\\\\",
           f2(sum(c5$residuals^2))),
   "\\bottomrule", "\\end{tabular}"), file.path("img", "res_residuos.tex"))
-q05p <- pruebas(c(tx[1:2], list(`GrupoSang × Infarto (grande)` =
+q09p <- pruebas(c(tx[1:2], list(`GrupoSang × Infarto (grande)` =
                   table(G$GrupoSang, G$Infarto))))
-names(q05p) <- cab_pruebas; q05p[[1]] <- sub("×", "$\\\\times$", q05p[[1]])
-tabla_tex(q05p, "res_q05_pruebas.tex", "lrrrrrrr")
+names(q09p) <- cab_pruebas; q09p[[1]] <- sub("×", "$\\\\times$", q09p[[1]])
+tabla_tex(q09p, "res_q09_pruebas.tex", "lrrrrrrr")
 
-## Q.06 McNemar: sobrepeso basal frente a 8 semanas ------------------------
+## Q.10 McNemar: sobrepeso basal frente a 8 semanas ------------------------
 # Muestra grande y pequeña (todos) y, para comentar, la grande por grupo
 mcn <- function(x, m, g) {
   t <- table(x$Sobrepeso_basal, x$Sobrepeso_8sem); mt <- mcnemar.test(t, correct = FALSE)
@@ -141,12 +141,12 @@ mcn <- function(x, m, g) {
              NoNo = t["No", "No"], NoSi = t["No", "Sí"], SiNo = t["Sí", "No"], SiSi = t["Sí", "Sí"],
              chi = f2(mt$statistic), p = fp(mt$p.value))
 }
-q06 <- rbind(mcn(G, "Grande", "Todos"), mcn(P, "Pequeña", "Todos"),
+q10 <- rbind(mcn(G, "Grande", "Todos"), mcn(P, "Pequeña", "Todos"),
              mcn(G[G$Tratamiento == "Placebo", ], "Grande", "Placebo"),
              mcn(G[G$Tratamiento == "Suplemento", ], "Grande", "Suplemento"))
-names(q06) <- c("Muestra", "Grupo", "$n$", "Basal", "8 sem", "No$\\to$No", "No$\\to$Sí",
+names(q10) <- c("Muestra", "Grupo", "$n$", "Basal", "8 sem", "No$\\to$No", "No$\\to$Sí",
                 "Sí$\\to$No", "Sí$\\to$Sí", "$\\chi^2$", "$p$")
-tabla_tex(q06, "res_q06.tex", "llrrrrrrrrr")
+tabla_tex(q10, "res_q10.tex", "llrrrrrrrrr")
 
 ## Dos medias independientes ------------------------------------------------
 indep <- function(var, grupo, lst = M[1:2]) do.call(rbind, lapply(names(lst), function(m) {
@@ -159,13 +159,13 @@ indep <- function(var, grupo, lst = M[1:2]) do.call(rbind, lapply(names(lst), fu
 }))
 cab_indep <- function(g1, g2) c("Muestra", sprintf("Medias (%s / %s)", g1, g2),
   "Diferencia", "IC 95\\,\\% dif.", "$t$", "$p$ Student", "$p$ Welch", "Levene $p$", "S-W $p$")
-q07 <- indep("PAS_8sem", "Tratamiento"); names(q07) <- cab_indep("Plac.", "Supl.")
-tabla_tex(q07, "res_q07.tex", "lrrcrrrrr")
-q08 <- indep("Colesterol", "Sexo"); names(q08) <- cab_indep("M", "H")
-tabla_tex(q08, "res_q08.tex", "lrrcrrrrr")
+q03 <- indep("PAS_8sem", "Tratamiento"); names(q03) <- cab_indep("Plac.", "Supl.")
+tabla_tex(q03, "res_q03.tex", "lrrcrrrrr")
+q04 <- indep("Colesterol", "Sexo"); names(q04) <- cab_indep("M", "H")
+tabla_tex(q04, "res_q04.tex", "lrrcrrrrr")
 
-## Q.09 PCR por tabaco y Dolor por tratamiento: t frente a Mann-Whitney ------
-q09 <- do.call(rbind, lapply(list(c("PCR", "Fumador"), c("Dolor", "Tratamiento")), function(v)
+## Q.05 PCR por tabaco y Dolor por tratamiento: t frente a Mann-Whitney ------
+q05 <- do.call(rbind, lapply(list(c("PCR", "Fumador"), c("Dolor", "Tratamiento")), function(v)
   do.call(rbind, lapply(names(M)[1:2], function(m) {
     x <- M[[m]]; y <- x[[v[1]]]; g <- x[[v[2]]]; w <- mw(y, g)
     data.frame(Var = sprintf("%s por %s", v[1], v[2]), Muestra = m,
@@ -175,12 +175,12 @@ q09 <- do.call(rbind, lapply(list(c("PCR", "Fumador"), c("Dolor", "Tratamiento")
                U = format(unname(w$statistic)), pmw = fp(w$p.value),
                SW = fp(sw_res(y, g)))
   }))))
-q09$Var[c(2, 4)] <- ""
-names(q09) <- c("Variable", "Muestra", "Medias", "Medianas", "$p$ ($t$)", "$U$", "$p$ (M-W)", "S-W $p$")
-tabla_tex(q09, "res_q09.tex", "llrrrrrr")
+q05$Var[c(2, 4)] <- ""
+names(q05) <- c("Variable", "Muestra", "Medias", "Medianas", "$p$ ($t$)", "$U$", "$p$ (M-W)", "S-W $p$")
+tabla_tex(q05, "res_q05.tex", "llrrrrrr")
 
-## Q.10 Pareadas: PAS_basal - PAS_8sem ---------------------------------------
-q10 <- do.call(rbind, lapply(names(M)[1:2], function(m)
+## Q.06 Pareadas: PAS_basal - PAS_8sem ---------------------------------------
+q06 <- do.call(rbind, lapply(names(M)[1:2], function(m)
   do.call(rbind, lapply(c("Todos", "Placebo", "Suplemento"), function(g) {
     x <- M[[m]]; if (g != "Todos") x <- x[x$Tratamiento == g, ]
     dif <- x$PAS_basal - x$PAS_8sem; tt <- t.test(dif)
@@ -190,10 +190,10 @@ q10 <- do.call(rbind, lapply(names(M)[1:2], function(m)
                p = fp(tt$p.value), pw = fp(wi$p.value),
                pind = fp(t.test(x$PAS_basal, x$PAS_8sem, var.equal = TRUE)$p.value))
   }))))
-q10$Muestra[duplicated(q10$Muestra)] <- ""
-names(q10) <- c("Muestra", "Grupo", "$n$", "Bajada media", "IC 95\\,\\%", "$t$",
+q06$Muestra[duplicated(q06$Muestra)] <- ""
+names(q06) <- c("Muestra", "Grupo", "$n$", "Bajada media", "IC 95\\,\\%", "$t$",
                 "$p$ ($t$ pareada)", "$p$ (Wilcoxon)", "$p$ (\\textcolor{red}{indep.})")
-tabla_tex(q10, "res_q10.tex", "llrrcrrrr")
+tabla_tex(q06, "res_q06.tex", "llrrcrrrr")
 
 ## Más de dos grupos: PAS basal por nivel educativo (muestra grande) ---------
 anv <- data.frame(Educa = levels(G$Educa), n = as.vector(table(G$Educa)),

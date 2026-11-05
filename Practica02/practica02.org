@@ -30,9 +30,9 @@
 
 - Pasar de *describir* una muestra a *inferir* sobre la población.
 - Entender la lógica del *contraste de hipótesis* y del /p-valor/.
-- Comparar *proporciones*: $\chi^2$, corrección de Yates, test exacto de Fisher.
 - Comparar *dos medias* (independientes y pareadas), con pruebas
   *paramétricas* y *no paramétricas*.
+- Comparar *proporciones*: $\chi^2$, corrección de Yates, test exacto de Fisher.
 
 #+BEGIN_EXPORT latex
 \begin{recuadro}\small
@@ -322,7 +322,7 @@ Código: \href{https://epidemos.es/bs2026/ic_logica.R}{ic\_logica.R}}
 \raggedright\tiny
 Dos de las posibles muestras de nuestra población, \textbf{A} y \textbf{B} ($n=30$).
 $H_0$: $\mu=210.8$ (aquí conocemos la verdad); valor crítico $t_{0.975;\,29}=2.045$.
-A cae en la región de \textcolor{RoyalBlue}{aceptación} y su IC contiene 210.8; B cae en
+A cae en la región de \textcolor{RoyalBlue}{no rechazo} y su IC contiene 210.8; B cae en
 la de \textcolor{BrickRed}{rechazo} y su IC no lo contiene: \textbf{es un error tipo I},
 porque $H_0$ es cierta. Código: \href{https://epidemos.es/bs2026/ic_dos.R}{ic\_dos.R}
 
@@ -440,109 +440,132 @@ $n=30$ es mucho más ancho.
 #+END_EXPORT
 
 
-* Contraste de hipótesis y tipos de pruebas
+* Contraste de hipótesis
+** Contraste de hipótesis: 5 pasos
+
+#+BEGIN_EXPORT latex
+\footnotesize\fontsize{7}{8.4}\selectfont\centering
+\vspace*{-2mm}
+\begin{tabular}{L{0.2\textwidth}L{0.76\textwidth}}\toprule
+\textbf{1. Formulación de hipótesis} &
+  $H_0$ (\emph{statu quo}; p.\,ej. $\mu=\mu_0$) y $H_1$: bilateral ($\mu\neq\mu_0$) o
+  unilateral ($\mu>\mu_0$ o $\mu<\mu_0$). La dirección de $H_1$ se fija
+  \textbf{a priori}, nunca a la vista de los datos.\\\midrule
+\textbf{2. Nivel de significación y potencia} &
+  $\alpha=P(\text{rechazar }H_0\mid H_0\text{ cierta})$: error de tipo I, típicamente 0.05.
+  En un diseño prospectivo, también la potencia $1-\beta$ y el efecto mínimo relevante
+  $\delta$; con ellos se calcula el $n$ necesario (\emph{análisis de potencia}).\\\midrule
+\textbf{3. Selección del estadístico de contraste} &
+  Un estadístico $T$ con distribución conocida bajo $H_0$ (p.\,ej. $t$ de Student). Depende
+  del diseño, de las variables y de los supuestos que se cumplan.\\\midrule
+\textbf{4. Cálculo y regla de decisión} &
+  Con la muestra se obtiene el valor observado $t_{obs}$ y se aplica uno de dos criterios
+  equivalentes:\newline
+  \textbf{Región crítica}: se rechaza $H_0$ si $t_{obs}$ cae en la región de rechazo,
+  definida por los valores críticos que corresponden a $\alpha$.\newline
+  \textbf{$p$-valor}: $p=P(|T|\geq|t_{obs}|\mid H_0)$ (bilateral); se rechaza $H_0$ si
+  $p\leq\alpha$.\\\midrule
+\textbf{5. Conclusión} &
+  Se rechaza $H_0$ o no se rechaza; \textbf{nunca se «acepta»}. La significación estadística
+  no equivale a relevancia práctica: hay que incluir el \textbf{tamaño del efecto}.\\\bottomrule
+\end{tabular}
+#+END_EXPORT
+
 ** Lógica del contraste: un juicio con jurado
 
 #+BEGIN_EXPORT latex
 \tiny\centering
-\begin{tabular}{L{0.44\textwidth}L{0.5\textwidth}}\toprule
-\textbf{\scriptsize En el juicio} & \textbf{\scriptsize En el contraste de hipótesis}\\\midrule
-\textbf{Defensa}: «mi cliente es inocente; no hay pruebas claras contra él».
-  Se parte de la \textbf{presunción de inocencia}. &
-  $\mathbf{H_0}$ (\emph{nula}): «no hay efecto, no hay diferencia» ($\mu=\mu_0$,
-  $\pi_1=\pi_2$, independencia\dots). Es el punto de partida: se mantiene salvo
-  pruebas en contra.\\\addlinespace[1mm]
-\textbf{Fiscal}: «hay pruebas claras de que es culpable». La \textbf{carga de la
-  prueba} es suya. &
-  $\mathbf{H_1}$ (\emph{alternativa}): lo que el investigador quiere demostrar
-  ($\mu\neq\mu_0$, hay asociación\dots). Necesita datos que contradigan a $H_0$.\\\addlinespace[1mm]
-\textbf{Jurado}: más benévolo o más justiciero, decide cuánta duda acepta aún como
+\setlength{\tabcolsep}{3pt}
+\vspace*{-1mm}
+\begin{tabular}{L{0.135\textwidth}L{0.405\textwidth}L{0.42\textwidth}}\toprule
+ & \textbf{En el juicio} & \textbf{En el contraste de hipótesis}\\\midrule
+\textbf{1. Formulación de hipótesis} &
+  \textbf{Defensa}: «es inocente; no hay pruebas claras contra él». Se parte de la
+  \textbf{presunción de inocencia}.\newline
+  \textbf{Fiscal}: «hay pruebas claras de que es culpable». La \textbf{carga de la prueba} es suya. &
+  $\mathbf{H_0}$: «no hay efecto ni diferencia» ($\mu=\mu_0$, $\pi_1=\pi_2$, independencia\dots).
+  Se mantiene salvo pruebas en contra.\newline
+  $\mathbf{H_1}$: lo que se quiere demostrar ($\mu\neq\mu_0$, asociación\dots). Necesita
+  datos en contra de $H_0$.\\\midrule
+\textbf{2. Nivel de significación} &
+  \textbf{Jurado}: más benévolo o más justiciero, decide cuánta duda acepta aún como
   «razonable». Se elige \emph{antes} de ver las pruebas. &
-  $\boldsymbol{\alpha}$ (nivel de significación; 0.05, o 0.01 si equivocarse es grave):
-  riesgo máximo que aceptamos de \textbf{condenar a un inocente} (error tipo I).
-  Se fija \emph{antes} de ver los datos.\\\addlinespace[1mm]
-\textbf{Reconstrucción de los hechos}: con las pruebas (lo indiscutible) y lo que
-  sabemos de cómo funciona el mundo se reconstruye qué pasó. &
-  \textbf{Estadístico de contraste} ($t$, $\chi^2$, $U$\dots): resume la muestra; la
-  teoría (TCL, normal, $t$\dots) dice cómo se distribuiría \emph{si $H_0$ fuera cierta}.\\\addlinespace[1mm]
-\textbf{La coartada}: «estaba en casa durmiendo». Si fuera verdad, ¿qué probabilidad
-  había de encontrar sus huellas en la escena del crimen? &
-  \textbf{$p$-valor}: probabilidad de un resultado tan extremo o más que el
-  observado \emph{si $H_0$ fuera cierta}. Un $p$ pequeño son pruebas difíciles de
-  explicar si fuera inocente.\\\addlinespace[1mm]
-\textbf{Veredicto}: culpable \textbf{solo} si la duda deja de ser razonable, es
-  decir, si esas pruebas serían \textbf{muy improbables} siendo inocente. Si no,
-  absuelto (aunque quizá lo sea \emph{por falta de pruebas}). &
-  $p<\alpha$ $\Rightarrow$ \textbf{rechazamos $H_0$}: resultado \textbf{significativo}.
-  $p\geq\alpha$ $\Rightarrow$ no rechazamos $H_0$. Ej.: ¿PAS media = 148? Muestra
-  pequeña, $p=0.10$: no rechazamos (falta de pruebas); grande, $p<0.001$: rechazamos.\\\bottomrule
+  $\boldsymbol{\alpha}$ (0.05, o 0.01 si equivocarse es grave): riesgo máximo de
+  \textbf{condenar a un inocente} (error tipo I). Se fija \emph{antes} de ver los datos.\\\midrule
+\textbf{3. Selección del estadístico} &
+  \textbf{Reconstrucción de la escena del crimen}: con lo que sabemos de los hechos y de
+  cómo funciona el mundo. &
+  \textbf{Estadístico $T$} ($t$, $\chi^2$, $U$\dots): resume la muestra; la teoría dice cómo se
+  distribuiría \emph{si $H_0$ fuera cierta}.\\\midrule
+\textbf{4. Cálculo y regla de decisión} &
+  \textbf{La coartada}: «estaba en casa durmiendo». Si fuera verdad, ¿qué probabilidad había
+  de encontrar sus huellas en la escena del crimen? &
+  $\boldsymbol{t_{obs}}$ y \textbf{$p$-valor}: probabilidad de un resultado tan extremo o más
+  \emph{si $H_0$ fuera cierta}. Con $p$ pequeño, las pruebas son difíciles de explicar.\\\midrule
+\textbf{5. Conclusión} &
+  \textbf{Veredicto}: culpable \textbf{solo} si la duda deja de ser razonable, es decir, si
+  esas pruebas serían \textbf{muy improbables} siendo inocente. Si no, absuelto (quizá
+  \emph{por falta de pruebas}). &
+  $p\leq\alpha$ $\Rightarrow$ \textbf{rechazamos $H_0$} (\textbf{significativo}).
+  $p>\alpha$ $\Rightarrow$ no rechazamos. Ej., ¿PAS media = 148? Pequeña, $p=0.10$: no
+  rechazamos; grande, $p<0.001$: rechazamos.\\\bottomrule
 \end{tabular}
 \raggedright
-\begin{recuadronaranja}\scriptsize
-El $p$ \textbf{no} es la probabilidad de que sea inocente ($H_0$ cierta). No
-rechazar $H_0$ \textbf{no demuestra} que sea cierta: «absuelto por falta de pruebas»
-$\neq$ «inocente».
+\begin{recuadronaranja}\tiny
+El $p$ \textbf{no} es la probabilidad de que sea inocente ($H_0$ cierta). No rechazar $H_0$
+\textbf{no demuestra} que sea cierta: «absuelto por falta de pruebas» $\neq$ «inocente».
 \end{recuadronaranja}
 #+END_EXPORT
 
-** Los cinco pasos de un contraste
+** Ejemplo de un contraste de hipótesis
 
 #+BEGIN_EXPORT latex
-\scriptsize
-Ejemplo: ¿la PAS basal media de nuestros pacientes es de 148 mmHg? (muestra pequeña)
-\begin{enumerate}
-\item \textbf{Hipótesis}: $H_0$: $\mu=148$ \quad frente a \quad $H_1$: $\mu\neq148$ (bilateral).
-\item \textbf{Nivel de significación}: $\alpha=0.05$, fijado \emph{antes} de ver los datos.
-\item \textbf{Estadístico} y su distribución si $H_0$ es cierta:
-  \[ t=\frac{\bar{x}-\mu_0}{S/\sqrt{n}}\ \sim\ t_{n-1} \]
-\item \textbf{Cálculo} con la muestra ($n=30$, $\bar{x}=151.0$, $S=9.7$):
-  $EE=9.7/\sqrt{30}=1.76$; \ $t=(151.0-148)/1.76=1.70$; \ gl $=29$; \ $p=0.10$.
-\item \textbf{Decisión e interpretación}: $p=0.10>0.05$ $\Rightarrow$ no se rechaza
-  $H_0$. «Los datos son compatibles con una PAS media de 148 mmHg».
-\end{enumerate}
-\begin{recuadro}\scriptsize
-jamovi hace los pasos 3 y 4; los pasos 1, 2 y 5 son \textbf{tuyos}.
-\end{recuadro}
-#+END_EXPORT
-
-** El p-valor dibujado: ¿la PAS basal media es 148 mmHg?
-
-#+BEGIN_EXPORT latex
-\begin{columns}
-\begin{column}{0.58\textwidth}
-\href{https://epidemos.es/bs2026/pvalor.R}{\includegraphics[width=\textwidth]{img/rj_pvalor.pdf}}
+\begin{columns}[T]
+\begin{column}{0.47\textwidth}\tiny
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{L{0.26\textwidth}L{0.7\textwidth}}\toprule
+\textbf{1. Hipótesis} & Contraste de \textbf{conformidad} con un valor: $H_0$: $\mu_{PAS}=148$
+  frente a $H_1$: $\mu_{PAS}\neq148$ (bilateral).\\\midrule
+\textbf{2. Significación} & $\alpha=0.05$. No se estima la potencia.\\\midrule
+\textbf{3. Estadístico} & $t=\dfrac{\bar{x}-\mu_0}{S/\sqrt{n}}\sim t_{n-1}$\\\midrule
+\textbf{4. Cálculo y decisión} & Muestra de 30: $\bar{x}=151.0$, $S=9.7$, $EE=9.7/\sqrt{30}=1.76$;
+  $t_{obs}=(151.0-148)/1.76=1.70$, gl $=29$.\newline
+  \textbf{Región crítica}: $|t_{obs}|=1.70<t_{\alpha/2}=2.045$: no cae en ella.\newline
+  \textbf{$p$-valor}: $p=0.100>\alpha$.\\\midrule
+\textbf{5. Conclusión} & No se rechaza $H_0$: los datos son compatibles con 148 mmHg.
+  Efecto: 3.0 mmHg (IC 95\,\%: $-0.6$ a 6.6).\\\bottomrule
+\end{tabular}
 \end{column}
-\begin{column}{0.42\textwidth}\scriptsize
-\begin{itemize}
-\item Curva: distribución de $t$ (29 gl) si $H_0$ es cierta.
-\item Rosa claro: región de rechazo ($\alpha=0.05$, bilateral: $|t|>2.05$).
-\item Rojo: \textbf{$p$-valor} (área más allá de $|t|=1.70$, en las dos colas).
-\end{itemize}
-El área roja es \textbf{mayor} que la de rechazo: no rechazamos $H_0$.\\[1mm]
-\textbf{Lo que el $p$-valor NO es}: la probabilidad de que $H_0$ sea
-cierta, ni el tamaño del efecto.\\[1mm]
+\begin{column}{0.53\textwidth}\centering
+\href{https://epidemos.es/bs2026/pvalor.R}{\includegraphics[width=\textwidth]{img/rj_pvalor.pdf}}\\[0.5mm]
+\raggedright\tiny
+$t_{obs}$ queda fuera de la región crítica, por eso la zona de $p$ es \textbf{mayor} que la
+crítica: $p>\alpha$. Los dos criterios dan siempre la misma decisión.
 Código: \href{https://epidemos.es/bs2026/pvalor.R}{pvalor.R}
 \end{column}
 \end{columns}
+\begin{recuadro}\tiny
+jamovi solo hace el \textbf{cálculo} del paso 4; plantear las hipótesis, fijar $\alpha$, elegir
+el estadístico y concluir es \textbf{tuyo}.
+\end{recuadro}
 #+END_EXPORT
 
 ** Contraste bilateral y unilateral
 
 #+BEGIN_EXPORT latex
-\scriptsize
-\begin{columns}
-\begin{column}{0.55\textwidth}
+\tiny
+\vspace*{-2mm}
+\begin{columns}[T]
+\begin{column}{0.62\textwidth}
 \begin{itemize}
-\item \textbf{Bilateral} (dos colas): $H_1$: $\mu\neq148$. Interesa una
-  diferencia en cualquier sentido. Es la opción \textbf{por defecto}.
-\item \textbf{Unilateral} (una cola): $H_1$: $\mu>148$ (o $<$). Solo si el
-  sentido contrario es imposible o irrelevante, y decidido \emph{antes} de ver
-  los datos.
-\item El $p$ unilateral es la \textbf{mitad} del bilateral (si el efecto va en
-  el sentido de $H_1$).
+\item \textbf{Bilateral} (dos colas): $H_1$: $\mu\neq148$. Interesa una diferencia en cualquier
+  sentido. Es la opción \textbf{por defecto}.
+\item \textbf{Unilateral} (una cola): $H_1$: $\mu>148$ (o $<$). Solo si el sentido contrario es
+  imposible o irrelevante, y decidido \emph{antes} de ver los datos.
+\item El $p$ unilateral es la \textbf{mitad} del bilateral (si el efecto va en el sentido de $H_1$).
 \end{itemize}
 \end{column}
-\begin{column}{0.45\textwidth}
+\begin{column}{0.38\textwidth}
 \textbf{En jamovi}: casilla \jmv{Hipótesis alternativas} de cada prueba:
 \begin{itemize}
 \item \jmv{$\neq$ Valor de prueba} / \jmv{Grupo 1 $\neq$ Grupo 2} (bilateral)
@@ -550,14 +573,19 @@ Código: \href{https://epidemos.es/bs2026/pvalor.R}{pvalor.R}
 \end{itemize}
 \end{column}
 \end{columns}
-\begin{recuadronaranja}\scriptsize
-Muestra pequeña: bilateral $p=0.100$; unilateral ($>$) $p=0.050$\dots{} ¡justo
-en el límite! Cambiar a una cola \emph{después} de ver los datos para conseguir
-$p<0.05$ es hacer trampa.
+\vspace{1mm}
+\centering
+\href{https://epidemos.es/bs2026/t_colas.R}{\includegraphics[width=0.96\textwidth]{img/rj_t_colas.pdf}}\\
+\raggedright
+\begin{recuadronaranja}\tiny
+Muestra pequeña: bilateral $p=0.0995$ (jamovi: .100), no rechazamos; unilateral $p=0.0498$
+(jamovi: .050), rechazamos por muy poco: $t_{obs}=1.702$ frente a $t_{\alpha}=1.699$. Cambiar a
+una cola \emph{después} de ver los datos para conseguir $p\leq0.05$ es hacer trampa.
+Código: \href{https://epidemos.es/bs2026/t_colas.R}{t\_colas.R}
 \end{recuadronaranja}
 #+END_EXPORT
 
-** Contraste e intervalo de confianza: dos caras de la misma moneda
+** Contraste e intervalos de confianza (IC)
 
 #+BEGIN_EXPORT latex
 \scriptsize
@@ -658,111 +686,369 @@ con placebo (IC 95\,\%: 4.9 a 11.8; $p<0.001$)».
 \end{recuadro}
 #+END_EXPORT
 
-** Tipos de pruebas de contraste
+** Q.02 Comparación con un valor de referencia
+
+1. ¿Es la PAS basal media de la población de 148 mmHg? Contrasta con
+   la *muestra pequeña* (=Filtrar 2=) y con la *grande* (=Filtrar 1=): =Pruebas t= \rightarrow
+   =Prueba t de una Muestra=, =Valor de prueba= 148. Anota $\bar{x}$, t, gl, p y el IC 95 %.
+2. ¿Qué habría pasado con una hipótesis unilateral (\mu > 148)?
+3. Sin filtro, ¿cuál es la PAS media real? ¿Alguna decisión fue un error tipo I o tipo II?
+
+** Contraste de conformidad en jamovi
 
 #+BEGIN_EXPORT latex
-\scriptsize
-\begin{tabular}{L{0.17\textwidth}L{0.76\textwidth}}\toprule
-\textbf{Criterio} & \textbf{Tipos}\\\midrule
-Objetivo & \textbf{Conformidad} con un valor de referencia (1 muestra) $\cdot$
-  \textbf{comparación} de grupos $\cdot$ \textbf{asociación} entre dos variables\\[0.5mm]
-Respuesta & \textbf{Cuantitativa} $\rightarrow$ medias (o medianas) $\cdot$
-  \textbf{cualitativa} $\rightarrow$ proporciones\\[0.5mm]
-Diseño & Muestras \textbf{independientes} (individuos distintos) $\cdot$
-  \textbf{dependientes o pareadas} (mismo individuo medido dos veces, o parejas emparejadas)\\[0.5mm]
-Supuestos & \textbf{Paramétricas}: suponen una distribución (normal) y contrastan sus
-  parámetros ($\mu$) $\cdot$ \textbf{no paramétricas}: trabajan con rangos o recuentos, sin suponer la distribución\\[0.5mm]
-$H_1$ & \textbf{Bilateral} (dos colas) $\cdot$ \textbf{unilateral} (una cola)\\\bottomrule
-\end{tabular}
-\begin{recuadro}\scriptsize
-Paramétricas: más \textbf{potentes} si se cumplen los supuestos. No paramétricas:
-más \textbf{robustas} (asimetría, valores extremos, variables ordinales, $n$ pequeño).
-\end{recuadro}
-#+END_EXPORT
-
-** ¿Qué prueba uso? Árbol de decisión
-
-\centering
-#+ATTR_LATEX: :width 0.98\textwidth :center nil
-[[file:./img/arbol_pruebas.pdf]]
-
-\scriptsize Normalidad: Shapiro-Wilk y gráfico Q-Q. Con n grande (> 30-40 por grupo) la /t/ es robusta (TCL).
-
-** Las pruebas en jamovi
-
-#+BEGIN_EXPORT latex
-\scriptsize\centering
-\begin{tabular}{L{0.3\textwidth}L{0.62\textwidth}}\toprule
-\textbf{Prueba} & \textbf{Menú de jamovi (pestaña Análisis)}\\\midrule
-$t$ una muestra, Wilcoxon & \jmv{Pruebas t} $\rightarrow$ \jmv{Prueba t de una Muestra}\\
-$t$ Student/Welch, Mann-Whitney & \jmv{Pruebas t} $\rightarrow$ \jmv{Prueba t para Muestras Independientes}\\
-$t$ pareada, Wilcoxon & \jmv{Pruebas t} $\rightarrow$ \jmv{Prueba t para Muestras Pareadas}\\\midrule
-Binomial (1 proporción) & \jmv{Frecuencias} $\rightarrow$ \jmv{Prueba de Proporciones (2 Resultados)}\\
-$\chi^2$, Yates, Fisher & \jmv{Frecuencias} $\rightarrow$ \jmv{Tablas de Contingencia: Muestras Independientes}\\
-McNemar & \jmv{Frecuencias} $\rightarrow$ \jmv{Tablas de Contingencia: Muestras Pareadas}\\\midrule
-ANOVA, Kruskal-Wallis & \jmv{ANOVA} $\rightarrow$ \jmv{ANOVA de Un Factor} / \jmv{No Paramétrico}\\\bottomrule
-\end{tabular}
-\begin{recuadro}\scriptsize
-En cada ventana: la prueba \textbf{paramétrica y la no paramétrica} son casillas
-de la misma ventana (\jmv{Pruebas}); los supuestos están en
-\jmv{Comprobaciones de Supuestos}.
-\end{recuadro}
-#+END_EXPORT
-
-** Comparar con un valor de referencia en jamovi
-
-#+BEGIN_EXPORT latex
-\vspace*{-2mm}
+\vspace*{-3mm}
 \centering
 % recorte de la captura (px = bp a 72 ppp): sin la barra de menús ni la gráfica Q-Q
-\includegraphics[width=\textwidth,trim=0 408 0 170,clip]{capturas/t1m_panel.png}\\[1mm]
+\includegraphics[width=0.8\textwidth,trim=0 408 0 170,clip]{capturas/t1m_panel.png}\\[0.5mm]
 \raggedright\tiny
-\begin{columns}[T]
-\begin{column}{0.5\textwidth}
 \jmv{Pruebas t} $\rightarrow$ \jmv{Prueba t de una Muestra} (\jmv{Filtrar 2}: $n=30$):
 \texttt{PAS\_basal} a \jmv{Variables Dependientes}; \jmv{Valor de prueba} 148 ($\neq$);
 \jmv{Diferencia de medias}, \jmv{Intervalo de confianza}, \jmv{Descriptivas} y
-\jmv{Prueba de Normalidad}.\\
-\textbf{$t=1.70$, $p=0.100$}; diferencia 3.0 (IC $-0.6$ a 6.6).
+\jmv{Prueba de Normalidad}.\\[0.5mm]
+\textbf{PAS\_basal}, $H_0$: $\mu=148$ (t de una muestra)\\[0.3mm]
+\resizebox{\textwidth}{!}{\input{img/res_q02_t.tex}}
+\begin{recuadro}\tiny
+La media poblacional es 151.0 $\Rightarrow$ $H_0$ es \emph{falsa}. La grande la rechaza
+(acierto); la pequeña no (\textbf{error tipo II}: poca potencia). Con una cola la pequeña da
+$p=0.0498$, en el filo. Shapiro-Wilk no indica falta de normalidad: la $t$ es adecuada.
+\end{recuadro}
+#+END_EXPORT
+
+* Comparación de medias
+** Muestras independientes y dependientes (pareadas)
+
+#+BEGIN_EXPORT latex
+\scriptsize
+\begin{tabular}{L{0.2\textwidth}L{0.36\textwidth}L{0.36\textwidth}}\toprule
+ & \textbf{Independientes} & \textbf{Dependientes (pareadas)}\\\midrule
+Diseño & Individuos \textbf{distintos} en cada grupo & \textbf{Mismos} individuos medidos dos veces (o parejas emparejadas)\\[0.5mm]
+Ejemplo & \texttt{PAS\_8sem}: Placebo frente a Suplemento & \texttt{PAS\_basal} frente a \texttt{PAS\_8sem}\\[0.5mm]
+Datos en jamovi & \textbf{una} variable + variable de \textbf{agrupación} & \textbf{dos} variables (columnas), una por momento\\[0.5mm]
+Paramétrica & $t$ de Student (o de Welch) & $t$ pareada\\[0.5mm]
+No paramétrica & $U$ de Mann-Whitney & Wilcoxon de rangos con signo\\\bottomrule
+\end{tabular}
+\begin{recuadro}\scriptsize
+En el diseño pareado cada individuo es \textbf{su propio control}: se elimina la
+variabilidad entre personas y el contraste gana \textbf{potencia}.
+\end{recuadro}
+#+END_EXPORT
+
+** Pruebas paramétricas y no paramétricas
+
+#+BEGIN_EXPORT latex
+\scriptsize
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\textbf{Paramétricas} ($t$)
+\begin{itemize}
+\item Comparan \textbf{medias}.
+\item Suponen \textbf{normalidad} (en cada grupo o de las diferencias); con $n$
+  grande basta el TCL.
+\item Más potentes si se cumplen los supuestos; dan IC de la diferencia de medias.
+\end{itemize}
+\textbf{No paramétricas} (rangos)
+\begin{itemize}
+\item Ordenan los datos y trabajan con su \textbf{posición} (rango).
+\item No suponen ninguna distribución; robustas frente a extremos.
+\item Para variables \textbf{ordinales}, muy asimétricas o $n$ pequeño no normal.
+\end{itemize}
 \end{column}
 \begin{column}{0.5\textwidth}
-\textbf{Proporción} (Q.02.3, ¿48\,\% de mujeres?):
-\jmv{Frecuencias} $\rightarrow$ \jmv{Prueba de Proporciones (2 Resultados)};
-\texttt{Sexo} a \jmv{Variables}, \jmv{Valor de prueba} 0.48. Contrasta cada
-nivel frente a 0.48: se lee la fila \emph{Mujer}.
+\textbf{Ejemplo}: PCR (mg/L) de 8 pacientes\\[1mm]
+\centering
+\begin{tabular}{lcccc}\toprule
+No fuma & 1.2 & 2.0 & 3.1 & 5.4\\
+\emph{rango} & 1 & 2 & 4 & 6\\\midrule
+Fuma & 2.8 & 4.6 & 7.9 & \textbf{48.0}\\
+\emph{rango} & 3 & 5 & 7 & \textbf{8}\\\bottomrule
+\end{tabular}\\[1mm]
+\raggedright
+Medias: 2.9 frente a \textbf{15.8} (el 48.0 la dispara). Sumas de rangos: 13
+frente a 23. Para los rangos, el 48.0 es solo «el mayor»: pesaría igual si
+fuera 8.0.
 \end{column}
 \end{columns}
 #+END_EXPORT
 
-** Q.02 Comparación con un valor de referencia
-
-1. ¿Es la PAS basal media de la población de 148 mmHg? Contrasta con
-   la *muestra pequeña* y con la *grande* (t para una muestra). Anota
-   $\bar{x}$, t, gl, p y el IC 95 %.
-2. ¿Qué habría pasado con una hipótesis unilateral (\mu > 148)?
-3. En los nacimientos hay \approx 48 % de mujeres. ¿Es compatible la
-   proporción de mujeres de cada muestra? (prueba binomial).
-4. Comprueba los valores reales sin filtro: ¿alguna decisión fue un
-   error tipo I o tipo II?
-
-** Resultado Q.02
+** Condiciones de aplicación de la t de Student
 
 #+BEGIN_EXPORT latex
 \scriptsize
-\textbf{PAS\_basal}, $H_0$: $\mu=148$ (t de una muestra)\\[0.5mm]
-\resizebox{\textwidth}{!}{\input{img/res_q02_t.tex}}\\[1mm]
-\textbf{Sexo = Mujer}, $H_0$: $\pi=0.48$ (prueba binomial)\\[0.5mm]
-\resizebox{0.8\textwidth}{!}{\input{img/res_q02_bin.tex}}
-\begin{recuadro}\tiny
-\textbf{PAS}: la media poblacional es 151.0 $\Rightarrow$ $H_0$ es \emph{falsa}. La grande
-la rechaza (acierto); la pequeña no (\textbf{error tipo II}: poca potencia). Con una cola
-la pequeña da $p=0.050$, en el filo. \textbf{Mujeres}: ninguna muestra rechaza; en la
-población hay 47.4\,\%, tan cerca de 48\,\% que no rechazar es lo razonable
-(diferencia irrelevante). Shapiro-Wilk no indica falta de normalidad: la $t$ es adecuada.
+\begin{enumerate}
+\item \textbf{Independencia} de las observaciones (lo garantiza el diseño).
+\item \textbf{Normalidad} en cada grupo: \jmv{Prueba de Normalidad}
+  (Shapiro-Wilk; $p<0.05$ $\Rightarrow$ no normal) y \jmv{Gráfico Q-Q} (puntos
+  sobre la diagonal). Con $n$ grande (más de 30-40 por grupo) la $t$ es robusta (TCL).
+\item \textbf{Igualdad de varianzas}: \jmv{Prueba de homogeneidad} (Levene;
+  $p<0.05$ $\Rightarrow$ varianzas distintas). Si no se cumple: \textbf{$t$ de Welch}.
+\end{enumerate}
+\begin{recuadro}\scriptsize
+Todo está en \jmv{Comprobaciones de Supuestos} de la ventana de la $t$.
+Shapiro-Wilk con $n$ muy grande rechaza por desviaciones mínimas: mira también el
+gráfico Q-Q y el histograma.
+\end{recuadro}
+\begin{recuadronaranja}\scriptsize
+Si la variable es ordinal, muy asimétrica o con $n$ pequeño y no normal:
+pruebas \textbf{no paramétricas}.
+\end{recuadronaranja}
+#+END_EXPORT
+
+** Dos muestras independientes en jamovi
+
+#+BEGIN_EXPORT latex
+\centering
+\captura{capturas/tis_panel.png}{0.84\textwidth}\\[0.5mm]
+\raggedright\scriptsize
+\jmv{Pruebas t} $\rightarrow$ \jmv{Prueba t para Muestras Independientes}
+(\jmv{Filtrar 1}): \texttt{PAS\_8sem} en \jmv{Variables Dependientes},
+\texttt{Tratamiento} en \jmv{Variables de agrupación}; \jmv{t de Student};
+\jmv{Diferencia de medias} con \jmv{Intervalo de confianza}; \jmv{Prueba de
+homogeneidad} (Levene) y \jmv{Prueba de Normalidad}. \jmv{Welch} y \jmv{U de
+Mann-Whitney} se marcan en la misma ventana cuando hacen falta. La diferencia es
+Grupo 1 $-$ Grupo 2 en el orden de los niveles: Placebo $-$ Suplemento $=8.35$ mmHg.
+Resultado: $t=4.81$, gl $=298$, $p<0.001$; IC 95\,\%: 4.93 a 11.8 mmHg.
+Supuestos: Shapiro-Wilk $p=0.323$ y Levene $p=0.966$ $\Rightarrow$ la t de Student es válida.
+#+END_EXPORT
+
+** Q.03 ¿Funciona el suplemento?
+
+1. Compara la =PAS_8sem= entre =Tratamiento= Placebo y Suplemento con
+   la *muestra pequeña* (t de Student). Anota la diferencia de medias, su IC y p.
+2. Revisa los supuestos (normalidad, Levene). ¿Cambia algo con Welch?
+3. Repite con la muestra grande y sin filtro. ¿Hubo algún error con la pequeña?
+
+** Resultado Q.03
+
+#+BEGIN_EXPORT latex
+\scriptsize
+\resizebox{\textwidth}{!}{\input{img/res_q03.tex}}\\[1mm]
+\begin{columns}
+\begin{column}{0.55\textwidth}
+\href{https://epidemos.es/bs2026/forest.R}{\includegraphics[width=\textwidth]{img/rj_forest.pdf}}
+\end{column}
+\begin{column}{0.45\textwidth}\tiny
+Supuestos correctos (Levene y Shapiro-Wilk $p>0.05$); Student y Welch coinciden.\\[1mm]
+\textbf{Grande}: el suplemento baja la PAS 8.3 mmHg (IC 4.9 a 11.8; $p<0.001$).\\[1mm]
+\textbf{Pequeña}: diferencia parecida (6.8) pero el IC ($-3.0$ a 16.6)
+contiene el 0: $p=0.17$. Diferencia real 8.4 mmHg $\Rightarrow$ \textbf{error tipo II}.\\[1mm]
+Código: \href{https://epidemos.es/bs2026/forest.R}{forest.R}
+\end{column}
+\end{columns}
+#+END_EXPORT
+
+** Q.04 Colesterol y sexo: el error tipo II
+
+1. Compara el =Colesterol= de mujeres y hombres en la *muestra pequeña*
+   y en la *grande*.
+2. Calcula la diferencia real (sin filtro). ¿Por qué las muestras
+   pueden «no ver» una diferencia que existe?
+3. ¿Es clínicamente relevante esa diferencia?
+
+** Resultado Q.04
+
+#+BEGIN_EXPORT latex
+\scriptsize
+\resizebox{\textwidth}{!}{\input{img/res_q04.tex}}
+\begin{itemize}
+\item Ninguna muestra rechaza $H_0$ ($p=0.51$ y $p=0.25$).
+\item Diferencia real (población): \textbf{2.4 mg/dL}, con una desviación típica
+  de unos 35: para detectarla con potencia del 80\,\% harían falta unos
+  \textbf{3300 pacientes por grupo}.
+\item Los IC son honestos: contienen el 2.4 real y dicen que la diferencia
+  es, como mucho, de unos 13 mg/dL (muestra grande).
+\end{itemize}
+\begin{recuadro}\scriptsize
+No rechazar $H_0$ no prueba que no haya diferencia; aquí la hay, pero es
+pequeña y \textbf{clínicamente irrelevante}. Mira siempre el IC.
 \end{recuadro}
 #+END_EXPORT
 
-* Comparando proporciones en tablas con dos variables: tablas de contingencia
+** Alternativa no paramétrica: U de Mann-Whitney
+
+#+BEGIN_EXPORT latex
+\scriptsize
+\begin{itemize}
+\item Ordena \textbf{todos} los valores juntos y compara los \textbf{rangos} de los
+  dos grupos: $U$ cuenta cuántas veces un valor de un grupo supera a uno del otro.
+\item $H_0$: las dos distribuciones son iguales (ninguno tiende a dar valores mayores).
+  Si tienen la misma forma, contrasta la igualdad de \textbf{medianas}.
+\item No necesita normalidad; robusta frente a valores extremos.
+\item Ideal para variables \textbf{ordinales} (\texttt{Dolor} 0-10) o muy
+  asimétricas (\texttt{PCR}).
+\item En jamovi: misma ventana de la $t$, casilla \jmv{U de Mann-Whitney};
+  pide además \jmv{Descriptivas} para ver las \textbf{medianas}.
+\end{itemize}
+#+END_EXPORT
+
+** PCR: una variable muy asimétrica
+
+#+BEGIN_EXPORT latex
+\centering
+\href{https://epidemos.es/bs2026/pcr.R}{\includegraphics[width=0.8\textwidth]{img/rj_pcr.pdf}}\\[1mm]
+\scriptsize Muestra grande. Con datos tan asimétricos Mann-Whitney es más
+potente que la t. Código: \href{https://epidemos.es/bs2026/pcr.R}{pcr.R}
+#+END_EXPORT
+
+** Q.05 PCR y tabaco; dolor y tratamiento
+
+1. Explora la =PCR= (histograma, Shapiro-Wilk, Q-Q). ¿Es normal?
+2. Compara la PCR de fumadores y no fumadores con t y con Mann-Whitney
+   (muestra pequeña y grande). Compara medias y medianas.
+3. Compara el =Dolor= (0-10) entre tratamientos: ¿qué prueba es la adecuada?
+
+** Resultado Q.05
+
+#+BEGIN_EXPORT latex
+\scriptsize
+\resizebox{\textwidth}{!}{\input{img/res_q05.tex}}
+\begin{itemize}
+\item \textbf{PCR}: nada normal (Shapiro-Wilk $p<0.001$, cola larga a la derecha) y
+  varianzas distintas (jamovi avisa: Levene significativo; Welch $p=0.004$).
+  Las \textbf{medias} se inflan con los extremos; mejor describir con
+  \textbf{medianas} (2.3 frente a 3.8 en la grande) y contrastar con
+  \textbf{Mann-Whitney}, que da un $p$ mucho menor que la $t$ en la muestra grande.
+\item Pequeña: ninguna prueba detecta la diferencia ($n$ = 18 / 12).
+\item \textbf{Dolor}: variable \textbf{ordinal} $\Rightarrow$ Mann-Whitney. Menos
+  dolor con el suplemento (mediana 3 frente a 4; $p<0.001$ en la grande).
+\end{itemize}
+#+END_EXPORT
+
+** Muestras pareadas: la misma persona dos veces
+
+#+BEGIN_EXPORT latex
+\begin{columns}
+\begin{column}{0.6\textwidth}
+\href{https://epidemos.es/bs2026/pareadas.R}{\includegraphics[width=\textwidth]{img/rj_pareadas.pdf}}
+\end{column}
+\begin{column}{0.4\textwidth}\scriptsize
+\begin{itemize}
+\item Se analiza la \textbf{diferencia} de cada individuo: $d_i = \text{basal}_i - \text{8 sem}_i$.
+\item $t$ pareada = $t$ de una muestra sobre las diferencias ($H_0$: $\mu_d=0$).
+\item Supuesto: \textbf{normalidad de las diferencias}.
+\end{itemize}
+\begin{recuadronaranja}\scriptsize
+Error frecuente: analizar datos pareados como independientes.
+\end{recuadronaranja}
+Código: \href{https://epidemos.es/bs2026/pareadas.R}{pareadas.R}
+\end{column}
+\end{columns}
+#+END_EXPORT
+
+** Alternativa no paramétrica: Wilcoxon de rangos con signo
+
+#+BEGIN_EXPORT latex
+\scriptsize
+\begin{enumerate}
+\item Calcula la diferencia $d_i$ de cada individuo (se descartan las $d_i=0$).
+\item Ordena los \textbf{valores absolutos} $|d_i|$ y asígnales rangos.
+\item Suma por separado los rangos de las diferencias \textbf{positivas} y de las
+  \textbf{negativas}.
+\item Si $H_0$ es cierta (no hay cambio), ambas sumas deberían parecerse.
+\end{enumerate}
+\centering
+\begin{tabular}{lrrrrr}\toprule
+$d_i$ (mmHg) & $+12$ & $-3$ & $+7$ & $+20$ & $-5$\\
+rango de $|d_i|$ & 4 & 1 & 3 & 5 & 2\\\bottomrule
+\end{tabular}\\[1mm]
+\raggedright
+Suma de rangos positivos $=4+3+5=12$; negativos $=1+2=3$.
+\begin{recuadro}\scriptsize
+Usa la \textbf{magnitud} de los cambios (a diferencia de una simple prueba de
+signos) pero no su valor exacto. En jamovi: \jmv{Prueba t para Muestras Pareadas}
+$\rightarrow$ \jmv{Prueba de rangos con signo de Wilcoxon}.
+\end{recuadro}
+#+END_EXPORT
+
+** Muestras pareadas en jamovi
+
+#+BEGIN_EXPORT latex
+\begin{columns}[T]
+\begin{column}{0.64\textwidth}
+\captura{capturas/tps_panel_30.png}{\textwidth}
+\end{column}
+\begin{column}{0.36\textwidth}\scriptsize
+\jmv{Pruebas t} $\rightarrow$ \jmv{Prueba t para Muestras Pareadas}
+(\jmv{Filtrar 2}: $n=30$)
+{\tiny\begin{itemize}
+\item \jmv{Variables Apareadas}: \texttt{PAS\_basal} y \texttt{PAS\_8sem}
+  (diferencia = basal $-$ 8 sem)
+\item \jmv{t de Student} y \jmv{Rangos de Wilcoxon}
+\item \jmv{Diferencia de medias} e \jmv{Intervalo de confianza}
+\item \jmv{Descriptivas}, \jmv{Gráficas descriptivas}
+\item \jmv{Prueba de Normalidad} (de las \emph{diferencias})
+\end{itemize}}
+Bajada media 6.7 mmHg (IC 2.9 a 10.4; $p<0.001$).
+¡Los IC de las dos medias del gráfico \textbf{se solapan}! (Q.06).\\[1mm]
+Por tratamiento: otro filtro, \texttt{Tratamiento == 1} (Suplemento) o
+\texttt{== 0} (Placebo).
+\end{column}
+\end{columns}
+#+END_EXPORT
+
+** Q.06 ¿Baja la presión arterial?
+
+1. Con la muestra pequeña, compara =PAS_basal= y =PAS_8sem= (t
+   pareada y Wilcoxon). Anota la bajada media, su IC y p.
+2. Repite separando por =Tratamiento=: crea un filtro nuevo
+   ~Tratamiento == 1~ (Suplemento) y déjalo activo junto a =Filtrar 2=
+   (los filtros activos se combinan); después cámbialo a ~Tratamiento == 0~
+   (Placebo). ¿Baja también con placebo? ¿Por qué?
+3. Repite con la muestra grande.
+4. Mira en =Descriptivas= los IC 95 % de la PAS basal y de la PAS a 8
+   semanas por separado: ¿se solapan? ¿Por qué la t pareada detecta la
+   bajada con más facilidad?
+
+** Resultado Q.06
+
+#+BEGIN_EXPORT latex
+\scriptsize
+\resizebox{\textwidth}{!}{\input{img/res_q06.tex}}
+\begin{itemize}
+\item La PAS baja en los dos grupos; con el \textbf{suplemento} el triple (13.2 frente a
+  4.4 mmHg en la grande). Población: 12.4 y 4.1 mmHg.
+\item Pequeña, placebo: bajada de 3.2 mmHg no significativa ($n=16$): error tipo II.
+\item Wilcoxon y $t$ pareada llevan a las mismas conclusiones.
+\item Pequeña: los IC de las medias \textbf{se solapan} (basal 147.4 a 154.6; 8 sem
+  139.4 a 149.3), pero la $t$ pareada da $p<0.001$. Comparar IC separados no sirve
+  para datos pareados.
+\end{itemize}
+\begin{recuadronaranja}\scriptsize
+Última columna: $p$ si se analizasen \textbf{(mal)} como muestras independientes.
+Siempre es mayor: al ignorar el emparejamiento, la variabilidad entre pacientes
+(DT $\approx12$) tapa el cambio dentro de cada paciente. En el placebo pequeño
+pasaría de $p=0.12$ a $p=0.46$.
+\end{recuadronaranja}
+#+END_EXPORT
+
+** Para saber más: más de dos grupos
+
+#+BEGIN_EXPORT latex
+\scriptsize
+\begin{columns}
+\begin{column}{0.55\textwidth}
+\begin{itemize}
+\item Con 3 o más grupos, hacer muchas $t$ por parejas \textbf{infla el error tipo I}.
+\item \textbf{ANOVA de un factor} (paramétrica): ¿son iguales todas las medias?
+\item \textbf{Kruskal-Wallis} (no paramétrica): versión con rangos.
+\item Si se rechaza $H_0$, comparaciones \emph{post hoc} (Tukey, Games-Howell).
+\item En jamovi: \jmv{ANOVA} $\rightarrow$ \jmv{ANOVA de Un Factor} y
+  \jmv{ANOVA} $\rightarrow$ \jmv{No Paramétrico} $\rightarrow$
+  \jmv{ANOVA de Un Factor (No Paramétrico)}.
+\end{itemize}
+\end{column}
+\begin{column}{0.45\textwidth}\centering
+\texttt{PAS\_basal} por \texttt{Educa} (grande)\\[1mm]
+\input{img/res_anova.tex}\\[1mm]
+\raggedright
+ANOVA: $F(2;\,297)=2.91$, $p=0.056$.\\
+Kruskal-Wallis: $\chi^2=5.65$, gl $=2$, $p=0.059$.\\[1mm]
+\tiny Al límite: la PAS basal sube con la edad, y la edad es mayor con estudios básicos.
+\end{column}
+\end{columns}
+#+END_EXPORT
+
+* Comparación de proporciones, tablas de contingencia
 ** Tablas de contingencia
 
 #+BEGIN_EXPORT latex
@@ -782,7 +1068,7 @@ población hay 47.4\,\%, tan cerca de 48\,\% que no rechazar es lo razonable
 \end{column}
 \begin{column}{0.54\textwidth}\centering
 Fumador $\times$ Infarto (muestra grande)\\[1mm]
-\resizebox{\linewidth}{!}{\input{img/res_q03_tabla.tex}}\\[2mm]
+\resizebox{\linewidth}{!}{\input{img/res_q07_tabla.tex}}\\[2mm]
 \raggedright
 Infarto: \textbf{17.0\,\%} en fumadores frente a \textbf{3.8\,\%} en no
 fumadores. ¿Es una diferencia real o puede deberse al azar del muestreo?
@@ -806,6 +1092,29 @@ Cuanto más se alejan las observadas de las esperadas, más evidencia contra $H_
 Código: \href{https://epidemos.es/bs2026/chi2.R}{chi2.R}
 \end{column}
 \end{columns}
+#+END_EXPORT
+
+** Sobre $\chi^2$: la distribución teórica de $(O-E)^2/E$
+
+#+BEGIN_EXPORT latex
+\scriptsize
+\vspace*{-2mm}
+\begin{itemize}
+\item Si $H_0$ es cierta, cada desviación tipificada $(O-E)/\sqrt{E}$ se comporta,
+  aproximadamente, como una normal tipificada $Z$.
+\item Una $\chi^2$ con $k$ grados de libertad es la \textbf{suma de $k$ variables $Z^2$
+  independientes}: $\chi^2_k=Z_1^2+\dots+Z_k^2$. Por eso nunca es negativa y solo se rechaza
+  por la derecha. Con $gl=1$, $\chi^2=Z^2$: $\mathbf{3.84=1.96^2}$.
+\item \textbf{Grados de libertad}: las celdas que se pueden llenar libremente una vez fijados
+  los totales. En una $2\times2$ se suman 4 términos, pero conocida una celda salen las otras
+  tres: $gl=(f-1)(c-1)=1$.
+\end{itemize}
+\centering
+\href{https://epidemos.es/bs2026/chi2_dist.R}{\includegraphics[width=0.96\textwidth]{img/rj_chi2_dist.pdf}}\\
+\raggedright\tiny
+Azul: región de no rechazo; rojo: región crítica con $\alpha=0.05$. Para Fumador $\times$ Infarto,
+$\chi^2=15.47$ queda muy a la derecha de 3.84, fuera del gráfico.
+Código: \href{https://epidemos.es/bs2026/chi2_dist.R}{chi2\_dist.R}
 #+END_EXPORT
 
 ** Prueba $\chi^2$ de Pearson
@@ -955,13 +1264,13 @@ su RR es el de \emph{no} enfermar. La OR y la diferencia sí sirven tal cual.
 Resultado: $\chi^2=15.5$, $p<0.001$; esperadas todas $\geq5$ (mínima 6.75).
 \begin{recuadronaranja}\tiny
 \jmv{Riesgo relativo} = 1.16 \jmv{(Se comparan filas)}: jamovi toma la
-\textbf{primera columna} (\emph{No}) como suceso. Ver Resultado Q.03.
+\textbf{primera columna} (\emph{No}) como suceso. Ver Resultado Q.07.
 \end{recuadronaranja}
 \end{column}
 \end{columns}
 #+END_EXPORT
 
-** Q.03 Fumador e infarto
+** Q.07 Fumador e infarto
 
 1. Con la *muestra grande*, tabla =Fumador= (filas) \times =Infarto=
    (columnas): % por filas, frecuencias esperadas, $\chi^2$, RR y OR con IC.
@@ -970,14 +1279,14 @@ Resultado: $\chi^2=15.5$, $p<0.001$; esperadas todas $\geq5$ (mínima 6.75).
    ¿Qué prueba usarías?
 4. Repite *sin filtro* (población). ¿Acertaron las muestras?
 
-** Resultado Q.03
+** Resultado Q.07
 
 #+BEGIN_EXPORT latex
 \scriptsize
-\resizebox{\textwidth}{!}{\input{img/res_q03_pruebas.tex}}\\[1.5mm]
+\resizebox{\textwidth}{!}{\input{img/res_q07_pruebas.tex}}\\[1.5mm]
 \begin{columns}
 \begin{column}{0.5\textwidth}
-\resizebox{\textwidth}{!}{\input{img/res_q03_efecto.tex}}
+\resizebox{\textwidth}{!}{\input{img/res_q07_efecto.tex}}
 \end{column}
 \begin{column}{0.5\textwidth}\tiny
 \begin{itemize}
@@ -997,7 +1306,7 @@ $17.0/3.8=4.5$.
 \end{recuadro}
 #+END_EXPORT
 
-** Q.04 Efecto adverso: ¿$\chi^2$, Yates o Fisher?
+** Q.08 Efecto adverso: ¿$\chi^2$, Yates o Fisher?
 
 1. Con la *muestra grande*, tabla =Tratamiento= \times =EfAdverso=.
    Mira las frecuencias *esperadas* y el % de efectos adversos en cada grupo.
@@ -1006,20 +1315,20 @@ $17.0/3.8=4.5$.
 3. Repite con la *muestra pequeña*: ¿qué prueba es la adecuada?
 4. Compara con la población. ¿Hubo algún error?
 
-** Resultado Q.04
+** Resultado Q.08
 
 #+BEGIN_EXPORT latex
 \scriptsize
 \begin{columns}
 \begin{column}{0.5\textwidth}\centering
-Grande\\ \resizebox{\textwidth}{!}{\input{img/res_q04_tabla_gr.tex}}
+Grande\\ \resizebox{\textwidth}{!}{\input{img/res_q08_tabla_gr.tex}}
 \end{column}
 \begin{column}{0.5\textwidth}\centering
-Pequeña\\ \resizebox{\textwidth}{!}{\input{img/res_q04_tabla_peq.tex}}
+Pequeña\\ \resizebox{\textwidth}{!}{\input{img/res_q08_tabla_peq.tex}}
 \end{column}
 \end{columns}
 \vspace{1mm}
-\resizebox{\textwidth}{!}{\input{img/res_q04_pruebas.tex}}
+\resizebox{\textwidth}{!}{\input{img/res_q08_pruebas.tex}}
 \begin{recuadro}\tiny
 \textbf{Grande}: esperadas $\geq5$, pero $\chi^2$ da $p=0.037$ y Yates y Fisher
 $p\approx0.06$: \textbf{la decisión depende de la prueba}. Evidencia débil (RR 2.30;
@@ -1072,7 +1381,7 @@ $|r|>1.96$. En una $2\times2$ los cuatro valen $\pm\sqrt{\chi^2}$.
 \end{recuadro}
 #+END_EXPORT
 
-** Q.05 Nivel educativo y tabaco
+** Q.09 Nivel educativo y tabaco
 
 1. Con la muestra grande, tabla =Educa= \times =Fumador= con % por filas.
    ¿Hay asociación? ¿Cuántos grados de libertad tiene el $\chi^2$?
@@ -1081,7 +1390,7 @@ $|r|>1.96$. En una $2\times2$ los cuatro valen $\pm\sqrt{\chi^2}$.
 3. Repite con la muestra pequeña. ¿Se cumplen las condiciones del $\chi^2$?
 4. Repite =GrupoSang= \times =Infarto= (muestra grande). ¿Y ahora?
 
-** Resultado Q.05: la muestra grande en jamovi
+** Resultado Q.09: la muestra grande en jamovi
 
 #+BEGIN_EXPORT latex
 \begin{columns}[T]
@@ -1103,11 +1412,11 @@ $|r|>1.96$. En una $2\times2$ los cuatro valen $\pm\sqrt{\chi^2}$.
 \end{columns}
 #+END_EXPORT
 
-** Resultado Q.05: muestra pequeña y grupo sanguíneo
+** Resultado Q.09: muestra pequeña y grupo sanguíneo
 
 #+BEGIN_EXPORT latex
 \scriptsize
-\resizebox{\textwidth}{!}{\input{img/res_q05_pruebas.tex}}
+\resizebox{\textwidth}{!}{\input{img/res_q09_pruebas.tex}}
 \begin{itemize}
 \item \textbf{Pequeña}: 3 de 6 esperadas $<5$ $\Rightarrow$ el $\chi^2$ no es fiable;
   Fisher tampoco ve asociación ($p=1.00$): con $n=30$ no hay potencia.
@@ -1156,7 +1465,7 @@ son muestras independientes (como la $t$ de Student frente a la $t$ pareada).
 \end{recuadronaranja}
 #+END_EXPORT
 
-** Q.06 ¿Baja la proporción de pacientes con sobrepeso?
+** Q.10 ¿Baja la proporción de pacientes con sobrepeso?
 
 1. Con la *muestra grande* (=Filtrar 1=), prueba de McNemar de
    =Sobrepeso_basal= frente a =Sobrepeso_8sem=.
@@ -1165,7 +1474,7 @@ son muestras independientes (como la $t$ de Student frente a la $t$ pareada).
 3. Repite con la *muestra pequeña* (=Filtrar 2=). ¿Cuántos pacientes cambian?
    ¿Qué concluyes?
 
-** Resultado Q.06: la muestra grande en jamovi
+** Resultado Q.10: la muestra grande en jamovi
 
 #+BEGIN_EXPORT latex
 \centering
@@ -1183,11 +1492,11 @@ $\rightarrow$ \jmv{Muestras Pareadas}: filas \texttt{Sobrepeso\_basal}, columnas
 \end{itemize}
 #+END_EXPORT
 
-** Resultado Q.06: muestra pequeña y por grupo
+** Resultado Q.10: muestra pequeña y por grupo
 
 #+BEGIN_EXPORT latex
 \scriptsize
-\resizebox{\textwidth}{!}{\input{img/res_q06.tex}}
+\resizebox{\textwidth}{!}{\input{img/res_q10.tex}}
 \begin{itemize}
 \item \textbf{Pequeña}: solo 5 pacientes cambian (4 frente a 1): $p=0.18$. McNemar
   depende de cuántos \textbf{cambian}, no del total: con tan pocos no hay potencia
@@ -1202,340 +1511,15 @@ atribuirle el efecto hay que \textbf{compararlo con el grupo placebo}.
 \end{recuadro}
 #+END_EXPORT
 
-* Comparación de dos medias
-** Muestras independientes y dependientes (pareadas)
+* Resumen y recapitulaciones
+** ¿Qué prueba uso? Árbol de decisión
 
-#+BEGIN_EXPORT latex
-\scriptsize
-\begin{tabular}{L{0.2\textwidth}L{0.36\textwidth}L{0.36\textwidth}}\toprule
- & \textbf{Independientes} & \textbf{Dependientes (pareadas)}\\\midrule
-Diseño & Individuos \textbf{distintos} en cada grupo & \textbf{Mismos} individuos medidos dos veces (o parejas emparejadas)\\[0.5mm]
-Ejemplo & \texttt{PAS\_8sem}: Placebo frente a Suplemento & \texttt{PAS\_basal} frente a \texttt{PAS\_8sem}\\[0.5mm]
-Datos en jamovi & \textbf{una} variable + variable de \textbf{agrupación} & \textbf{dos} variables (columnas), una por momento\\[0.5mm]
-Paramétrica & $t$ de Student (o de Welch) & $t$ pareada\\[0.5mm]
-No paramétrica & $U$ de Mann-Whitney & Wilcoxon de rangos con signo\\\bottomrule
-\end{tabular}
-\begin{recuadro}\scriptsize
-En el diseño pareado cada individuo es \textbf{su propio control}: se elimina la
-variabilidad entre personas y el contraste gana \textbf{potencia}.
-\end{recuadro}
-#+END_EXPORT
-
-** Pruebas paramétricas y no paramétricas
-
-#+BEGIN_EXPORT latex
-\scriptsize
-\begin{columns}
-\begin{column}{0.5\textwidth}
-\textbf{Paramétricas} ($t$)
-\begin{itemize}
-\item Comparan \textbf{medias}.
-\item Suponen \textbf{normalidad} (en cada grupo o de las diferencias); con $n$
-  grande basta el TCL.
-\item Más potentes si se cumplen los supuestos; dan IC de la diferencia de medias.
-\end{itemize}
-\textbf{No paramétricas} (rangos)
-\begin{itemize}
-\item Ordenan los datos y trabajan con su \textbf{posición} (rango).
-\item No suponen ninguna distribución; robustas frente a extremos.
-\item Para variables \textbf{ordinales}, muy asimétricas o $n$ pequeño no normal.
-\end{itemize}
-\end{column}
-\begin{column}{0.5\textwidth}
-\textbf{Ejemplo}: PCR (mg/L) de 8 pacientes\\[1mm]
 \centering
-\begin{tabular}{lcccc}\toprule
-No fuma & 1.2 & 2.0 & 3.1 & 5.4\\
-\emph{rango} & 1 & 2 & 4 & 6\\\midrule
-Fuma & 2.8 & 4.6 & 7.9 & \textbf{48.0}\\
-\emph{rango} & 3 & 5 & 7 & \textbf{8}\\\bottomrule
-\end{tabular}\\[1mm]
-\raggedright
-Medias: 2.9 frente a \textbf{15.8} (el 48.0 la dispara). Sumas de rangos: 13
-frente a 23. Para los rangos, el 48.0 es solo «el mayor»: pesaría igual si
-fuera 8.0.
-\end{column}
-\end{columns}
-#+END_EXPORT
+#+ATTR_LATEX: :width 0.98\textwidth :center nil
+[[file:./img/arbol_pruebas.pdf]]
 
-** Condiciones de aplicación de la t de Student
+\scriptsize Normalidad: Shapiro-Wilk y gráfico Q-Q. Con n grande (> 30-40 por grupo) la /t/ es robusta (TCL).
 
-#+BEGIN_EXPORT latex
-\scriptsize
-\begin{enumerate}
-\item \textbf{Independencia} de las observaciones (lo garantiza el diseño).
-\item \textbf{Normalidad} en cada grupo: \jmv{Prueba de Normalidad}
-  (Shapiro-Wilk; $p<0.05$ $\Rightarrow$ no normal) y \jmv{Gráfico Q-Q} (puntos
-  sobre la diagonal). Con $n$ grande (más de 30-40 por grupo) la $t$ es robusta (TCL).
-\item \textbf{Igualdad de varianzas}: \jmv{Prueba de homogeneidad} (Levene;
-  $p<0.05$ $\Rightarrow$ varianzas distintas). Si no se cumple: \textbf{$t$ de Welch}.
-\end{enumerate}
-\begin{recuadro}\scriptsize
-Todo está en \jmv{Comprobaciones de Supuestos} de la ventana de la $t$.
-Shapiro-Wilk con $n$ muy grande rechaza por desviaciones mínimas: mira también el
-gráfico Q-Q y el histograma.
-\end{recuadro}
-\begin{recuadronaranja}\scriptsize
-Si la variable es ordinal, muy asimétrica o con $n$ pequeño y no normal:
-pruebas \textbf{no paramétricas}.
-\end{recuadronaranja}
-#+END_EXPORT
-
-** Dos muestras independientes en jamovi
-
-#+BEGIN_EXPORT latex
-\centering
-\captura{capturas/tis_panel.png}{0.84\textwidth}\\[0.5mm]
-\raggedright\scriptsize
-\jmv{Pruebas t} $\rightarrow$ \jmv{Prueba t para Muestras Independientes}
-(\jmv{Filtrar 1}): \texttt{PAS\_8sem} en \jmv{Variables Dependientes},
-\texttt{Tratamiento} en \jmv{Variables de agrupación}; \jmv{t de Student};
-\jmv{Diferencia de medias} con \jmv{Intervalo de confianza}; \jmv{Prueba de
-homogeneidad} (Levene) y \jmv{Prueba de Normalidad}. \jmv{Welch} y \jmv{U de
-Mann-Whitney} se marcan en la misma ventana cuando hacen falta. La diferencia es
-Grupo 1 $-$ Grupo 2 en el orden de los niveles: Placebo $-$ Suplemento $=8.35$ mmHg.
-Resultado: $t=4.81$, gl $=298$, $p<0.001$; IC 95\,\%: 4.93 a 11.8 mmHg.
-Supuestos: Shapiro-Wilk $p=0.323$ y Levene $p=0.966$ $\Rightarrow$ la t de Student es válida.
-#+END_EXPORT
-
-** Q.07 ¿Funciona el suplemento?
-
-1. Compara la =PAS_8sem= entre =Tratamiento= Placebo y Suplemento con
-   la *muestra pequeña* (t de Student). Anota la diferencia de medias, su IC y p.
-2. Revisa los supuestos (normalidad, Levene). ¿Cambia algo con Welch?
-3. Repite con la muestra grande y sin filtro. ¿Hubo algún error con la pequeña?
-
-** Resultado Q.07
-
-#+BEGIN_EXPORT latex
-\scriptsize
-\resizebox{\textwidth}{!}{\input{img/res_q07.tex}}\\[1mm]
-\begin{columns}
-\begin{column}{0.55\textwidth}
-\href{https://epidemos.es/bs2026/forest.R}{\includegraphics[width=\textwidth]{img/rj_forest.pdf}}
-\end{column}
-\begin{column}{0.45\textwidth}\tiny
-Supuestos correctos (Levene y Shapiro-Wilk $p>0.05$); Student y Welch coinciden.\\[1mm]
-\textbf{Grande}: el suplemento baja la PAS 8.3 mmHg (IC 4.9 a 11.8; $p<0.001$).\\[1mm]
-\textbf{Pequeña}: diferencia parecida (6.8) pero el IC ($-3.0$ a 16.6)
-contiene el 0: $p=0.17$. Diferencia real 8.4 mmHg $\Rightarrow$ \textbf{error tipo II}.\\[1mm]
-Código: \href{https://epidemos.es/bs2026/forest.R}{forest.R}
-\end{column}
-\end{columns}
-#+END_EXPORT
-
-** Q.08 Colesterol y sexo: el error tipo II
-
-1. Compara el =Colesterol= de mujeres y hombres en la *muestra pequeña*
-   y en la *grande*.
-2. Calcula la diferencia real (sin filtro). ¿Por qué las muestras
-   pueden «no ver» una diferencia que existe?
-3. ¿Es clínicamente relevante esa diferencia?
-
-** Resultado Q.08
-
-#+BEGIN_EXPORT latex
-\scriptsize
-\resizebox{\textwidth}{!}{\input{img/res_q08.tex}}
-\begin{itemize}
-\item Ninguna muestra rechaza $H_0$ ($p=0.51$ y $p=0.25$).
-\item Diferencia real (población): \textbf{2.4 mg/dL}, con una desviación típica
-  de unos 35: para detectarla con potencia del 80\,\% harían falta unos
-  \textbf{3300 pacientes por grupo}.
-\item Los IC son honestos: contienen el 2.4 real y dicen que la diferencia
-  es, como mucho, de unos 13 mg/dL (muestra grande).
-\end{itemize}
-\begin{recuadro}\scriptsize
-No rechazar $H_0$ no prueba que no haya diferencia; aquí la hay, pero es
-pequeña y \textbf{clínicamente irrelevante}. Mira siempre el IC.
-\end{recuadro}
-#+END_EXPORT
-
-** Alternativa no paramétrica: U de Mann-Whitney
-
-#+BEGIN_EXPORT latex
-\scriptsize
-\begin{itemize}
-\item Ordena \textbf{todos} los valores juntos y compara los \textbf{rangos} de los
-  dos grupos: $U$ cuenta cuántas veces un valor de un grupo supera a uno del otro.
-\item $H_0$: las dos distribuciones son iguales (ninguno tiende a dar valores mayores).
-  Si tienen la misma forma, contrasta la igualdad de \textbf{medianas}.
-\item No necesita normalidad; robusta frente a valores extremos.
-\item Ideal para variables \textbf{ordinales} (\texttt{Dolor} 0-10) o muy
-  asimétricas (\texttt{PCR}).
-\item En jamovi: misma ventana de la $t$, casilla \jmv{U de Mann-Whitney};
-  pide además \jmv{Descriptivas} para ver las \textbf{medianas}.
-\end{itemize}
-#+END_EXPORT
-
-** PCR: una variable muy asimétrica
-
-#+BEGIN_EXPORT latex
-\centering
-\href{https://epidemos.es/bs2026/pcr.R}{\includegraphics[width=0.8\textwidth]{img/rj_pcr.pdf}}\\[1mm]
-\scriptsize Muestra grande. Con datos tan asimétricos Mann-Whitney es más
-potente que la t. Código: \href{https://epidemos.es/bs2026/pcr.R}{pcr.R}
-#+END_EXPORT
-
-** Q.09 PCR y tabaco; dolor y tratamiento
-
-1. Explora la =PCR= (histograma, Shapiro-Wilk, Q-Q). ¿Es normal?
-2. Compara la PCR de fumadores y no fumadores con t y con Mann-Whitney
-   (muestra pequeña y grande). Compara medias y medianas.
-3. Compara el =Dolor= (0-10) entre tratamientos: ¿qué prueba es la adecuada?
-
-** Resultado Q.09
-
-#+BEGIN_EXPORT latex
-\scriptsize
-\resizebox{\textwidth}{!}{\input{img/res_q09.tex}}
-\begin{itemize}
-\item \textbf{PCR}: nada normal (Shapiro-Wilk $p<0.001$, cola larga a la derecha) y
-  varianzas distintas (jamovi avisa: Levene significativo; Welch $p=0.004$).
-  Las \textbf{medias} se inflan con los extremos; mejor describir con
-  \textbf{medianas} (2.3 frente a 3.8 en la grande) y contrastar con
-  \textbf{Mann-Whitney}, que da un $p$ mucho menor que la $t$ en la muestra grande.
-\item Pequeña: ninguna prueba detecta la diferencia ($n$ = 18 / 12).
-\item \textbf{Dolor}: variable \textbf{ordinal} $\Rightarrow$ Mann-Whitney. Menos
-  dolor con el suplemento (mediana 3 frente a 4; $p<0.001$ en la grande).
-\end{itemize}
-#+END_EXPORT
-
-** Muestras pareadas: la misma persona dos veces
-
-#+BEGIN_EXPORT latex
-\begin{columns}
-\begin{column}{0.6\textwidth}
-\href{https://epidemos.es/bs2026/pareadas.R}{\includegraphics[width=\textwidth]{img/rj_pareadas.pdf}}
-\end{column}
-\begin{column}{0.4\textwidth}\scriptsize
-\begin{itemize}
-\item Se analiza la \textbf{diferencia} de cada individuo: $d_i = \text{basal}_i - \text{8 sem}_i$.
-\item $t$ pareada = $t$ de una muestra sobre las diferencias ($H_0$: $\mu_d=0$).
-\item Supuesto: \textbf{normalidad de las diferencias}.
-\end{itemize}
-\begin{recuadronaranja}\scriptsize
-Error frecuente: analizar datos pareados como independientes.
-\end{recuadronaranja}
-Código: \href{https://epidemos.es/bs2026/pareadas.R}{pareadas.R}
-\end{column}
-\end{columns}
-#+END_EXPORT
-
-** Alternativa no paramétrica: Wilcoxon de rangos con signo
-
-#+BEGIN_EXPORT latex
-\scriptsize
-\begin{enumerate}
-\item Calcula la diferencia $d_i$ de cada individuo (se descartan las $d_i=0$).
-\item Ordena los \textbf{valores absolutos} $|d_i|$ y asígnales rangos.
-\item Suma por separado los rangos de las diferencias \textbf{positivas} y de las
-  \textbf{negativas}.
-\item Si $H_0$ es cierta (no hay cambio), ambas sumas deberían parecerse.
-\end{enumerate}
-\centering
-\begin{tabular}{lrrrrr}\toprule
-$d_i$ (mmHg) & $+12$ & $-3$ & $+7$ & $+20$ & $-5$\\
-rango de $|d_i|$ & 4 & 1 & 3 & 5 & 2\\\bottomrule
-\end{tabular}\\[1mm]
-\raggedright
-Suma de rangos positivos $=4+3+5=12$; negativos $=1+2=3$.
-\begin{recuadro}\scriptsize
-Usa la \textbf{magnitud} de los cambios (a diferencia de una simple prueba de
-signos) pero no su valor exacto. En jamovi: \jmv{Prueba t para Muestras Pareadas}
-$\rightarrow$ \jmv{Prueba de rangos con signo de Wilcoxon}.
-\end{recuadro}
-#+END_EXPORT
-
-** Muestras pareadas en jamovi
-
-#+BEGIN_EXPORT latex
-\begin{columns}[T]
-\begin{column}{0.64\textwidth}
-\captura{capturas/tps_panel_30.png}{\textwidth}
-\end{column}
-\begin{column}{0.36\textwidth}\scriptsize
-\jmv{Pruebas t} $\rightarrow$ \jmv{Prueba t para Muestras Pareadas}
-(\jmv{Filtrar 2}: $n=30$)
-{\tiny\begin{itemize}
-\item \jmv{Variables Apareadas}: \texttt{PAS\_basal} y \texttt{PAS\_8sem}
-  (diferencia = basal $-$ 8 sem)
-\item \jmv{t de Student} y \jmv{Rangos de Wilcoxon}
-\item \jmv{Diferencia de medias} e \jmv{Intervalo de confianza}
-\item \jmv{Descriptivas}, \jmv{Gráficas descriptivas}
-\item \jmv{Prueba de Normalidad} (de las \emph{diferencias})
-\end{itemize}}
-Bajada media 6.7 mmHg (IC 2.9 a 10.4; $p<0.001$).
-¡Los IC de las dos medias del gráfico \textbf{se solapan}! (Q.10).\\[1mm]
-Por tratamiento: otro filtro, \texttt{Tratamiento == 1} (Suplemento) o
-\texttt{== 0} (Placebo).
-\end{column}
-\end{columns}
-#+END_EXPORT
-
-** Q.10 ¿Baja la presión arterial?
-
-1. Con la muestra pequeña, compara =PAS_basal= y =PAS_8sem= (t
-   pareada y Wilcoxon). Anota la bajada media, su IC y p.
-2. Repite separando por =Tratamiento=: crea un filtro nuevo
-   ~Tratamiento == 1~ (Suplemento) y déjalo activo junto a =Filtrar 2=
-   (los filtros activos se combinan); después cámbialo a ~Tratamiento == 0~
-   (Placebo). ¿Baja también con placebo? ¿Por qué?
-3. Repite con la muestra grande.
-4. Mira en =Descriptivas= los IC 95 % de la PAS basal y de la PAS a 8
-   semanas por separado: ¿se solapan? ¿Por qué la t pareada detecta la
-   bajada con más facilidad?
-
-** Resultado Q.10
-
-#+BEGIN_EXPORT latex
-\scriptsize
-\resizebox{\textwidth}{!}{\input{img/res_q10.tex}}
-\begin{itemize}
-\item La PAS baja en los dos grupos; con el \textbf{suplemento} el triple (13.2 frente a
-  4.4 mmHg en la grande). Población: 12.4 y 4.1 mmHg.
-\item Pequeña, placebo: bajada de 3.2 mmHg no significativa ($n=16$): error tipo II.
-\item Wilcoxon y $t$ pareada llevan a las mismas conclusiones.
-\item Pequeña: los IC de las medias \textbf{se solapan} (basal 147.4 a 154.6; 8 sem
-  139.4 a 149.3), pero la $t$ pareada da $p<0.001$. Comparar IC separados no sirve
-  para datos pareados.
-\end{itemize}
-\begin{recuadronaranja}\scriptsize
-Última columna: $p$ si se analizasen \textbf{(mal)} como muestras independientes.
-Siempre es mayor: al ignorar el emparejamiento, la variabilidad entre pacientes
-(DT $\approx12$) tapa el cambio dentro de cada paciente. En el placebo pequeño
-pasaría de $p=0.12$ a $p=0.46$.
-\end{recuadronaranja}
-#+END_EXPORT
-
-** Para saber más: más de dos grupos
-
-#+BEGIN_EXPORT latex
-\scriptsize
-\begin{columns}
-\begin{column}{0.55\textwidth}
-\begin{itemize}
-\item Con 3 o más grupos, hacer muchas $t$ por parejas \textbf{infla el error tipo I}.
-\item \textbf{ANOVA de un factor} (paramétrica): ¿son iguales todas las medias?
-\item \textbf{Kruskal-Wallis} (no paramétrica): versión con rangos.
-\item Si se rechaza $H_0$, comparaciones \emph{post hoc} (Tukey, Games-Howell).
-\item En jamovi: \jmv{ANOVA} $\rightarrow$ \jmv{ANOVA de Un Factor} y
-  \jmv{ANOVA} $\rightarrow$ \jmv{No Paramétrico} $\rightarrow$
-  \jmv{ANOVA de Un Factor (No Paramétrico)}.
-\end{itemize}
-\end{column}
-\begin{column}{0.45\textwidth}\centering
-\texttt{PAS\_basal} por \texttt{Educa} (grande)\\[1mm]
-\input{img/res_anova.tex}\\[1mm]
-\raggedright
-ANOVA: $F(2;\,297)=2.91$, $p=0.056$.\\
-Kruskal-Wallis: $\chi^2=5.65$, gl $=2$, $p=0.059$.\\[1mm]
-\tiny Al límite: la PAS basal sube con la edad, y la edad es mayor con estudios básicos.
-\end{column}
-\end{columns}
-#+END_EXPORT
-
-* Resumen
 ** ¿Qué prueba uso? Tabla resumen
 
 #+BEGIN_EXPORT latex
@@ -1553,6 +1537,27 @@ Proporciones pareadas & \multicolumn{2}{l}{McNemar}\\\bottomrule
 \begin{recuadro}\scriptsize
 Y siempre: \textbf{tamaño del efecto + IC 95\,\% + $p$}, comprobando los
 supuestos y decidiendo la prueba \textbf{antes} de ver los resultados.
+\end{recuadro}
+#+END_EXPORT
+
+** Las pruebas en jamovi
+
+#+BEGIN_EXPORT latex
+\scriptsize\centering
+\begin{tabular}{L{0.3\textwidth}L{0.62\textwidth}}\toprule
+\textbf{Prueba} & \textbf{Menú de jamovi (pestaña Análisis)}\\\midrule
+$t$ una muestra, Wilcoxon & \jmv{Pruebas t} $\rightarrow$ \jmv{Prueba t de una Muestra}\\
+$t$ Student/Welch, Mann-Whitney & \jmv{Pruebas t} $\rightarrow$ \jmv{Prueba t para Muestras Independientes}\\
+$t$ pareada, Wilcoxon & \jmv{Pruebas t} $\rightarrow$ \jmv{Prueba t para Muestras Pareadas}\\\midrule
+Binomial (1 proporción) & \jmv{Frecuencias} $\rightarrow$ \jmv{Prueba de Proporciones (2 Resultados)}\\
+$\chi^2$, Yates, Fisher & \jmv{Frecuencias} $\rightarrow$ \jmv{Tablas de Contingencia: Muestras Independientes}\\
+McNemar & \jmv{Frecuencias} $\rightarrow$ \jmv{Tablas de Contingencia: Muestras Pareadas}\\\midrule
+ANOVA, Kruskal-Wallis & \jmv{ANOVA} $\rightarrow$ \jmv{ANOVA de Un Factor} / \jmv{No Paramétrico}\\\bottomrule
+\end{tabular}
+\begin{recuadro}\scriptsize
+En cada ventana: la prueba \textbf{paramétrica y la no paramétrica} son casillas
+de la misma ventana (\jmv{Pruebas}); los supuestos están en
+\jmv{Comprobaciones de Supuestos}.
 \end{recuadro}
 #+END_EXPORT
 

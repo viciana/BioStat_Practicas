@@ -54,13 +54,13 @@ for (sg in c(-1, 1)) {                              # región de rechazo (rojo)
   polygon(x_t(c(sg * tc, u, sg * tc)), c(0, dt(u, n - 1), 0),
           col = adjustcolor("firebrick", 0.35), border = NA)
 }
-u <- tg[abs(tg) <= tc]                              # región de aceptación (azul)
+u <- tg[abs(tg) <= tc]                              # región de no rechazo (azul)
 polygon(x_t(c(-tc, u, tc)), c(0, dt(u, n - 1), 0),
         col = adjustcolor("steelblue", 0.12), border = NA)
 lines(x_t(tg), dt(tg, n - 1), lwd = 1.5)
 segments(mu, 0, mu, 0.97, lty = 2)
 text(mu, 0.555, bquote(mu == .(f)), cex = 0.6, pos = 4, offset = 0.15)
-text(mu, c(0.2, 0.15), c("región de aceptación", expression("de" ~ H[0])), cex = 0.55,
+text(mu, c(0.2, 0.15), c("región de no rechazo", expression("de" ~ H[0])), cex = 0.55,
      col = "steelblue4")
 for (sg in c(-1, 1))                                # dos líneas en cada cola
   text(x_t(sg * 3.55), c(0.15, 0.1), c("región de rechazo", expression("de" ~ H[0])),

@@ -65,6 +65,10 @@ img/rj_tcl.pdf: src/19_rj_tcl.R datos/tcl.R datos/poblacion.omv
 	Rscript $<
 img/rj_zt.pdf: src/23_rj_zt.R datos/zt.R
 	Rscript $<
+img/rj_t_colas.pdf: src/31_rj_t_colas.R datos/t_colas.R datos/poblacion.omv
+	Rscript $<
+img/rj_chi2_dist.pdf: src/32_rj_chi2_dist.R datos/chi2_dist.R
+	Rscript $<
 
 ## Figuras LaTeX independientes (standalone; TikZ choca con ctable)
 STANDALONE = d=$$(mktemp -d) && \
@@ -80,6 +84,7 @@ GRAFICOS = img/rj_ic.pdf img/rj_pvalor.pdf img/rj_chi2.pdf img/rj_pareadas.pdf \
            img/rj_binomial.pdf img/rj_normal.pdf img/rj_normal_z.pdf img/rj_tipifica.pdf img/rj_tcl.pdf \
            img/rj_zt.pdf img/rj_relevancia.pdf img/rj_ic_dos.pdf \
            img/rj_lgn.pdf img/rj_tcl_ee.pdf img/rj_ic_logica.pdf \
+           img/rj_t_colas.pdf img/rj_chi2_dist.pdf \
            img/arbol_pruebas.pdf img/inferencia.pdf
 graficos: $(GRAFICOS)
 
@@ -93,7 +98,7 @@ practica02.pdf: practica02.org myconfbeamer.org $(GRAFICOS) img/res_q02_t.tex im
 pdf: practica02.pdf
 
 ## Diapositivas descartadas (no forma parte de 'all')
-descartes.pdf: descartes.org myconfbeamer.org $(GRAFICOS) $(CAPTURAS)
+descartes.pdf: descartes.org myconfbeamer.org $(GRAFICOS) img/res_q02_t.tex $(CAPTURAS)
 	$(EXPORTA)
 
 clean:
