@@ -8,8 +8,13 @@
 #+LATEX_HEADER: \usepackage{array}\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 #+LATEX_HEADER: \newcommand{\jmv}[1]{\textsf{\color{MidnightBlue}#1}}
 #+LATEX_HEADER: \newcommand{\captura}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}{\fbox{\parbox{#2}{\centering\vspace{8mm}\small Captura pendiente:\\ \texttt{\detokenize{#1}}\vspace{8mm}}}}}
-#+LATEX_HEADER: % Nº de diapositiva (= página del PDF) abajo a la izquierda, sobre el fondo: no ocupa sitio
-#+LATEX_HEADER: \setbeamertemplate{background}{\vbox to \paperheight{\vfill\hbox to \paperwidth{\hspace*{1.5mm}\tiny\color{gray}\insertpagenumber\hfill}\vspace*{1mm}}}
+#+LATEX_HEADER: % Fecha y hora de compilación (para seguir las versiones), solo en la portada
+#+LATEX_HEADER: \newcount\hh \newcount\mm \hh=\time \divide\hh by 60 \mm=\hh \multiply\mm by -60 \advance\mm by \time
+#+LATEX_HEADER: \newcommand{\dosdig}[1]{\ifnum#1<10 0\fi\number#1}
+#+LATEX_HEADER: \newcommand{\compilado}{\number\year-\dosdig{\month}-\dosdig{\day}\ \dosdig{\hh}:\dosdig{\mm}}
+#+LATEX_HEADER: % Nº de diapositiva (= página del PDF) abajo a la izquierda, sobre el fondo: no ocupa sitio;
+#+LATEX_HEADER: % en la portada, en su lugar, la fecha de compilación abajo a la derecha
+#+LATEX_HEADER: \setbeamertemplate{background}{\vbox to \paperheight{\vfill\hbox to \paperwidth{\hspace*{1.5mm}\fontsize{4}{5}\selectfont\color{gray!70}\ifnum\value{page}=1 Compilado: \compilado\hfill\else\tiny\color{gray}\insertpagenumber\hfill\fi}\vspace*{1mm}}}
 #+OPTIONS: H:2
 #+OPTIONS: toc:nil ^:{}
 
@@ -1122,15 +1127,18 @@ fumadores. ¿Es una diferencia real o puede deberse al azar del muestreo?
 
 #+BEGIN_EXPORT latex
 \begin{columns}
-\begin{column}{0.55\textwidth}
-\href{https://epidemos.es/bs2026/chi2.R}{\includegraphics[width=\textwidth]{img/rj_chi2.pdf}}
+\begin{column}{0.5\textwidth}\centering
+\vspace*{-4mm}
+\href{https://epidemos.es/bs2026/chi2.R}{\includegraphics[height=0.86\textheight,keepaspectratio]{img/rj_chi2.pdf}}
 \end{column}
-\begin{column}{0.45\textwidth}\scriptsize
+\begin{column}{0.5\textwidth}\scriptsize
 \textbf{Esperadas}: las que habría si $H_0$ (independencia) fuera cierta:
 \[ E_{ij} = \frac{\text{total fila}_i \times \text{total col.}_j}{n} \]
 Ej.: fumadores con infarto: $E=\dfrac{88\times23}{300}=6.75$, pero hemos
 \textbf{observado} 15.\\[1mm]
 Cuanto más se alejan las observadas de las esperadas, más evidencia contra $H_0$.\\[1mm]
+\textbf{Abajo}: lo que cada celda aporta al $\chi^2$, $(O-E)^2/E$. Casi todo sale de las
+celdas con infarto: con esperadas pequeñas, cada caso de más pesa mucho.\\[1mm]
 Código: \href{https://epidemos.es/bs2026/chi2.R}{chi2.R}
 \end{column}
 \end{columns}
@@ -1205,36 +1213,45 @@ Fumador $\times$ Infarto (grande): $p=0.00008$ sin corregir y $p=0.0002$ con Yat
 
 #+BEGIN_EXPORT latex
 \scriptsize
-\begin{columns}
-\begin{column}{0.47\textwidth}
+\begin{columns}[T]
+\begin{column}{0.47\textwidth}\scriptsize
 \begin{itemize}
-\item No usa ninguna aproximación: calcula la probabilidad \textbf{exacta}
-  (hipergeométrica) de todas las tablas posibles con los \textbf{mismos totales}.
-\item $p$ = suma de las probabilidades de las tablas tan o menos probables que
-  la observada.
-\item Válido \textbf{siempre}; imprescindible si hay esperadas $<5$.
+\item No todos los repartos de $n$ en 4 casillas: solo las tablas con los \textbf{mismos
+  totales}; fijados, $a$ determina las otras tres.
+\item Bajo $H_0$, \textbf{hipergeométrica}:\\[0.5mm]
+  {\centering\setlength{\tabcolsep}{2.5pt}\begin{tabular}{l|cc|c}
+   & Sí & No & Total\\\hline
+  Placebo & $a$ & $b$ & $a+b$\\
+  Suplemento & $c$ & $d$ & $c+d$\\\hline
+  Total & $a+c$ & $b+d$ & $n$
+  \end{tabular}\par}
+  \[ P(a)=\frac{\dbinom{a+b}{a}\dbinom{c+d}{c}}{\dbinom{n}{a+c}} \]
+\item $p$ = suma de las $P$ de las tablas tan o menos probables que la observada.
+  Válido \textbf{siempre}; imprescindible si alguna $E<5$.
 \end{itemize}
-Tratamiento $\times$ EfAdverso, \textbf{muestra pequeña}: 2 efectos adversos en 30
-pacientes; esperadas 1.07 y 0.93.
 \end{column}
-\begin{column}{0.53\textwidth}\centering
-Tablas posibles (filas Placebo/Suplemento; columnas No/Sí):\\[1mm]
+\begin{column}{0.53\textwidth}\scriptsize\centering
+\raggedright Tratamiento $\times$ EfAdverso, \textbf{muestra pequeña}: 2 efectos adversos en 30
+pacientes (esperadas 1.07 y 0.93). Tablas posibles (filas Placebo/Suplemento; columnas
+Sí/No):\\[1mm]
+\centering
 \begin{tabular}{ccc}
-$\begin{array}{|cc|}\hline 14&2\\ 14&0\\\hline\end{array}$ &
-$\begin{array}{|cc|}\hline 15&1\\ 13&1\\\hline\end{array}$ &
-$\begin{array}{|cc|}\hline \mathbf{16}&\mathbf{0}\\ \mathbf{12}&\mathbf{2}\\\hline\end{array}$\\[2mm]
+$\begin{array}{|cc|}\hline 2&14\\ 0&14\\\hline\end{array}$ &
+$\begin{array}{|cc|}\hline 1&15\\ 1&13\\\hline\end{array}$ &
+$\begin{array}{|cc|}\hline \mathbf{0}&\mathbf{16}\\ \mathbf{2}&\mathbf{12}\\\hline\end{array}$\\[2mm]
 $P=0.276$ & $P=0.515$ & $P=\mathbf{0.209}$\\
  & & (observada)
-\end{tabular}\\[2mm]
+\end{tabular}\\[1mm]
 \raggedright
-Ninguna otra tabla es menos probable que la observada: $p=0.209$.
-No hay evidencia de más efectos adversos con el suplemento\dots{} con solo 30
-pacientes.
+Observada: $P=\binom{16}{0}\binom{14}{2}\big/\binom{30}{2}=91/435=0.209$. Ninguna otra
+tabla es menos probable: $p=0.209$. No hay evidencia de más efectos adversos con el
+suplemento\dots{} con solo 30 pacientes.
+\begin{recuadro}\scriptsize
+En jamovi: \jmv{Estadísticas} $\rightarrow$ \jmv{Test exacto de Fisher} (también en
+tablas mayores que $2\times2$).
+\end{recuadro}
 \end{column}
 \end{columns}
-\begin{recuadro}\scriptsize
-En jamovi: \jmv{Estadísticas} $\rightarrow$ \jmv{Test exacto de Fisher} (también en tablas mayores que $2\times2$).
-\end{recuadro}
 #+END_EXPORT
 
 ** $\chi^2$, Yates o Fisher: ¿cuál elijo?
@@ -1280,8 +1297,11 @@ $p_1=\dfrac{a}{a+b}$ \qquad $p_0=\dfrac{c}{c+d}$
 \begin{recuadro}\scriptsize
 En jamovi: \jmv{Estadísticas} $\rightarrow$ \jmv{Medidas Comparativas (solo 2x2)}:
 \jmv{Razón de odds}, \jmv{Riesgo relativo}, \jmv{Diferencia de proporciones}.
-¡Ojo! jamovi toma como suceso la \textbf{primera columna} (\emph{No}, código 0):
-su RR es el de \emph{no} enfermar. La OR y la diferencia sí sirven tal cual.
+\textbf{Nota}: jamovi toma la \textbf{primera fila} como expuestos y la \textbf{primera columna}
+como suceso. Para que el \textbf{RR} y el \textbf{RA} (diferencia de proporciones) salgan bien,
+hay que \textbf{cambiar el orden de las categorías}: \emph{Sí} primero en las dos variables.
+Si se invierten \textbf{las dos}, la OR y el RA no cambian; si solo \textbf{una}, la OR sale
+invertida ($1/OR$) y el RA cambia de signo.
 \end{recuadro}
 #+END_EXPORT
 
@@ -1305,8 +1325,9 @@ su RR es el de \emph{no} enfermar. La OR y la diferencia sí sirven tal cual.
 \end{itemize}
 Resultado: $\chi^2=15.5$, $p<0.001$; esperadas todas $\geq5$ (mínima 6.75).
 \begin{recuadronaranja}\tiny
-\jmv{Riesgo relativo} = 1.16 \jmv{(Se comparan filas)}: jamovi toma la
-\textbf{primera columna} (\emph{No}) como suceso. Ver Resultado Q.08.
+\textbf{Nota}: con el orden No/Sí, el \jmv{Riesgo relativo} de jamovi (1.16) es el de
+\emph{no} tener infarto. Hay que \textbf{cambiar el orden de las categorías} (\emph{Sí}
+primero) para que el RR y el RA salgan bien. Ver Resultado Q.08.
 \end{recuadronaranja}
 \end{column}
 \end{columns}
@@ -1316,7 +1337,8 @@ Resultado: $\chi^2=15.5$, $p<0.001$; esperadas todas $\geq5$ (mínima 6.75).
 
 1. Con la *muestra grande*, tabla =Fumador= (filas) \times =Infarto=
    (columnas): % por filas, frecuencias esperadas, $\chi^2$, RR y OR con IC.
-2. ¿Hay asociación? Interpreta el RR.
+2. ¿Hay asociación? Interpreta el RR (antes, pon /Sí/ como primera categoría
+   de =Fumador= e =Infarto=).
 3. Repite con la *muestra pequeña*: ¿se cumplen las condiciones del $\chi^2$?
    ¿Qué prueba usarías?
 4. Repite *sin filtro* (población). ¿Acertaron las muestras?
@@ -1341,10 +1363,9 @@ Resultado: $\chi^2=15.5$, $p<0.001$; esperadas todas $\geq5$ (mínima 6.75).
 \end{column}
 \end{columns}
 \begin{recuadro}\tiny
-jamovi da OR = 5.24 y diferencia 0.133, pero \textbf{RR = 1.16}: es el riesgo de
-\emph{no} tener infarto (96.2\,\% / 83.0\,\%), porque toma la primera columna
-(\emph{No}) como suceso. El RR de infarto se obtiene de los \% por filas:
-$17.0/3.8=4.5$.
+Con el orden original de las categorías (No, Sí), jamovi da \textbf{RR = 1.16}: el riesgo
+de \emph{no} tener infarto (96.2\,\% / 83.0\,\%). Con \emph{Sí} como primera categoría en
+\texttt{Fumador} e \texttt{Infarto} da el RR de infarto: \textbf{4.52} ($=17.0/3.8$).
 \end{recuadro}
 #+END_EXPORT
 

@@ -5,6 +5,6 @@
 # Ejecutar desde practica02:   Rscript src/12_rj_chi2.R
 # ---------------------------------------------------------------------
 data <- jmvReadWrite::read_omv("datos/poblacion.omv")   # en Rj: 'data'
-cairo_pdf("img/rj_chi2.pdf", width = 3.6, height = 2.8)
+cairo_pdf("img/rj_chi2.pdf", width = 3.1, height = 4.5)
 source("datos/chi2.R")
 dev.off()
