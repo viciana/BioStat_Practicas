@@ -23,7 +23,7 @@ datos/poblacion.omv: src/02_filtros.R src/omv_enteros.R datos/poblacion_base.omv
 datos: datos/poblacion.omv
 
 ## Tablas de soluciones (img/res_*.tex, las escribe un único script) ------
-img/res_q02_t.tex: src/30_resultados.R src/estilo_jmv.R datos/poblacion.omv
+img/res_q02_t.tex img/res_q01.tex img/res_q01_pob.tex img/res_q01f.tex img/res_q01f_pob.tex: src/30_resultados.R src/estilo_jmv.R datos/poblacion.omv
 	Rscript $<
 
 resultados: img/res_q02_t.tex
@@ -69,6 +69,10 @@ img/rj_t_colas.pdf: src/31_rj_t_colas.R datos/t_colas.R datos/poblacion.omv
 	Rscript $<
 img/rj_chi2_dist.pdf: src/32_rj_chi2_dist.R datos/chi2_dist.R
 	Rscript $<
+img/rj_ic_colesterol.pdf: src/33_rj_ic_colesterol.R datos/ic_colesterol.R datos/poblacion.omv
+	Rscript $<
+img/rj_ic_fumador.pdf: src/34_rj_ic_fumador.R datos/ic_fumador.R datos/poblacion.omv
+	Rscript $<
 
 ## Figuras LaTeX independientes (standalone; TikZ choca con ctable)
 STANDALONE = d=$$(mktemp -d) && \
@@ -84,14 +88,14 @@ GRAFICOS = img/rj_ic.pdf img/rj_pvalor.pdf img/rj_chi2.pdf img/rj_pareadas.pdf \
            img/rj_binomial.pdf img/rj_normal.pdf img/rj_normal_z.pdf img/rj_tipifica.pdf img/rj_tcl.pdf \
            img/rj_zt.pdf img/rj_relevancia.pdf img/rj_ic_dos.pdf \
            img/rj_lgn.pdf img/rj_tcl_ee.pdf img/rj_ic_logica.pdf \
-           img/rj_t_colas.pdf img/rj_chi2_dist.pdf \
+           img/rj_t_colas.pdf img/rj_chi2_dist.pdf img/rj_ic_colesterol.pdf img/rj_ic_fumador.pdf \
            img/arbol_pruebas.pdf img/inferencia.pdf
 graficos: $(GRAFICOS)
 
 ## Presentación ------------------------------------------------------------
 # Capturas de jamovi (se ignoran los nombres con espacios, que rompen make)
 CAPTURAS = $(shell find capturas -name "*.png" ! -name "* *")
-practica02.pdf: practica02.org myconfbeamer.org $(GRAFICOS) img/res_q02_t.tex img/res_ic_dos.tex \
+practica02.pdf: practica02.org myconfbeamer.org $(GRAFICOS) img/res_q02_t.tex img/res_q01.tex img/res_q01f.tex img/res_ic_dos.tex \
                 $(CAPTURAS)
 	$(EXPORTA)
 
@@ -99,6 +103,10 @@ pdf: practica02.pdf
 
 ## Diapositivas descartadas (no forma parte de 'all')
 descartes.pdf: descartes.org myconfbeamer.org $(GRAFICOS) img/res_q02_t.tex $(CAPTURAS)
+	$(EXPORTA)
+
+## Diapositivas nuevas pendientes de ordenar (addendum.org)
+addendum.pdf: addendum.org myconfbeamer.org $(GRAFICOS) img/res_q01f.tex $(CAPTURAS)
 	$(EXPORTA)
 
 clean:

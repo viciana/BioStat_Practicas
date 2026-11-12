@@ -33,22 +33,15 @@ tg  <- seq(-4.5, 4.5, length = 600)
 y_ax <- 0.70                                       # recta del colesterol
 y   <- c(0.905, 0.74)                               # IC de A y de B, sobre la recta
 op <- par(mar = c(3, 0.5, 0.3, 0.5), mgp = c(1.8, 0.6, 0), cex.axis = 0.75)
-plot(NA, xlim = x_t(c(-4.3, 4.3)), ylim = c(0, 1.03), bty = "n", xaxt = "n", yaxt = "n",
-     xlab = bquote("Estadístico" ~ t ~ "bajo" ~ H[0] * ":" ~ mu == .(f <- sprintf("%.1f", mu)) ~
+plot(NA, xlim = x_t(c(-4.3, 4.3)), ylim = c(0, 1.21), bty = "n", xaxt = "n", yaxt = "n",
+     xlab = bquote("Distribución del estadístico" ~ t ~ "bajo" ~ H[0] * ":" ~ mu == .(f <- sprintf("%.1f", mu)) ~
                    "(" * .(n - 1) ~ "gl)"), ylab = "")
 axis(1, at = seq(190, 240, 10), pos = y_ax, tcl = -0.2, mgp = c(0, 0.1, 0), cex.axis = 0.6)
 text(par("usr")[2], y_ax - 0.145, "Colesterol (mg/dL)", cex = 0.55, adj = 1)
 axis(1, at = x_t(-4:4), labels = -4:4)
-## 1) Al fondo: el cálculo de t, sobre el punto medio de cada flecha
 y0 <- y - 0.02                                      # salida de las flechas (bajo cada IC)
-ym <- c(0.5, 0.3)                                   # altura del cálculo de t
-xm <- m + (x_t(tt) - m) * (y0 - ym) / (y0 - 0.035)
-for (i in 1:2)
-  text(xm[i], ym[i], cex = 0.5, col = adjustcolor(col[i], 0.85),
-       bquote(t == frac(.(sprintf("%.1f", m[i])) - .(f), .(sprintf("%.2f", ee[i]))) *
-              " = " * .(sprintf("%.2f", tt[i]))))
 
-## 2) Encima: regiones, curva t, mu y valores críticos
+## 1) Regiones, curva t, mu y valores críticos
 for (sg in c(-1, 1)) {                              # región de rechazo (rojo)
   u <- tg[sg * tg >= tc]
   polygon(x_t(c(sg * tc, u, sg * tc)), c(0, dt(u, n - 1), 0),
@@ -60,10 +53,10 @@ polygon(x_t(c(-tc, u, tc)), c(0, dt(u, n - 1), 0),
 lines(x_t(tg), dt(tg, n - 1), lwd = 1.5)
 segments(mu, 0, mu, 0.97, lty = 2)
 text(mu, 0.555, bquote(mu == .(f)), cex = 0.6, pos = 4, offset = 0.15)
-text(mu, c(0.2, 0.15), c("región de no rechazo", expression("de" ~ H[0])), cex = 0.55,
-     col = "steelblue4")
-for (sg in c(-1, 1))                                # dos líneas en cada cola
-  text(x_t(sg * 3.55), c(0.15, 0.1), c("región de rechazo", expression("de" ~ H[0])),
+text(mu, c(0.23, 0.18, 0.13), c("región de", "no rechazo", expression("de" ~ H[0])),
+     cex = 0.55, col = "steelblue4")
+for (sg in c(-1, 1))                                # tres líneas en cada cola
+  text(x_t(sg * 3.75), c(0.25, 0.205, 0.16), c("región de", "rechazo", expression("de" ~ H[0])),
        cex = 0.5, col = "firebrick")
 segments(x_t(c(-1, 1) * tc), 0, x_t(c(-1, 1) * tc), 0.42, col = "firebrick", lwd = 1.2)
 text(x_t(c(-1, 1) * tc), 0.075, sprintf("%+.3f", c(-1, 1) * tc), cex = 0.5, col = "firebrick",
@@ -78,6 +71,7 @@ rotulo <- function(x, y, e, cex, ...) {             # texto con fondo blanco
   rect(x - w, y - h, x + w, y + h, col = "white", border = NA)
   text(x, y, e, cex = cex, ...)
 }
+xf <- c(203, 229); yf <- c(1.155, 0.965)               # posición de cada fórmula de t
 for (i in 1:2) {
   segments(li[i], y[i], ls[i], y[i], lwd = 3, col = col[i])
   points(m[i], y[i], pch = 19, cex = 0.8)
@@ -89,5 +83,12 @@ for (i in 1:2) {
          "," ~ .(sprintf("%.1f", ls[i])) * "]"))
   arrows(m[i], y0[i], x_t(tt[i]), 0.035, length = 0.06, col = col[i], lwd = 1.2)
   points(x_t(tt[i]), 0.02, pch = 19, cex = 1.2, col = col[i])
+  ## el cálculo de t, arriba y encima de las definiciones de la muestra y del IC
+  rotulo(xf[i], yf[i], cex = 0.5, col = col[i],
+         bquote(t == frac(bar(x) - mu, EE) * " = " * frac(.(sprintf("%.1f", m[i])) - .(f), .(sprintf("%.2f", ee[i]))) *
+                " = " * .(sprintf("%.2f", tt[i]))))
+  ## y su valor, donde la flecha llega al eje t
+  text(x_t(tt[i]), 0.02, sprintf("t = %.2f", tt[i]), cex = 0.55, font = 2, col = col[i],
+       pos = c(2, 4)[i], offset = 0.6)
 }
 par(op)

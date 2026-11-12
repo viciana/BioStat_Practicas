@@ -4,6 +4,6 @@
 # img/rj_zt.pdf
 # Ejecutar desde Practica02:   Rscript src/23_rj_zt.R
 # ---------------------------------------------------------------------
-cairo_pdf("img/rj_zt.pdf", width = 4.8, height = 2.9)
+cairo_pdf("img/rj_zt.pdf", width = 5.4, height = 2.9)
 source("datos/zt.R")
 dev.off()

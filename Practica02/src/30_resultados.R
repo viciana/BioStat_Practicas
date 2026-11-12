@@ -23,6 +23,39 @@ sw_res <- function(y, g) shapiro.test(y - ave(y, g))$p.value
 mw  <- function(y, g) suppressWarnings(wilcox.test(y ~ g))
 chi <- function(t, ...) suppressWarnings(chisq.test(t, ...))
 
+## Q.01 IC del colesterol: Descriptivas de jamovi, muestras pequeña y grande ------
+# Una tabla con las dos muestras (media, DT, EE, IC, mu y Shapiro-Wilk con su
+# cabecera «Test de normalidad») y otra con la población (n y media)
+q01 <- do.call(rbind, lapply(names(M)[1:2], function(m) {
+  x <- M[[m]]$Colesterol; n <- length(x); tt <- t.test(x); sw <- shapiro.test(x)
+  c(m, n, f1(mean(x)), f1(sd(x)), f1(sd(x) / sqrt(n)), f1(tt$conf.int[1]),
+    f1(tt$conf.int[2]), f1(mean(d$Colesterol)), f3(sw$statistic), fp(sw$p.value)) }))
+writeLines(c("\\begin{tabular}{lrrrrrrrrr}", "\\toprule",
+  " & & & & & & & & \\multicolumn{2}{c}{Test de normalidad} \\\\ \\cmidrule(lr){9-10}",
+  " & & & & & \\multicolumn{2}{c}{Intervalo de confianza al 95\\,\\%} & & \\multicolumn{2}{c}{Shapiro-Wilk} \\\\ \\cmidrule(lr){6-7} \\cmidrule(lr){9-10}",
+  "Muestra & $N$ & Media ($\\bar{x}$) & DT & EE & Más bajo & Superior & $\\mu$ & $W$ & $p$ \\\\ \\midrule",
+  apply(q01, 1, function(f) paste(paste(f, collapse = " & "), "\\\\")),
+  "\\bottomrule", "\\end{tabular}"), "img/res_q01.tex")
+tabla_tex(data.frame(Muestra = "Población", `$N$` = nrow(d), `Media ($\\mu$)` = f1(mean(d$Colesterol)),
+                     check.names = FALSE), "res_q01_pob.tex", "lrr")
+
+## Addendum, IC de la proporción de fumadores con Descriptivas (Fumador 0/1) ---------
+# Mismo diseño que Q.01: la media de una variable 0/1 es la proporción. Con Shapiro-Wilk
+# (que rechaza la normalidad) para comentar que el IC de la media es robusto
+pi_pob <- mean(d$Fumador == "Sí")
+q01f <- do.call(rbind, lapply(names(M)[1:2], function(m) {
+  x <- as.numeric(M[[m]]$Fumador == "Sí"); n <- length(x); tt <- t.test(x); sw <- shapiro.test(x)
+  c(m, n, f3(mean(x)), f3(sd(x)), f3(sd(x) / sqrt(n)), f3(tt$conf.int[1]),
+    f3(tt$conf.int[2]), f3(pi_pob), f3(sw$statistic), fp(sw$p.value)) }))
+writeLines(c("\\begin{tabular}{lrrrrrrrrr}", "\\toprule",
+  " & & & & & & & & \\multicolumn{2}{c}{Test de normalidad} \\\\ \\cmidrule(lr){9-10}",
+  " & & & & & \\multicolumn{2}{c}{Intervalo de confianza al 95\\,\\%} & & \\multicolumn{2}{c}{Shapiro-Wilk} \\\\ \\cmidrule(lr){6-7} \\cmidrule(lr){9-10}",
+  "Muestra & $N$ & Media ($\\bar{x}$) & DT & EE & Más bajo & Superior & $\\pi$ & $W$ & $p$ \\\\ \\midrule",
+  apply(q01f, 1, function(f) paste(paste(f, collapse = " & "), "\\\\")),
+  "\\bottomrule", "\\end{tabular}"), "img/res_q01f.tex")
+tabla_tex(data.frame(Muestra = "Población", `$N$` = nrow(d), `Media ($\\pi$)` = f3(pi_pob),
+                     check.names = FALSE), "res_q01f_pob.tex", "lrr")
+
 ## Q.02 t para una muestra: PAS_basal, H0: mu = 148 --------------------
 mu0 <- 148
 q02 <- do.call(rbind, lapply(names(M)[1:2], function(m) {
@@ -194,6 +227,32 @@ q06$Muestra[duplicated(q06$Muestra)] <- ""
 names(q06) <- c("Muestra", "Grupo", "$n$", "Bajada media", "IC 95\\,\\%", "$t$",
                 "$p$ ($t$ pareada)", "$p$ (Wilcoxon)", "$p$ (\\textcolor{red}{indep.})")
 tabla_tex(q06, "res_q06.tex", "llrrcrrrr")
+
+## Q.07 (nueva) Pareadas con la variable diferencia Dif_PAS = PAS_basal - PAS_8sem --
+# (a) ¿Baja la PAS? t para una muestra sobre Dif_PAS (H0: mu_d = 0) = t pareada
+# (b) ¿Baja más con el suplemento? t para muestras independientes de Dif_PAS por Tratamiento
+#     (jamovi da la diferencia Placebo - Suplemento: negativa si baja más con el suplemento)
+Md <- lapply(M, function(x) { x$Dif_PAS <- x$PAS_basal - x$PAS_8sem; x })
+q07a <- do.call(rbind, lapply(names(Md)[1:2], function(m) {
+  y <- Md[[m]]$Dif_PAS; tt <- t.test(y)
+  data.frame(Muestra = m, n = length(y), Media = f1(mean(y)), DT = f1(sd(y)),
+             IC = ic(tt$conf.int[1], tt$conf.int[2]), t = f2(tt$statistic),
+             gl = length(y) - 1, p = fp(tt$p.value), SW = fp(shapiro.test(y)$p.value))
+}))
+names(q07a) <- c("Muestra", "$n$", "Bajada media", "DT", "IC 95\\,\\%", "$t$", "gl", "$p$",
+                 "S-W $p$")
+tabla_tex(q07a, "res_q07n_una.tex", "lrrrcrrrr")
+q07b <- do.call(rbind, lapply(names(Md)[1:2], function(m) {
+  x <- Md[[m]]; y <- x$Dif_PAS; g <- droplevels(x$Tratamiento)
+  st <- t.test(y ~ g, var.equal = TRUE); we <- t.test(y ~ g)
+  data.frame(Muestra = m, Medias = paste(f1(tapply(y, g, mean)), collapse = " / "),
+             Dif = f1(-diff(tapply(y, g, mean))), IC = ic(st$conf.int[1], st$conf.int[2]),
+             t = f2(st$statistic), p = fp(st$p.value), Welch = fp(we$p.value),
+             MW = fp(mw(y, g)$p.value), Lev = fp(levene(y, g)))
+}))
+names(q07b) <- c("Muestra", "Bajada (Plac. / Supl.)", "Diferencia", "IC 95\\,\\% dif.", "$t$",
+                 "$p$ Student", "$p$ Welch", "$p$ M-W", "Levene $p$")
+tabla_tex(q07b, "res_q07n_indep.tex", "lrrcrrrrr")
 
 ## Más de dos grupos: PAS basal por nivel educativo (muestra grande) ---------
 anv <- data.frame(Educa = levels(G$Educa), n = as.vector(table(G$Educa)),
