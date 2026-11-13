@@ -15,8 +15,8 @@ con `make` dentro de ella.
 cd Practica01 && make     # o: cd Practica02 && make
 ```
 
-Requisitos y detalles de cada práctica en su `README.md` o
-`ESTADO_PROYECTO.md`.
+Requisitos y detalles de cada práctica en su `README.md` o en la cabecera
+de su `Makefile`.
 
 Datos y scripts para los alumnos: <https://epidemos.es/bs2026/>.
 
