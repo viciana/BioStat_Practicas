@@ -3,7 +3,8 @@ CLAUDE.md
 ESTADO_PROYECTO.*
 guion_practica*.md
 ReOrdenaModifica_*.org
-addendum.org
-descartes.org
+addendum.*
+descartes.*
+Makefile.local
 *Congelada*
 /hipótesis metáfora juicio_original.txt

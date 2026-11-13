@@ -101,15 +101,10 @@ practica02.pdf: practica02.org myconfbeamer.org $(GRAFICOS) img/res_q02_t.tex im
 
 pdf: practica02.pdf
 
-## Diapositivas descartadas (no forma parte de 'all')
-descartes.pdf: descartes.org myconfbeamer.org $(GRAFICOS) img/res_q02_t.tex $(CAPTURAS)
-	$(EXPORTA)
-
-## Diapositivas nuevas pendientes de ordenar (addendum.org)
-addendum.pdf: addendum.org myconfbeamer.org $(GRAFICOS) img/res_q01f.tex $(CAPTURAS)
-	$(EXPORTA)
+## Objetivos propios de cada equipo (opcional, no se versiona)
+-include Makefile.local
 
 clean:
-	rm -rf img practica02.pdf practica02.tex descartes.pdf descartes.tex datos/*.csv datos/*.omv
+	rm -rf img practica02.pdf practica02.tex datos/*.csv datos/*.omv
 
 .PHONY: all datos graficos resultados pdf clean

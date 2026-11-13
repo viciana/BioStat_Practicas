@@ -18,7 +18,7 @@
 #+OPTIONS: H:2
 #+OPTIONS: toc:nil ^:{}
 
-# BORRADOR v1 (27-10-2026).  Estructura según guion_practica02.md.
+# BORRADOR v1 (27-10-2026).
 # Se genera con:  make practica02.pdf
 # Datos:     datos/poblacion.csv, poblacion_base.omv  src/01_simula_poblacion.R
 #            datos/poblacion.omv (con filtros) src/02_filtros.R (el de clase)
